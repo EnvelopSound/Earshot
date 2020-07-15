@@ -1,0 +1,41 @@
+version: '3.4'
+
+services:
+  nginx-rtmp:
+    build:
+      context: .
+      network: 'host'
+    ports:
+      - 1935:1935
+      - 80:80
+      - 443:443
+    environment:
+      - HTTP_PORT=80
+      - RTMP_PORT=1935
+
+      # set a custom auth token here
+      - RTMP_AUTH_TOKEN=
+
+      # set custom ffmpeg flags here
+      - FFMPEG_FLAGS=-window_size 5 -extra_window_size 5
+    networks:
+      - emp-network
+    volumes:
+      - ./certs:/opt/certs
+  rtmp-tester:
+    build:
+      context: ./tester/
+      network: 'host'
+    command: /run-tests.sh
+    environment:
+      # must match auth token above
+      - RTMP_AUTH_TOKEN=
+    depends_on:
+      - nginx-rtmp
+    networks:
+      - emp-network
+
+
+networks:
+  emp-network:
+    driver: bridge
