@@ -146,7 +146,7 @@ ecs-cli up --instance-role your-ec2-instance-role
 ecs-cli compose up
 ```
 
-### Local Development ###
+## Local Development ##
 
 To develop the Webtools React application:
 
