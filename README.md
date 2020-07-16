@@ -164,4 +164,6 @@ yarn start
 
 The ```rtmp-tester``` container spawns the nginx transcoder, uses ffmpeg to stream a 16 channel WAV file via RTMP, and checks for the presence of a DASH manifest file. To run it:
 
-```docker-compose up --build rtmp-tester```
+```
+docker-compose up --build rtmp-tester
+```
