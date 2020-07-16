@@ -123,7 +123,7 @@ once you have created your IAM role, please copy the role name as you will need 
 
 #### Create Security Group ####
 
-Our ECS cluster will need to be configured to allow inbound traffic from HTTP, and RTMP ports. To allow our ECS cluster to accept TCP traffic we will need to create a new EC2 security group.
+Our ECS cluster will need to be configured to allow inbound traffic from HTTP and RTMP ports. To allow our ECS cluster to accept TCP traffic we will need to create a new EC2 security group.
 
 To learn how to create a new security group, please see: [Creating, configuring, and deleting security groups for Amazon EC2 - AWS Command Line Interface](https://docs.aws.amazon.com/cli/latest/userguide/cli-services-ec2-sg.html)
 
