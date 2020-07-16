@@ -4,7 +4,7 @@ Envelop Ambisonic RTMP Streaming Higher-Order Transcoder (Earshot) is a containe
 
 Earshot is based on [pkviet's](https://github.com/pkviet) forks of [FFmpeg](https://github.com/pkviet/FFmpeg) and [OBS](https://github.com/pkviet/obs-studio) which enable AAC encoding and decoding for up to 16 channels.
 
-Earshot is GPL licensed as it uses ffmpeg binaries compiled with GPL codecs such as libx264.
+Earshot is GPL licensed, as it uses ffmpeg binaries compiled with GPL codecs including libx264.
 
 ## Motivation ##
 
@@ -158,10 +158,10 @@ yarn
 yarn start
 ```
 
-* Comment the production /webtools route and uncomment the local development /webtools route in ```nginx-rtmp/nginx.conf``` to proxy requests to http://localhost/webtools to the React app running on port 3000. Now you can develop with all the benefits of Webpack hot reloading!
+* Comment the production /webtools route and uncomment the local development ```/webtools``` route in ```nginx-rtmp/nginx.conf``` to proxy http://localhost/webtools requests to the React app running on port 3000. Now you can develop with all the benefits of Webpack hot reloading!
 
 ### Testing ###
 
-The ```rtmp-tester``` container spawns the server, uses ffmpeg to stream a 16 channel WAV file via RTMP, and checks for the presence of a DASH manifest file. To run it:
+The ```rtmp-tester``` container spawns the nginx transcoder, uses ffmpeg to stream a 16 channel WAV file via RTMP, and checks for the presence of a DASH manifest file. To run it:
 
 ```docker-compose up --build rtmp-tester```
