@@ -33,7 +33,7 @@ Some browsers, such as some versions of Safari, do not support Opus.
 
 ### Requirements: ###
 
-* OSX 10.14.6 (may work on other platforms, YMMV)
+* OSX Mojave or newer (may work on other platforms, YMMV)
 * [OBS Studio Music Edition](https://github.com/pkviet/obs-studio/releases/), either built locally or a downloaded release binary OR
 * [FFmpeg](https://ffmpeg.org/) installed locally
 * [Docker Desktop](https://www.docker.com/products/docker-desktop)
