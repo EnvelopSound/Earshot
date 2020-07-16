@@ -79,51 +79,6 @@ RUN cd /tmp/nginx-${NGINX_VERSION} && \
   --with-cc-opt="-Wimplicit-fallthrough=0" && \
   cd /tmp/nginx-${NGINX_VERSION} && make && make install
 
-###############################
-# Build the FFmpeg-build image.
-FROM alpine:3.11 as build-ffmpeg
-ARG FFMPEG_VERSION
-ARG PREFIX=/usr/local
-ARG MAKEFLAGS="-j4"
-
-# FFmpeg build dependencies.
-RUN apk add --update \
-  build-base \
-  coreutils \
-  freetype-dev \
-  lame-dev \
-  libogg-dev \
-  libass \
-  libass-dev \
-  libvpx-dev \
-  libvorbis-dev \
-  libwebp-dev \
-  libtheora-dev \
-  openssl-dev \
-  opus-dev \
-  pkgconf \
-  pkgconfig \
-  rtmpdump-dev \
-  wget \
-  x264-dev \
-  x265-dev \
-  yasm \
-  git
-
-RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories
-RUN apk add --update fdk-aac-dev
-
-## check the contents of this directory
-# Install prebuilt alpine ffmpeg original
-COPY nginx-transcoder/bin-alpine/ffmpeg /usr/local/bin/ffmpeg
-# build it yourself
-#RUN git clone -b pce2 https://github.com/EnvelopSound/FFmpeg ffmpeg && cd ffmpeg && ./configure --enable-libx264 --enable-libopus --enable-gpl && make -j 8 && make && make install
-#COPY nginx-transcoder/bin-alpine/ffmpeg /usr/local/bin/ffmpeg
-
-
-# Cleanup.
-RUN rm -rf /var/cache/* /tmp/*
-
 ##########################
 # Build the release image.
 FROM alpine:3.11
@@ -155,14 +110,14 @@ RUN apk add --update \
 
 COPY --from=build-nginx /usr/local/nginx /usr/local/nginx
 COPY --from=build-nginx /etc/nginx /etc/nginx
-COPY --from=build-ffmpeg /usr/local /usr/local
-COPY --from=build-ffmpeg /usr/lib/libfdk-aac.so.2 /usr/lib/libfdk-aac.so.2
 
 # Add NGINX path, config and static files.
 ENV PATH "${PATH}:/usr/local/nginx/sbin"
 ADD nginx-transcoder/nginx.conf /etc/nginx/nginx.conf.template
 RUN mkdir -p /opt/data && mkdir /www
 ADD nginx-transcoder/static /www/static
+COPY nginx-transcoder/bin-alpine/ffmpeg /usr/local/bin/
+
 
 
 # Copy special FFMPEG build for alpine
