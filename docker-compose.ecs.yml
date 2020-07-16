@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  nginx-rtmp:
+    build:
+      context: .
+      network: 'host'
+    network_mode: 'host'
+    ports:
+      - 1935:1935
+      - 80:80
+      - 443:443
+    environment:
+      - HTTP_PORT=80
+      - RTMP_PORT=1935
+
+      # set a custom auth token here
+      - RTMP_AUTH_TOKEN=
+
+      # set any custom ffmpeg flags here
+      - FFMPEG_FLAGS=
+    volumes:
+      - ./certs:/opt/certs
