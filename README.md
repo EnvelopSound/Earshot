@@ -4,15 +4,17 @@ Envelop Ambisonic RTMP Streaming Higher-Order Transcoder (Earshot) is a containe
 
 Earshot is based on [pkviet's](https://github.com/pkviet) forks of [FFmpeg](https://github.com/pkviet/FFmpeg) and [OBS](https://github.com/pkviet/obs-studio) which enable AAC encoding and decoding for up to 16 channels.
 
+Earshot is GPL licensed as it uses ffmpeg binaries compiled with GPL codecs such as libx264.
+
 ## Motivation ##
 
 Tools such as [Envelop for Live](https://www.envelop.us/software) have made it easy for musicians to compose and perform ambisonic content.  However, there remain limited options for livestreaming ambisonic content, particularly beyond first order. Ambisonic livestreaming has applications for VR/AR/XR and immersive home listening experiences.
 
 Earshot can be used in combination with pkviet's [OBS Studio Music Edition](https://github.com/pkviet/obs-studio/releases/) which supports multichannel AAC encoding up to 16.0. For more information on OBS see [obsproject.com](https://obsproject.com).
 
-Earshot is designed to be easily deployed to a cloud-based hosting solution, such as AWS Elastic Beanstalk / ECS, Digital Ocean, etc.
+Earshot is designed to be easily deployed to a cloud-based hosting solution, such as AWS ECS, DigitalOcean, etc.
 
-## Technologies Used ##
+## Key Technologies Used ##
 
 * [NGINX RTMP Module](https://github.com/arut/nginx-rtmp-module) which runs the transcoding and DASH-serving HTTP server
 * [Docker](https://www.docker.com/)
@@ -21,34 +23,35 @@ Earshot is designed to be easily deployed to a cloud-based hosting solution, suc
 * [Opus](https://github.com/xiph/opus), the audio codec used in combination with DASH
 * [MPEG-DASH](https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP), an adaptive bitrate HTTP streaming solution
 * [dash.js](https://github.com/Dash-Industry-Forum/dash.js), a Javascript client for DASH stream playback
+* [Create React App](https://github.com/facebook/create-react-app) for Webtools
 
 ## Known Limitations ##
 
-Safari does not support Opus, so if you are processing the DASH stream on the web, you must use Firefox or Chrome.
+Some browsers, such as some versions of Safari, do not support Opus.
 
 ## Running Earshot locally ##
 
 ### Requirements: ###
 
 * OSX 10.14.6 (may work on other platforms, YMMV)
-* [OBS Studio Music Edition](https://github.com/pkviet/obs-studio/releases/), either built locally or a downloaded release binary
+* [OBS Studio Music Edition](https://github.com/pkviet/obs-studio/releases/), either built locally or a downloaded release binary OR
+* [FFmpeg](https://ffmpeg.org/) installed locally
 * [Docker Desktop](https://www.docker.com/products/docker-desktop)
 * [Loopback](https://rogueamoeba.com/loopback/), Jack, or Soundflower (if streaming from Ableton Live or other audio software)
 
-To generate a multichannel stream such as third-order AMBIX, you can use any of the following:
+To generate a multichannel stream, such as third-order AMBIX, you can use any of the following:
 
 * Ableton Live 10 Studio with [Envelop for Live](https://www.envelop.us/software) installed
-* An example AMBIX-encoded 16 channel WAV file included in the `resources` directory`
+* An example AMBIX-encoded 16 channel WAV file included in the `tester/resources` directory`
 * Any other DAW or software that can produce a multichannel stream
 
-### Setup: ###
+### Setup with OBS: ###
 
-1. Build and run Docker container
+1. Build and run the Docker container for the transcoder
 
 From this (project root) directory:
 
-    cd nginx-transcoder
-    docker-compose up --build
+    docker-compose up --build nginx-rtmp
 
 2. Open OBS Music Edition
 
@@ -81,31 +84,31 @@ Your Dash stream is now available under http://localhost/stream1.mpd
 
 DASH stream webtools are available under http://localhost/webtools
 
-#### Add RTMP Auth ####
+#### RTMP Authentication ####
 
-To add a RTMP auth secret token you can update the "RTMP_AUTH_TOKEN" environment variable in the docker-compose.yml file.
+To add a RTMP auth secret token you can update the "RTMP_AUTH_TOKEN" environment variable in the docker-compose.yml file, e.g. ```- RTMP_AUTH_TOKEN=my_secret```
 
-On your streaming client, appent the secret using the "token" GET parameter to the request.
+On your streaming client, appent the secret using the ```token``` GET parameter to the request.
 
 * With ffmpeg: ```ffmpeg -y -stream_loop -1 -i tester/resources/16chambixloop.wav -af "channelmap=channel_layout=hexadecagonal" -c:a aac -ac 16 -b:a 2048k -f flv "rtmp://127.0.0.1:1935/live/stream1?token=my_secret"```
-* With OBS: your **Stream Key** should be appended with ?token=my_secret. If the stream name is stream1, Stream Key should be ```stream1?token=my_secret```
+* With OBS: your **Stream Key** should be appended with ```?token=my_secret```. If the stream name is stream1, Stream Key should be ```stream1?token=my_secret```
 
 #### FFMPEG Flags ####
 
-If you want to add additional flags for ffmpeg -- for example, different adaptive DASH bitrates -- you can update the "FFMPEG_FLAGS" environment variable in the docker-compose.yml.
+If you want to add additional flags for ffmpeg that is called within the transcoder -- for example, more adaptive DASH stream bitrates -- you can update the "FFMPEG_FLAGS" environment variable in the docker-compose.yml.
 
-#### Setup on ECS: ####
+## Deploying Earshot to AWS ECS ##
 
-You can also deploy the service on AWS ECS.
+You can easily deploy Earshot to run on AWS ECS.
 
-#### Install AWS CLI Tools
+#### Install AWS CLI Tools ####
 
 To deploy the containers on ECS you will need to install official AWS CLI tools.
 
 - [AWS CLI](https://aws.amazon.com/cli/)
 - [ECS CLI Tools](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI_installation.html)
 
-#### Create EC2 role
+#### Create EC2 role ####
 
 You will need to create an IAM role so that ECS CLI can create resources on your behalf.
 
@@ -117,7 +120,7 @@ to create an EC2 role, please refer to [IAM roles for Amazon EC2 - Amazon Elasti
 
 once you have created your IAM role, please copy the role name as you will need it later.
 
-#### Deploy on ECS
+#### Deploy on ECS ####
 
 1. Configure ECS CLI
 
@@ -137,8 +140,28 @@ ecs-cli configure --cluster your-cluster-name --default-launch-type EC2 --region
 ecs-cli up --instance-role your-ec2-instance-role
 ```
 
-4. Build & deploy containers
+4. Build and deploy the container
 
 ```
 ecs-cli compose up
 ```
+
+### Local Development ###
+
+To develop the Webtools React application:
+
+* Run the Webtools app with yarn:
+
+```
+cd webtools
+yarn
+yarn start
+```
+
+* Comment the production /webtools route and uncomment the local development /webtools route in ```nginx-rtmp/nginx.conf``` to proxy requests to http://localhost/webtools to the React app running on port 3000. Now you can develop with all the benefits of Webpack hot reloading!
+
+### Testing ###
+
+The ```rtmp-tester``` container spawns the server, uses ffmpeg to stream a 16 channel WAV file via RTMP, and checks for the presence of a DASH manifest file. To run it:
+
+```docker-compose up --build rtmp-tester```
