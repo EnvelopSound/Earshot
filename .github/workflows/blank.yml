@@ -15,8 +15,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Build the stack
+      - name: Checkout files
         uses: actions/checkout@v2
         with:
           lfs: true
+      - name: Build the stack
         run: git lfs checkout && docker-compose up --exit-code-from rtmp-tester
