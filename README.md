@@ -38,6 +38,7 @@ Some browsers, such as some versions of Safari, do not support Opus.
 * [FFmpeg](https://ffmpeg.org/) installed locally
 * [Docker Desktop](https://www.docker.com/products/docker-desktop)
 * [Loopback](https://rogueamoeba.com/loopback/), Jack, or Soundflower (if streaming from Ableton Live or other audio software)
+* [Yarn](https://classic.yarnpkg.com/en/) if developing Webtools locally
 
 To generate a multichannel stream, such as third-order AMBIX, you can use any of the following:
 
