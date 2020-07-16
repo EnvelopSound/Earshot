@@ -158,7 +158,7 @@ yarn
 yarn start
 ```
 
-* Comment the production /webtools route and uncomment the local development ```/webtools``` route in ```nginx-rtmp/nginx.conf``` to proxy http://localhost/webtools requests to the React app running on port 3000. Now you can develop with all the benefits of Webpack hot reloading!
+* Comment the production ```/webtools``` route and uncomment the local development ```/webtools``` route in ```nginx-rtmp/nginx.conf``` to proxy http://localhost/webtools requests to the React app running on port 3000. Now you can develop with all the benefits of Webpack hot reloading!
 
 ### Testing ###
 
