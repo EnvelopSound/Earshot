@@ -121,6 +121,43 @@ to create an EC2 role, please refer to [IAM roles for Amazon EC2 - Amazon Elasti
 
 once you have created your IAM role, please copy the role name as you will need it later.
 
+#### Create Security Group ####
+
+Our ECS cluster will need to be configured to allow inbound traffic from HTTP, and RTMP ports. To allow our ECS cluster to accept TCP traffic we will need to create a new EC2 security group.
+
+To learn how to create a new security group, please see: [Creating, configuring, and deleting security groups for Amazon EC2 - AWS Command Line Interface](https://docs.aws.amazon.com/cli/latest/userguide/cli-services-ec2-sg.html)
+
+In your security group please add the following settings:
+
+```
+Name: ECSEarshotSecurity
+Description: (blank)
+VPC: (any)
+```
+
+Inbound rules:
+
+```
+Type: Custom TCP
+Protocol: TCP
+Port Range: 1935
+Source: 0.0.0.0/0
+```
+
+```
+Type: Custom TCP
+Protocol: TCP
+Port Range: 80
+Source: 0.0.0.0/0
+```
+
+```
+Type: Custom TCP
+Protocol: TCP
+Port Range: 443
+Source: 0.0.0.0/0
+```
+
 #### Deploy on ECS ####
 
 1. Configure ECS CLI
@@ -138,7 +175,7 @@ ecs-cli configure --cluster your-cluster-name --default-launch-type EC2 --region
 3. Provision the cluster
 
 ```
-ecs-cli up --instance-role your-ec2-instance-role
+ecs-cli up --instance-role your-ec2-instance-role --security-group ECSEarshotSecurity
 ```
 
 4. Build and deploy the container
