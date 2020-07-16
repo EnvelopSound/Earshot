@@ -144,7 +144,7 @@ ecs-cli up --instance-role your-ec2-instance-role
 4. Build and deploy the container
 
 ```
-ecs-cli compose up
+ecs-cli compose --file docker-compose.ecs.yml up
 ```
 
 ## Local Development ##
