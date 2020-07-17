@@ -33,17 +33,21 @@ Some browsers, such as some versions of Safari, do not support Opus.
 
 ### Requirements: ###
 
-* OSX Mojave or newer (may work on other platforms, YMMV)
-* [OBS Studio Music Edition](https://github.com/pkviet/obs-studio/releases/), either built locally or a downloaded release binary OR
-* [FFmpeg](https://ffmpeg.org/) installed locally
 * [Docker Desktop](https://www.docker.com/products/docker-desktop)
-* [Loopback](https://rogueamoeba.com/loopback/), Jack, or Soundflower (if streaming from Ableton Live or other audio software)
-* [Yarn](https://classic.yarnpkg.com/en/) if developing Webtools locally
+* [Git](https://git-scm.com/)
+* [Git LFS](https://git-lfs.github.com/)
 
-To generate a multichannel stream, such as third-order AMBIX, you can use any of the following:
+#### Optional Requirements: ####
+
+* [OBS Studio Music Edition](https://github.com/pkviet/obs-studio/releases/) -- recommended to easily stream from your computer
+* [FFmpeg](https://ffmpeg.org/) installed locally for command-line RTMP streaming
+* [Yarn](https://classic.yarnpkg.com/en/) for developing Webtools locally
+* [Loopback](https://rogueamoeba.com/loopback/) for streaming from Ableton Live or other audio software
+
+To generate a multichannel audio stream in a format such as third-order AMBIX you can use any of the following:
 
 * Ableton Live 10 Studio with [Envelop for Live](https://www.envelop.us/software) installed
-* An example AMBIX-encoded 16 channel WAV file included in the `tester/resources` directory`
+* An example AMBIX-encoded 16 channel WAV file included in the `tester/resources` directory` streamed with FFmpeg
 * Any other DAW or software that can produce a multichannel stream
 
 ### Setup with OBS: ###
