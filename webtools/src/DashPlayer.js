@@ -1,11 +1,11 @@
-import React from "react";
+import axios from "axios";
 import dashjs from "dashjs";
+import React from "react";
 
 const SLIDER_MAX_VALUE = 200;
 const POLLING_INTERVAL = 1000;
 
-// TODO: make dynamic
-const STREAM_URL = "/stream1.mpd";
+const NGINX_INFO_URL = "/nginxInfo";
 
 export default class DashPlayer extends React.Component {
   state = {
@@ -13,6 +13,8 @@ export default class DashPlayer extends React.Component {
     audioBufferLevel: null,
     audioBitRate: null,
     availabilityStartTime: null,
+    ffmpegFlags: null,
+    liveLatency: null,
     minBufferTime: null,
     minimumUpdatePeriod: null,
     numChannels: null,
@@ -22,12 +24,32 @@ export default class DashPlayer extends React.Component {
   };
 
   componentDidMount() {
-    this.load();
+    this.load(this.props.streamUrl);
+    this.loadEarshotInfo();
   }
 
-  load() {
+  componentDidUpdate(prevProps) {
+    if (this.props.streamUrl !== prevProps.streamUrl) {
+      this.load(this.props.streamUrl);
+    }
+  }
+
+  load(url) {
+    if (this.state.dashPlayer) {
+      // if stream is being updated, just update the URL
+      this.state.dashPlayer.attachSource(url);
+      return;
+    }
+
     const dashPlayer = dashjs.MediaPlayer().create();
-    dashPlayer.initialize(document.querySelector("#videoPlayer"), STREAM_URL, true);
+    dashPlayer.initialize(document.querySelector("#videoPlayer"), url, true);
+    dashPlayer.updateSettings({
+      streaming: {
+        stableBufferTime: 20,
+        bufferTimeAtTopQuality: 40
+      }
+    });
+
     dashPlayer.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, (event) => {
       const data = event.data;
       const audioAdaptionSet = data.Period.AdaptationSet_asArray.find(elem => elem.contentType === "audio");
@@ -44,10 +66,10 @@ export default class DashPlayer extends React.Component {
         numChannels,
         profiles: data.profiles,
         suggestedPresentationDelay: data.suggestedPresentationDelay,
+        liveLatency: dashPlayer.getCurrentLiveLatency()
       });
     });
     dashPlayer.on(dashjs.MediaPlayer.events.ERROR, (error) => {
-      console.log("DASDAS");
       console.error(error);
       this.setState({
         isLoading: false,
@@ -56,6 +78,12 @@ export default class DashPlayer extends React.Component {
     });
     this.setState({
       dashPlayer,
+    });
+  }
+
+  loadEarshotInfo() {
+    axios.get(NGINX_INFO_URL).then((response) => {
+      this.setState({ ffmpegFlags: response.data.ffmpegFlags });
     });
   }
 
@@ -69,27 +97,49 @@ export default class DashPlayer extends React.Component {
       );
     } else if (this.state.error) {
       body = (
-        <div>
+        <div className="ErrorBox">
           {this.state.error}
         </div>
       );
     } else {
       body = (
-        <div className="StreamInfo">
-          {this.renderGainSliders()}
-          {this.renderStreamInfo()}
-        </div>
+        <>
+          <div className="SliderBox">
+            {this.renderGainSliders()}
+          </div>
+          <div className="StreamInfoBox">
+            {this.renderDashInfo()}
+            {this.renderNginxInfo()}
+          </div>
+        </>
       );
     }
 
     return (
-      <>
-        <video
-          id="videoPlayer"
-          autoPlay={true}
-        />
+      <div className="StreamInfoContainer">
+        {this.renderVideoBox()}
         {body}
-      </>
+      </div>
+    );
+  }
+
+  renderVideoBox() {
+    let video = (
+      <video
+        className="VideoPlayer"
+        id="videoPlayer"
+        muted
+      />
+    );
+
+    return (
+      <div className="VideoBox">
+        {video}
+        <div className="ButtonBox">
+          <button className="VideoControlButton" onClick={() => { document.querySelector("#videoPlayer").play(); }}>Play</button>
+          <button className="VideoControlButton" onClick={() => { document.querySelector("#videoPlayer").pause(); }}>Pause</button>
+        </div>
+      </div>
     );
   }
 
@@ -99,7 +149,7 @@ export default class DashPlayer extends React.Component {
       let v = i;
       sliders.push(
         (
-          <div key={i} className="slidecontainer">
+          <div key={i} className="SliderContainer">
             Channel {i}
             <input
               type="range"
@@ -117,10 +167,34 @@ export default class DashPlayer extends React.Component {
     return sliders;
   }
 
-  renderStreamInfo() {
+  renderDashInfo() {
     return (
       <table>
         <tbody>
+          <tr>
+            <td>
+              Stream Name
+            </td>
+            <td>
+              {this.props.streamName}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Stream URL
+            </td>
+            <td>
+              {new URL(this.props.streamUrl, document.baseURI).href}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Live Latency
+            </td>
+            <td>
+              {this.state.liveLatency ? this.state.liveLatency + " secs" : "Calculating..."}
+            </td>
+          </tr>
           <tr>
             <td>
               Buffer Level
@@ -190,6 +264,23 @@ export default class DashPlayer extends React.Component {
     );
   }
 
+  renderNginxInfo() {
+    return (
+      <table>
+        <tbody>
+          <tr>
+            <td>
+              FFmpeg Flags
+            </td>
+            <td>
+              {this.state.ffmpegFlags ? this.state.ffmpegFlags : "Calculating..."}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    );
+  }
+
   setupAudio({ numChannels }) {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
 
@@ -219,7 +310,8 @@ export default class DashPlayer extends React.Component {
       const gain = audioContext.createGain();
       gainNodes.push(gain);
       splitter.connect(gain, i, 0);
-      gain.connect(merger, 0, i < numChannels / 2 ? 0 : 1);
+      gain.connect(merger, 0, 0);
+      gain.connect(merger, 0, 1);
       gain.gain.value = 0;
     }
 
@@ -229,6 +321,10 @@ export default class DashPlayer extends React.Component {
   }
 
   setGain(channel, value) {
+    let videoPlayer = document.querySelector("#videoPlayer");
+    if (videoPlayer.muted) {
+      videoPlayer.muted = false;
+    }
     if (this.state.gainNodes && value) {
       let gainNode = this.state.gainNodes[channel];
       gainNode.gain.value = value;
@@ -238,7 +334,11 @@ export default class DashPlayer extends React.Component {
   setupStreamInfo() {
     const player = this.state.dashPlayer;
     setInterval(() => {
-      const streamInfo = player.getActiveStream().getStreamInfo();
+      const activeStream = player.getActiveStream();
+      if  (!activeStream) {
+        return;
+      }
+      const streamInfo = activeStream.getStreamInfo();
       const dashMetrics = player.getDashMetrics();
       const dashAdapter = player.getDashAdapter();
 
