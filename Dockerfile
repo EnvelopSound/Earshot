@@ -114,11 +114,8 @@ COPY --from=build-nginx /etc/nginx /etc/nginx
 # Add NGINX path, config and static files.
 ENV PATH "${PATH}:/usr/local/nginx/sbin"
 ADD nginx-transcoder/nginx.conf /etc/nginx/nginx.conf.template
-RUN mkdir -p /opt/data && mkdir /www
 ADD nginx-transcoder/static /www/static
 COPY nginx-transcoder/bin-alpine/ffmpeg /usr/local/bin/
-
-
 
 # Copy special FFMPEG build for alpine
 # Uses pkviet's pce2 fork which supports PCE headers in RTMP
@@ -136,8 +133,7 @@ RUN set -x ; \
     addgroup -g 82 nginx ; \
     adduser -u 82 -D -h /home/nginx -s /bin/sh -G nginx nginx && exit 0 ; exit 1
 
-RUN chown -R nginx /opt/data
-
-CMD envsubst "$(env | sed -e 's/=.*//' -e 's/^/\$/g')" < \
+CMD rm -rf /opt/data && mkdir /opt/data && chown nginx /opt/data && chmod 777 /opt/data && mkdir -p /www && \
+  envsubst "$(env | sed -e 's/=.*//' -e 's/^/\$/g')" < \
   /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && \
   nginx

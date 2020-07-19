@@ -135,10 +135,12 @@ export default class DashPlayer extends React.Component {
     return (
       <div className="VideoBox">
         {video}
-        <div className="ButtonBox">
-          <button className="VideoControlButton" onClick={() => { document.querySelector("#videoPlayer").play(); }}>Play</button>
-          <button className="VideoControlButton" onClick={() => { document.querySelector("#videoPlayer").pause(); }}>Pause</button>
-        </div>
+        {!this.state.isLoading && !this.state.error && (
+          <div className="ButtonBox">
+            <button className="VideoControlButton" onClick={() => { document.querySelector("#videoPlayer").play(); }}>Play</button>
+            <button className="VideoControlButton" onClick={() => { document.querySelector("#videoPlayer").pause(); }}>Pause</button>
+          </div>
+        )}
       </div>
     );
   }
