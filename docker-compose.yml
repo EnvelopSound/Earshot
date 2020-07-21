@@ -17,7 +17,7 @@ services:
       - RTMP_AUTH_TOKEN=
 
       # set custom ffmpeg flags here
-      - FFMPEG_FLAGS=-window_size 5 -max_muxing_queue_size 1000
+      - FFMPEG_FLAGS=-window_size 100 -max_muxing_queue_size 1000
     networks:
       - emp-network
     tmpfs:

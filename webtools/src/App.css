@@ -30,10 +30,13 @@
 }
 
 .StreamName {
-  background-color: gray;
-  color: white;
-  padding: 10px;
   cursor: pointer;
+  padding: 10px;
+}
+
+.StreamName.Selected {
+  background-color: #8A8A8A;
+  color: white;
 }
 
 .ServerInfo {
@@ -45,46 +48,72 @@
   width: 85%;
 }
 
+.SearchingForStreamsContainer {
+  background-color: #8A8A8A;
+  color: black;
+  display: table;
+  float: right;
+  height: 100vh;
+  text-align: center;
+  width: 85%;
+}
+
+.SearchingForStreamsText {
+  display: table-cell;
+  vertical-align: middle;
+}
+
 .StreamInfoContainer {
+  background-color: #8A8A8A;
+  color: black;
   font-size: calc(8px + 2vmin);
-  color: white;
-  background-color: #282c34;
   height: 100vh;
 }
 
 div.StreamInfoContainer {
-  background-color: #282c34;
+  background-color: #8A8A8A;
   padding: 10px;
 }
 
 .VideoBox {
   float: left;
-  width: 40%;
+  padding-right: 10px;
+  width: 45%;
+}
+
+.AudioOnlyBox {
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 .VideoPlayer {
-  width: 95%;
+  width: 100%;
 }
 
 .VideoControlButton {
   margin: 0px 10px 0px 10px;
 }
 
-.SliderBox {
+.InfoBox {
+  background: #D3D3D3;
   float: left;
-  width: 20%;
   font-size: 20px;
+  padding: 10px;
+  margin-right: 10px;
 }
 
-.SliderContainer {
-  float: right;
-  padding-right: 30px;
+.SliderBox {
+  width: 20%;
+}
+
+.VideoInfoBox {
+  width: 98%;
 }
 
 .StreamInfoBox {
-  float: right;
-  width: 40%;
+  float: left;
   font-size: 18px;
+  width: 20%;
 }
 
 .ButtonBox {
@@ -92,14 +121,6 @@ div.StreamInfoContainer {
 }
 
 .ErrorBox {
-  float: left;
   clear: both;
-}
-
-.DashInfo {
-
-}
-
-.NginxInfo {
-
+  float: left;
 }
