@@ -129,7 +129,7 @@ COPY nginx-transcoder/bin-alpine/ffmpeg /usr/local/bin/
 COPY --from=0 /app/build /www/webtools
 
 EXPOSE 1935
-EXPOSE 80
+EXPOSE 8000
 
 # Add the nginx user since we don't want to run as root
 RUN set -x ; \

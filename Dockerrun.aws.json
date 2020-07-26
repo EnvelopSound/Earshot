@@ -6,12 +6,11 @@
   },
   "Ports": [
          {
-            "hostPort": 8000,
-            "containerPort": 80
+            "ContainerPort": 8000
          },
 	 {
-            "hostPort": 1935,
-            "containerPort": 1935
+            "HostPort": 1935,
+            "ContainerPort": 1935
          }
 
   ]
