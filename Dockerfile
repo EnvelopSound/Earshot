@@ -5,7 +5,7 @@
 # these are what will be served by nginx
 # use alias build to be easier to refer this container elsewhere
 # e.g inside nginx container
-FROM node:12.18.2-alpine3.12 as build
+FROM node:12.18.2-alpine3.12
 # set working directory
 # this is the working folder in the container
 # from which the app will be running from
@@ -27,7 +27,7 @@ ARG FFMPEG_VERSION=4.2.2
 
 ##############################
 # Build the NGINX-build image.
-FROM alpine:3.11 as build-nginx
+FROM alpine:3.11
 #ARG NGINX_VERSION
 #ARG NGINX_RTMP_VERSION
 ARG NGINX_VERSION=1.15.1
@@ -108,8 +108,8 @@ RUN apk add --update \
   x265-dev \
   sudo
 
-COPY --from=build-nginx /usr/local/nginx /usr/local/nginx
-COPY --from=build-nginx /etc/nginx /etc/nginx
+COPY --from=1 /usr/local/nginx /usr/local/nginx
+COPY --from=1 /etc/nginx /etc/nginx
 
 # Add NGINX path, config and static files.
 ENV PATH "${PATH}:/usr/local/nginx/sbin"
@@ -126,7 +126,7 @@ COPY nginx-transcoder/bin-alpine/ffmpeg /usr/local/bin/
 #
 # https://github.com/pkviet/FFmpeg
 
-COPY --from=build /app/build /www/webtools
+COPY --from=0 /app/build /www/webtools
 
 EXPOSE 1935
 EXPOSE 80

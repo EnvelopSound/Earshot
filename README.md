@@ -168,3 +168,10 @@ The ```rtmp-tester``` container spawns the nginx transcoder, uses ffmpeg to stre
 ```
 docker-compose up --build rtmp-tester
 ```
+
+
+### Deploy using AWS CloudFormationg ###
+
+```
+aws cloudformation create-stack --stack-name earshot-stack --profile=roddy --region us-west-2 --template-body file:///root/new/cf.yml --parameters ParameterKey=KeyName,ParameterValue=ecs-test ParameterKey=VpcId,ParameterValue=vpc-00f458fe10be88d98 'ParameterKey=SubnetId,ParameterValue="subnet-00fb0f26228eb6ad3,subnet-0acc539d9591733c4"' --capabilities CAPABILITY_IAM
+```

@@ -1,0 +1,25 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name": "earshot",
+      "image": "envelopsound/earshot:latest",
+      "essential": true,
+      "memory": 128,
+      "portMappings": [
+         {
+            "hostPort": 80,
+            "containerPort": 80
+         },
+	 {
+            "hostPort": 443,
+            "containerPort": 443
+         },
+	 {
+            "hostPort": 1935,
+            "containerPort": 1935
+         }
+      ]
+    }
+   ]
+}

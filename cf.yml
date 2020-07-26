@@ -206,7 +206,7 @@ Resources:
       Cluster: !Ref 'ECSCluster'
       DesiredCount: '1'
       LoadBalancers:
-      - ContainerName: simple-app
+      - ContainerName: earshot
         ContainerPort: '80'
         TargetGroupArn: !Ref 'ECSTG'
       Role: !Ref 'ECSServiceRole'
@@ -287,7 +287,7 @@ Resources:
           - Effect: Allow
             Action: ['ecs:CreateCluster', 'ecs:DeregisterContainerInstance', 'ecs:DiscoverPollEndpoint',
               'ecs:Poll', 'ecs:RegisterContainerInstance', 'ecs:StartTelemetrySession',
-              'ecs:Submit*', 'logs:CreateLogStream', 'logs:PutLogEvents']
+              'ecs:Submit*', 'logs:CreateLogStream', 'logs:PutLogEvents', 'cloudformation:SignalResource']
             Resource: '*'
   AutoscalingRole:
     Type: AWS::IAM::Role
@@ -305,7 +305,7 @@ Resources:
           Statement:
           - Effect: Allow
             Action: ['application-autoscaling:*', 'cloudwatch:DescribeAlarms', 'cloudwatch:PutMetricAlarm',
-              'ecs:DescribeServices', 'ecs:UpdateService']
+              'ecs:DescribeServices', 'ecs:UpdateService', 'cloudformation:SignalResource']
             Resource: '*'
   EC2InstanceProfile:
     Type: AWS::IAM::InstanceProfile
