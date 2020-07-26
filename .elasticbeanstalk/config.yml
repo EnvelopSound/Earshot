@@ -1,6 +1,10 @@
 branch-defaults:
   cf-impl:
-    environment: earshot-test-dev
+    environment: earshot-test-8
+environment-defaults:
+  earshot-test-8:
+    branch: null
+    repository: null
 global:
   application_name: earshot-test
   branch: null
