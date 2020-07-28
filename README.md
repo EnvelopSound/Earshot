@@ -202,6 +202,8 @@ yarn start
 
 * Comment the production ```/webtools``` route and uncomment the local development ```/webtools``` route in ```nginx-rtmp/nginx.conf``` to proxy http://localhost/webtools requests to the React app running on port 3000. Now you can develop with all the benefits of Webpack hot reloading!
 
+Note: the default browser tab that yarn spawns (http://localhost:3000/webtools) will not work, since it looks for DASH files and nginx stats with a relative URL.  Use http://localhost/webtools.
+
 ### Testing ###
 
 The ```rtmp-tester``` container spawns the nginx transcoder, uses ffmpeg to stream a 16 channel WAV file via RTMP, and checks for the presence of a DASH manifest file. To run it:
