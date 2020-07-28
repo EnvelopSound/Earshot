@@ -172,6 +172,32 @@ docker-compose up --build rtmp-tester
 
 ### Deploy using AWS CloudFormationg ###
 
+
+#### 1. Deploy EC2 stack
+
 ```
-aws cloudformation create-stack --stack-name earshot-stack --profile=roddy --region us-west-2 --template-body file:///root/new/cf.yml --parameters ParameterKey=KeyName,ParameterValue=ecs-test ParameterKey=VpcId,ParameterValue=vpc-00f458fe10be88d98 'ParameterKey=SubnetId,ParameterValue="subnet-00fb0f26228eb6ad3,subnet-0acc539d9591733c4"' --capabilities CAPABILITY_IAM
+aws cloudformation create-stack --stack-name earshot-stack-ec2 --region us-west-2 --template-body file://templates/cluster-ec2-public-vpc.yml --parameters ParameterKey=EnvironmentName,ParameterValue=production --capabilities CAPABILITY_IAM
 ```
+
+
+#### 2. Deploy ALB stack
+
+```
+aws cloudformation create-stack --stack-name earshot-stack-alb --region us-west-2 --template-body file://templates/alb-external.yml --parameters ParameterKey=EnvironmentName,ParameterValue=production --capabilities CAPABILITY_IAM
+```
+
+#### 3. Deploy ECS stack
+
+```
+aws cloudformation create-stack --stack-name earshot-stack-ecs --region us-west-2 --template-body file://templates/service-ec2-public-lb.yml --parameters ParameterKey=EnvironmentName,ParameterValue=production --capabilities CAPABILITY_IAM
+```
+
+### Access ALB public URL ###
+
+To get the public URL of your application load balancer:
+
+1. Login to AWS Console
+2. Goto CloudFormation
+3. Click "earshot-stack-alb" stack
+4. Click "Outputs" tab
+5. Copy "ExternalUrl"
