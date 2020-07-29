@@ -6,10 +6,13 @@ Parameters:
     Type: String
     Default: production
     Description: "A friendly environment name that will be used for namespacing all cluster resources. Example: staging, qa, or production"
+  KeyPair:
+    Type: String
+    Description: "Key pair for SSH access."
   InstanceType:
     Description: EC2 instance type
     Type: String
-    Default: c5.xlarge
+    Default: t2.micro
     Description: Class of EC2 instance used to host containers. Choose t2 for testing, m5 for general purpose, c5 for CPU intensive services, and r5 for memory intensive services
     AllowedValues: [ t2.micro, t2.small, t2.medium, t2.large, t2.xlarge, t2.2xlarge,
      m5.large, m5.xlarge, m5.2large, m5.4xlarge, m5.12xlarge, m5.24large,
@@ -18,7 +21,7 @@ Parameters:
     ConstraintDescription: Please choose a valid instance type.
   DesiredCapacity:
     Type: Number
-    Default: '3'
+    Default: '1'
     Description: Number of EC2 instances to launch in your ECS cluster.
   MaxSize:
     Type: Number
@@ -162,6 +165,7 @@ Resources:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
       ImageId: !Ref 'ECSAMI'
+      KeyPair: !Ref 'KeyPair'
       SecurityGroups: [!Ref 'ContainerSecurityGroup']
       InstanceType: !Ref 'InstanceType'
       IamInstanceProfile: !Ref 'EC2InstanceProfile'

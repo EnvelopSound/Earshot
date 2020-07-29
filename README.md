@@ -176,7 +176,7 @@ docker-compose up --build rtmp-tester
 #### 1. Deploy EC2 stack
 
 ```
-aws cloudformation create-stack --stack-name earshot-stack-ec2 --region us-west-2 --template-body file://templates/cluster-ec2-public-vpc.yml --parameters ParameterKey=EnvironmentName,ParameterValue=production --capabilities CAPABILITY_IAM
+aws cloudformation create-stack --stack-name earshot-stack-ec2 --region us-west-2 --template-body file://templates/cluster-ec2-public-vpc.yml --parameters ParameterKey=EnvironmentName,ParameterValue=production ParameterKey=KeyPair,ParameterValue=your-aws-keypair --capabilities CAPABILITY_IAM
 ```
 
 
