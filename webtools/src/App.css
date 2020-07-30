@@ -47,8 +47,9 @@
 .StreamInfoContainer {
   background-color: #8A8A8A;
   color: black;
+  display: block;
   font-size: calc(8px + 2vmin);
-  height: 100vh;
+  overflow: auto;
 }
 
 div.StreamInfoContainer {

@@ -12,6 +12,7 @@
     "dashjs": "3.1.2",
     "fontsource-roboto": "^2.2.6",
     "moment": "^2.27.0",
+    "query-string": "^6.13.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",

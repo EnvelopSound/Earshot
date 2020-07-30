@@ -1,4 +1,7 @@
 import React from "react";
+import { withRouter } from "react-router-dom";
+import history from "./history";
+import QueryString from "query-string"
 
 import dashjs from "dashjs";
 
@@ -20,7 +23,7 @@ const BUFFER_TIME_AT_TOP_QUALITY = 120;
 // TODO: fix, but probably is an rtmp-nginx issue
 const MANIFEST_LOAD_RETRY_INTERVAL = 50000;
 
-const CLIENT_SETTINGS = {
+const DEFAULT_CLIENT_SETTINGS = {
   streaming: {
     useSuggestedPresentationDelay: false,
     lowLatencyEnabled: false,
@@ -49,7 +52,7 @@ const DEFAULT_STATE = {
   videoAdaptationSets: null,
 };
 
-export default class DashPlayer extends React.Component {
+class DashPlayer extends React.Component {
   constructor(props) {
     super(props);
     this.state = DEFAULT_STATE;
@@ -74,8 +77,8 @@ export default class DashPlayer extends React.Component {
     }
 
     const dashPlayer = dashjs.MediaPlayer().create();
-
-    dashPlayer.updateSettings(CLIENT_SETTINGS);
+    const settings = this.getCurrentSettings();
+    dashPlayer.updateSettings(settings);
     dashPlayer.initialize(document.querySelector("#videoPlayer"), url, true);
 
     dashPlayer.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, (event) => {
@@ -108,6 +111,12 @@ export default class DashPlayer extends React.Component {
     this.setState({
       dashPlayer,
     });
+  }
+
+  getCurrentSettings() {
+    const params = QueryString.parse(this.props.location.search);
+    const settings = params.settings ? JSON.parse(params.settings) : DEFAULT_CLIENT_SETTINGS;
+    return settings;
   }
 
   render() {
@@ -222,11 +231,10 @@ export default class DashPlayer extends React.Component {
   renderDashSettings() {
     return (
       <DashSettings
-        clientSettings={CLIENT_SETTINGS}
+        clientSettings={this.getCurrentSettings()}
         onChange={(settings) => {
           this.state.dashPlayer.updateSettings(settings);
-          console.log(settings);
-          console.log(this.state.dashPlayer.getSettings());
+          history.push(`/webtools/?settings=${JSON.stringify(settings)}`)
         }}
       />
     );
@@ -254,7 +262,7 @@ export default class DashPlayer extends React.Component {
         });
       }
     }, POLLING_INTERVAL);
-
   }
-
 }
+
+export default withRouter(DashPlayer);
