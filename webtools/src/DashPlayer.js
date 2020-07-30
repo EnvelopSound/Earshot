@@ -199,13 +199,13 @@ class DashPlayer extends React.Component {
   }
 
   renderVideoBox() {
-    const isAudioOnly = !this.state.isLoading && !this.state.videoAdaptationSets;
+    const isAudioOnly = !this.state.isLoading && !this.state.videoAdaptationSets.length;
 
     if (this.state.isLoading) {
       return this.renderHiddenVideoElementDiv();
     } else if (isAudioOnly) {
       return (
-        <div>
+        <div className="VideoBox InfoBox">
           <div className="AudioOnlyBox">
             Audio-only Stream
           </div>
