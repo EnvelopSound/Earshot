@@ -12,6 +12,10 @@ const POLLING_INTERVAL = 1000;
 const STABLE_BUFFER_TIME = 120;
 const BUFFER_TIME_AT_TOP_QUALITY = 120;
 
+// this is a ridiciulously high number as there is some issue
+// with empty segmentTimelines with fresh livestreams.
+const MANIFEST_LOAD_RETRY_INTERVAL = 50000;
+
 const CLIENT_SETTINGS = {
   streaming: {
     useSuggestedPresentationDelay: false,
@@ -19,11 +23,11 @@ const CLIENT_SETTINGS = {
     stableBufferTime: STABLE_BUFFER_TIME,
     bufferTimeAtTopQualityLongForm: BUFFER_TIME_AT_TOP_QUALITY,
     retryIntervals: {
-      MPD: 5000,
+      MPD: MANIFEST_LOAD_RETRY_INTERVAL
     },
     retryAttempts: {
-      MPD: 5,
-    }
+      MPD: 3
+    },
   }
 };
 
@@ -64,8 +68,8 @@ export default class DashPlayer extends React.Component {
 
     const dashPlayer = dashjs.MediaPlayer().create();
     dashPlayer.updateSettings(CLIENT_SETTINGS);
-
     dashPlayer.initialize(document.querySelector("#videoPlayer"), url, true);
+
     dashPlayer.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, (event) => {
       const data = event.data;
       const audioAdaptationSet = data.Period.AdaptationSet_asArray.find(elem => elem.contentType === "audio");
@@ -87,21 +91,12 @@ export default class DashPlayer extends React.Component {
       });
     });
     dashPlayer.on(dashjs.MediaPlayer.events.ERROR, (error) => {
-      if (error.error.code === dashjs.MediaPlayer.errors.DATA_UPDATE_FAILED_ERROR_CODE) {
-        // these errors may happen in the first few seconds of stream loading, ignore
-        return;
-      } else if (error.error.code === dashjs.MediaPlayer.errors.DOWNLOAD_ERROR_ID_CONTENT_CODE) {
-        // these errors may happen in the first few seconds of stream loading, ignore
-        return;
-      } else if (error.error.code === dashjs.MediaPlayer.errors.DOWNLOAD_ERROR_ID_MANIFEST_CODE) {
-        // these errors may happen in the first few seconds of stream loading, ignore
-        return;
-      }
       this.setState({
         isLoading: false,
         error: error.error.message,
       });
     });
+
     this.setState({
       dashPlayer,
     });
@@ -111,8 +106,12 @@ export default class DashPlayer extends React.Component {
     let body;
     if (this.state.isLoading) {
       body = (
-        <div>
-          Loading...
+        <div className="SearchingOrLoadingStreamsContainer">
+          <div className="SearchingOrLoadingStreamsText">
+             Loading {this.props.streamName}...
+            <br />
+            (it may take up to a minute for the stream to warm up...)
+          </div>
         </div>
       );
     } else if (this.state.error) {
@@ -165,34 +164,50 @@ export default class DashPlayer extends React.Component {
     );
   }
 
+  renderVideoElement() {
+    return (
+      <video
+        className="VideoPlayer"
+        id="videoPlayer"
+        muted
+      />
+    );
+  }
+
+  renderHiddenVideoElementDiv() {
+    return (
+      <div style={{ display: "none" }}>
+        {this.renderVideoElement()}
+      </div>
+    );
+  }
+
   renderVideoBox() {
     const isAudioOnly = !this.state.isLoading && !this.state.videoAdaptationSets;
-    let video = (
-      <div>
-        {isAudioOnly && (
+
+    if (this.state.isLoading) {
+      return this.renderHiddenVideoElementDiv();
+    } else if (isAudioOnly) {
+      return (
+        <div>
           <div className="AudioOnlyBox">
             Audio-only Stream
           </div>
-        )}
-        <video
-          className="VideoPlayer"
-          id="videoPlayer"
-          hidden={isAudioOnly}
-          muted
-        />
-      </div>
-    );
-
-    return (
-      <div className="VideoBox InfoBox">
-        {video}
-        {this.state.videoAdaptationSets && (
-          <VideoInfo
-            videoAdaptationSets={this.state.videoAdaptationSets}
-          />
-        )}
-      </div>
-    );
+          {this.renderHiddenVideoElementDiv()}
+        </div>
+      );
+    } else {
+      return (
+        <div className="VideoBox InfoBox">
+          {this.renderVideoElement()}
+          {this.state.videoAdaptationSets && (
+            <VideoInfo
+              videoAdaptationSets={this.state.videoAdaptationSets}
+            />
+          )}
+        </div>
+      );
+    }
   }
 
   setupStreamInfo() {

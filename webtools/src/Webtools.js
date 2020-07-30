@@ -138,8 +138,8 @@ export default class Webtools extends React.Component {
 
   renderSearchingForStreams() {
     return (
-      <div className="SearchingForStreamsContainer">
-        <div className="SearchingForStreamsText">
+      <div className="SearchingOrLoadingStreamsContainer">
+        <div className="SearchingOrLoadingStreamsText">
           Searching for streams...
           <br />
           (Retrying after {this.state.statRetryTimer} Seconds)

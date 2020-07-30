@@ -48,7 +48,7 @@
   width: 85%;
 }
 
-.SearchingForStreamsContainer {
+.SearchingOrLoadingStreamsContainer {
   background-color: #8A8A8A;
   color: black;
   display: table;
@@ -58,7 +58,7 @@
   width: 85%;
 }
 
-.SearchingForStreamsText {
+.SearchingOrLoadingStreamsText {
   display: table-cell;
   vertical-align: middle;
 }
