@@ -22,9 +22,9 @@ export default function DashStreamInfo(props) {
         variant="h6"
         gutterBottom
       >
-              DASH Stream Info
-            </Typography>
-            <Divider />
+        DASH Stream Info
+      </Typography>
+      <Divider />
       <Table>
         <TableBody>
           <TableRow>
@@ -105,14 +105,6 @@ export default function DashStreamInfo(props) {
             </StreamInfoCell>
             <StreamInfoCell>
               {props.suggestedPresentationDelay} Seconds
-            </StreamInfoCell>
-          </TableRow>
-          <TableRow>
-            <StreamInfoCell>
-              Dash.js Client Settings
-            </StreamInfoCell>
-            <StreamInfoCell style={{ fontSize: "10px"}}>
-              {JSON.stringify(props.clientSettings, null, 1)}
             </StreamInfoCell>
           </TableRow>
         </TableBody>

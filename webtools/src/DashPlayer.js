@@ -1,9 +1,11 @@
-import dashjs from "dashjs";
 import React from "react";
+
+import dashjs from "dashjs";
 
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 
+import DashSettings from "./DashSettings.js";
 import DashStreamInfo from "./DashStreamInfo.js";
 import GainSliderBox from "./GainSliderBox.js";
 import VideoInfo from "./VideoInfo.js";
@@ -14,6 +16,8 @@ const BUFFER_TIME_AT_TOP_QUALITY = 120;
 
 // this is a ridiciulously high number as there is some issue
 // with empty segmentTimelines with fresh livestreams.
+//
+// TODO: fix, but probably is an rtmp-nginx issue
 const MANIFEST_LOAD_RETRY_INTERVAL = 50000;
 
 const CLIENT_SETTINGS = {
@@ -46,7 +50,10 @@ const DEFAULT_STATE = {
 };
 
 export default class DashPlayer extends React.Component {
-  state = DEFAULT_STATE;
+  constructor(props) {
+    super(props);
+    this.state = DEFAULT_STATE;
+  }
 
   componentDidMount() {
     this.load(this.props.streamUrl);
@@ -67,6 +74,7 @@ export default class DashPlayer extends React.Component {
     }
 
     const dashPlayer = dashjs.MediaPlayer().create();
+
     dashPlayer.updateSettings(CLIENT_SETTINGS);
     dashPlayer.initialize(document.querySelector("#videoPlayer"), url, true);
 
@@ -142,7 +150,6 @@ export default class DashPlayer extends React.Component {
               audioBitRate={this.state.audioBitRate}
               audioBufferLevel={this.state.audioBufferLevel}
               availabilityStartTime={this.state.availabilityStartTime}
-              clientSettings={CLIENT_SETTINGS}
               dashProfiles={this.state.dashProfiles}
               liveLatency={this.state.liveLatency}
               minUpdatePeriod={this.state.minUpdatePeriod}
@@ -194,6 +201,7 @@ export default class DashPlayer extends React.Component {
             Audio-only Stream
           </div>
           {this.renderHiddenVideoElementDiv()}
+          {this.renderDashSettings()}
         </div>
       );
     } else {
@@ -205,9 +213,23 @@ export default class DashPlayer extends React.Component {
               videoAdaptationSets={this.state.videoAdaptationSets}
             />
           )}
+          {this.renderDashSettings()}
         </div>
       );
     }
+  }
+
+  renderDashSettings() {
+    return (
+      <DashSettings
+        clientSettings={CLIENT_SETTINGS}
+        onChange={(settings) => {
+          this.state.dashPlayer.updateSettings(settings);
+          console.log(settings);
+          console.log(this.state.dashPlayer.getSettings());
+        }}
+      />
+    );
   }
 
   setupStreamInfo() {
