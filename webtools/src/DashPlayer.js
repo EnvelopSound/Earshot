@@ -102,9 +102,15 @@ class DashPlayer extends React.Component {
       });
     });
     dashPlayer.on(dashjs.MediaPlayer.events.ERROR, (error) => {
+      let errorMessage = error.error.message
+      if (error.error.code === dashjs.MediaPlayer.errors.DATA_UPDATE_FAILED_ERROR_CODE) {
+        // these errors may happen in the first few seconds of stream loading
+        // could be a bug
+        errorMessage += "...try refreshing in 30 seconds."
+      }
       this.setState({
         isLoading: false,
-        error: error.error.message,
+        error: errorMessage,
       });
     });
 
