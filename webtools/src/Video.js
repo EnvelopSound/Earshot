@@ -20,7 +20,6 @@ class Video extends React.Component {
 
   componentDidMount() {
     this.myVideoContainer.current.appendChild(videoPlayer);
-
   }
 
   render() {

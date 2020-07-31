@@ -1,12 +1,12 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import history from "./history";
-import QueryString from "query-string"
+import QueryString from "query-string";
 
 import dashjs from "dashjs";
 
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
+import Divider from "@material-ui/core/Divider";
+import Typography from "@material-ui/core/Typography";
 
 import DashSettings from "./DashSettings.js";
 import DashStreamInfo from "./DashStreamInfo.js";
@@ -31,12 +31,12 @@ const DEFAULT_CLIENT_SETTINGS = {
     stableBufferTime: STABLE_BUFFER_TIME,
     bufferTimeAtTopQualityLongForm: BUFFER_TIME_AT_TOP_QUALITY,
     retryIntervals: {
-      MPD: MANIFEST_LOAD_RETRY_INTERVAL
+      MPD: MANIFEST_LOAD_RETRY_INTERVAL,
     },
     retryAttempts: {
-      MPD: 3
+      MPD: 3,
     },
-  }
+  },
 };
 
 const DEFAULT_STATE = {
@@ -66,12 +66,9 @@ class DashPlayer extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.streamUrl !== prevProps.streamUrl) {
       videoPlayer.muted = true;
-      this.setState(
-        DEFAULT_STATE,
-        () => {
-          this.load(this.props.streamUrl);
-        }
-      );
+      this.setState(DEFAULT_STATE, () => {
+        this.load(this.props.streamUrl);
+      });
     }
   }
 
@@ -89,9 +86,14 @@ class DashPlayer extends React.Component {
 
     dashPlayer.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, (event) => {
       const data = event.data;
-      const audioAdaptationSet = data.Period.AdaptationSet_asArray.find(elem => elem.contentType === "audio");
-      const videoAdaptationSets = data.Period.AdaptationSet_asArray.filter(elem => elem.contentType === "video");
-      const numChannels = audioAdaptationSet.Representation.AudioChannelConfiguration.value;
+      const audioAdaptationSet = data.Period.AdaptationSet_asArray.find(
+        (elem) => elem.contentType === "audio"
+      );
+      const videoAdaptationSets = data.Period.AdaptationSet_asArray.filter(
+        (elem) => elem.contentType === "video"
+      );
+      const numChannels =
+        audioAdaptationSet.Representation.AudioChannelConfiguration.value;
       if (this.state.isLoading) {
         this.setupStreamInfo();
       }
@@ -108,11 +110,14 @@ class DashPlayer extends React.Component {
       });
     });
     dashPlayer.on(dashjs.MediaPlayer.events.ERROR, (error) => {
-      let errorMessage = error.error.message
-      if (error.error.code === dashjs.MediaPlayer.errors.DATA_UPDATE_FAILED_ERROR_CODE) {
+      let errorMessage = error.error.message;
+      if (
+        error.error.code ===
+        dashjs.MediaPlayer.errors.DATA_UPDATE_FAILED_ERROR_CODE
+      ) {
         // these errors may happen in the first few seconds of stream loading
         // could be a bug
-        errorMessage += "...try refreshing in 30 seconds."
+        errorMessage += "...try refreshing in 30 seconds.";
       }
       this.setState({
         isLoading: false,
@@ -127,7 +132,9 @@ class DashPlayer extends React.Component {
 
   getCurrentSettings() {
     const params = QueryString.parse(this.props.location.search);
-    const settings = params.settings ? JSON.parse(params.settings) : DEFAULT_CLIENT_SETTINGS;
+    const settings = params.settings
+      ? JSON.parse(params.settings)
+      : DEFAULT_CLIENT_SETTINGS;
     return settings;
   }
 
@@ -137,26 +144,19 @@ class DashPlayer extends React.Component {
       body = (
         <div className="SearchingOrLoadingStreamsContainer">
           <div className="SearchingOrLoadingStreamsText">
-             Loading {this.props.streamName}...
+            Loading {this.props.streamName}...
             <br />
             (it may take up to a minute for the stream to warm up...)
           </div>
         </div>
       );
     } else if (this.state.error) {
-      body = (
-        <div className="ErrorBox">
-          {this.state.error}
-        </div>
-      );
+      body = <div className="ErrorBox">{this.state.error}</div>;
     } else {
       body = (
         <>
           <div className="SliderBox InfoBox">
-            <Typography
-              variant="h6"
-              gutterBottom
-            >
+            <Typography variant="h6" gutterBottom>
               Audio Preview
             </Typography>
             <Divider />
@@ -192,7 +192,7 @@ class DashPlayer extends React.Component {
   }
 
   getVideoPlayer() {
-    const video = document.createElement('video');
+    const video = document.createElement("video");
     video.setAttribute("className", "VideoPlayer");
     video.setAttribute("id", "videoPlayer");
     video.setAttribute("muted", true);
@@ -208,16 +208,15 @@ class DashPlayer extends React.Component {
   }
 
   renderVideoBox() {
-    const isAudioOnly = !this.state.isLoading && !this.state.videoAdaptationSets.length;
+    const isAudioOnly =
+      !this.state.isLoading && !this.state.videoAdaptationSets.length;
 
     if (this.state.isLoading) {
       return this.renderHiddenVideoElementDiv();
     } else if (isAudioOnly) {
       return (
         <div className="VideoBox InfoBox">
-          <div className="AudioOnlyBox">
-            Audio-only Stream
-          </div>
+          <div className="AudioOnlyBox">Audio-only Stream</div>
           {this.renderHiddenVideoElementDiv()}
           {this.renderDashSettings()}
         </div>
@@ -227,9 +226,7 @@ class DashPlayer extends React.Component {
         <div className="VideoBox InfoBox">
           <Video />
           {this.state.videoAdaptationSets && (
-            <VideoInfo
-              videoAdaptationSets={this.state.videoAdaptationSets}
-            />
+            <VideoInfo videoAdaptationSets={this.state.videoAdaptationSets} />
           )}
           {this.renderDashSettings()}
         </div>
@@ -243,7 +240,7 @@ class DashPlayer extends React.Component {
         clientSettings={this.getCurrentSettings()}
         onChange={(settings) => {
           this.state.dashPlayer.updateSettings(settings);
-          history.push(`/webtools/?settings=${JSON.stringify(settings)}`)
+          history.push(`/webtools/?settings=${JSON.stringify(settings)}`);
         }}
       />
     );
@@ -253,7 +250,7 @@ class DashPlayer extends React.Component {
     const player = this.state.dashPlayer;
     setInterval(() => {
       const activeStream = player.getActiveStream();
-      if  (!activeStream) {
+      if (!activeStream) {
         return;
       }
       const streamInfo = activeStream.getStreamInfo();
@@ -262,16 +259,28 @@ class DashPlayer extends React.Component {
 
       if (dashMetrics && streamInfo) {
         const periodIdx = streamInfo.index;
-        const repSwitch = dashMetrics.getCurrentRepresentationSwitch('audio', true);
-        const audioBufferLevel = dashMetrics.getCurrentBufferLevel('audio', true);
-        const audioBitRate = repSwitch ? Math.round(dashAdapter.getBandwidthForRepresentation(repSwitch.to, periodIdx) / 1000) : NaN;
+        const repSwitch = dashMetrics.getCurrentRepresentationSwitch(
+          "audio",
+          true
+        );
+        const audioBufferLevel = dashMetrics.getCurrentBufferLevel(
+          "audio",
+          true
+        );
+        const audioBitRate = repSwitch
+          ? Math.round(
+              dashAdapter.getBandwidthForRepresentation(
+                repSwitch.to,
+                periodIdx
+              ) / 1000
+            )
+          : NaN;
         this.setState({
           audioBitRate,
           audioBufferLevel,
         });
       }
     }, POLLING_INTERVAL);
-
   }
 }
 

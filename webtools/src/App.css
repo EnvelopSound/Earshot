@@ -1,4 +1,5 @@
-.App {}
+.App {
+}
 
 .App-logo {
   height: 40vmin;
@@ -16,7 +17,7 @@
 }
 
 .StreamName.Selected {
-  background-color: #8A8A8A;
+  background-color: #8a8a8a;
   color: white;
 }
 
@@ -30,7 +31,7 @@
 }
 
 .SearchingOrLoadingStreamsContainer {
-  background-color: #8A8A8A;
+  background-color: #8a8a8a;
   color: black;
   display: table;
   float: right;
@@ -45,7 +46,7 @@
 }
 
 .StreamInfoContainer {
-  background-color: #8A8A8A;
+  background-color: #8a8a8a;
   color: black;
   display: block;
   font-size: calc(8px + 2vmin);
@@ -53,7 +54,7 @@
 }
 
 div.StreamInfoContainer {
-  background-color: #8A8A8A;
+  background-color: #8a8a8a;
   padding: 10px;
 }
 
@@ -77,7 +78,7 @@ div.StreamInfoContainer {
 }
 
 .InfoBox {
-  background: #D3D3D3;
+  background: #d3d3d3;
   float: left;
   font-size: 20px;
   padding: 10px;

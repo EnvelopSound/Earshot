@@ -1,17 +1,16 @@
 import React from "react";
 
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Slider from '@material-ui/core/Slider';
-import VolumeDown from '@material-ui/icons/VolumeDown';
-import VolumeUp from '@material-ui/icons/VolumeUp';
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import Slider from "@material-ui/core/Slider";
+import VolumeDown from "@material-ui/icons/VolumeDown";
+import VolumeUp from "@material-ui/icons/VolumeUp";
 
 import { audioContext, mediaElemSource, videoPlayer } from "./Video.js";
 
 const SLIDER_MAX_VALUE = 200;
 
 class GainSlider extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -34,12 +33,10 @@ class GainSlider extends React.Component {
         min={0}
         step={SLIDER_MAX_VALUE / 10}
         style={{ color: "#006675" }}
-        onChange={
-          (event, newValue) => {
-            this.setState({ value: newValue });
-            this.props.onChange(newValue);
-          }
-        }
+        onChange={(event, newValue) => {
+          this.setState({ value: newValue });
+          this.props.onChange(newValue);
+        }}
         value={this.state.value}
       />
     );
@@ -47,7 +44,6 @@ class GainSlider extends React.Component {
 }
 
 export default class GainSliderBox extends React.Component {
-
   componentDidMount() {
     this.setupAudio(this.props.numChannels);
   }
@@ -61,34 +57,33 @@ export default class GainSliderBox extends React.Component {
   }
 
   render() {
-    const sliders =  [];
+    const sliders = [];
     for (let i = 0; i < this.props.numChannels; i++) {
       let v = i;
       sliders.push(
-        (
-          <Grid key={i}
-            container
-            style={{ background: '#D3D3D3', color: 'black' }}
-          >
-            <Grid item xs={4}>
-              <Typography variant="subtitle1" gutterBottom>
-                Channel {i}
-              </Typography>
-            </Grid>
-            <Grid item xs={1}>
-              <VolumeDown style={{ fontSize: "1.7rem" }} />
-            </Grid>
-            <Grid item xs={5} style={{ margin: "0px 4px 0px 4px" }}>
-              <GainSlider
-                onChange={(newValue) => this.setGain(v, newValue)}
-                streamUrl={this.props.streamUrl}
-              />
-            </Grid>
-            <Grid item>
-              <VolumeUp style={{ fontSize: "1.7rem" }}  />
-            </Grid>
+        <Grid
+          key={i}
+          container
+          style={{ background: "#D3D3D3", color: "black" }}
+        >
+          <Grid item xs={4}>
+            <Typography variant="subtitle1" gutterBottom>
+              Channel {i}
+            </Typography>
           </Grid>
-        )
+          <Grid item xs={1}>
+            <VolumeDown style={{ fontSize: "1.7rem" }} />
+          </Grid>
+          <Grid item xs={5} style={{ margin: "0px 4px 0px 4px" }}>
+            <GainSlider
+              onChange={(newValue) => this.setGain(v, newValue)}
+              streamUrl={this.props.streamUrl}
+            />
+          </Grid>
+          <Grid item>
+            <VolumeUp style={{ fontSize: "1.7rem" }} />
+          </Grid>
+        </Grid>
       );
     }
     return sliders;
@@ -96,7 +91,7 @@ export default class GainSliderBox extends React.Component {
 
   setupAudio(numChannels) {
     // Possible bug in Opera thats require resume context
-    if (audioContext.hasOwnProperty('resume')) {
+    if (audioContext.hasOwnProperty("resume")) {
       audioContext.resume();
     }
 
@@ -128,7 +123,6 @@ export default class GainSliderBox extends React.Component {
       sliderValues: this.getDefaultSliderValues(numChannels),
       splitter,
     });
-
   }
 
   getDefaultSliderValues(numChannels) {
@@ -152,8 +146,10 @@ export default class GainSliderBox extends React.Component {
   }
 
   resetGainNodes() {
-    const gainNodes = this.state.gainNodes.map((gainNode) => { gainNode.gain.value = 0; return gainNode; });
+    const gainNodes = this.state.gainNodes.map((gainNode) => {
+      gainNode.gain.value = 0;
+      return gainNode;
+    });
     this.setState({ gainNodes, sliderValues: [] });
   }
-
 }
