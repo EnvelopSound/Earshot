@@ -211,3 +211,36 @@ The ```rtmp-tester``` container spawns the nginx transcoder, uses ffmpeg to stre
 ```
 docker-compose up --build rtmp-tester
 ```
+
+
+### Deploy using AWS CloudFormationg ###
+
+
+#### 1. Deploy EC2 stack
+
+```
+aws cloudformation create-stack --stack-name earshot-stack-ec2 --region us-west-2 --template-body file://templates/cluster-ec2-public-vpc.yml --parameters ParameterKey=EnvironmentName,ParameterValue=production ParameterKey=KeyPair,ParameterValue=your-aws-keypair --capabilities CAPABILITY_IAM
+```
+
+
+#### 2. Deploy ALB stack
+
+```
+aws cloudformation create-stack --stack-name earshot-stack-alb --region us-west-2 --template-body file://templates/alb-external.yml --parameters ParameterKey=EnvironmentName,ParameterValue=production --capabilities CAPABILITY_IAM
+```
+
+#### 3. Deploy ECS stack
+
+```
+aws cloudformation create-stack --stack-name earshot-stack-ecs --region us-west-2 --template-body file://templates/service-ec2-public-lb.yml --parameters ParameterKey=EnvironmentName,ParameterValue=production --capabilities CAPABILITY_IAM
+```
+
+### Access ALB public URL ###
+
+To get the public URL of your application load balancer:
+
+1. Login to AWS Console
+2. Goto CloudFormation
+3. Click "earshot-stack-alb" stack
+4. Click "Outputs" tab
+5. Copy "ExternalUrl"
