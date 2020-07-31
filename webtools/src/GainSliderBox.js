@@ -6,9 +6,12 @@ import Slider from '@material-ui/core/Slider';
 import VolumeDown from '@material-ui/icons/VolumeDown';
 import VolumeUp from '@material-ui/icons/VolumeUp';
 
+import { audioContext, mediaElemSource, videoPlayer } from "./Video.js";
+
 const SLIDER_MAX_VALUE = 200;
 
 class GainSlider extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -26,38 +29,35 @@ class GainSlider extends React.Component {
   render() {
     return (
       <Slider
-    style={{ color: "#006675" }}
-    step={SLIDER_MAX_VALUE / 10}
-    min={0}
-    max={SLIDER_MAX_VALUE}
-    value={this.state.value}
-    onChange={
-      (event, newValue) => {
-        this.setState({ value: newValue }); this.props.onChange(newValue);
-      }
-    }
-    aria-labelledby="continuous-slider"
+        aria-labelledby="continuous-slider"
+        max={SLIDER_MAX_VALUE}
+        min={0}
+        step={SLIDER_MAX_VALUE / 10}
+        style={{ color: "#006675" }}
+        onChange={
+          (event, newValue) => {
+            this.setState({ value: newValue });
+            this.props.onChange(newValue);
+          }
+        }
+        value={this.state.value}
       />
     );
   }
 }
 
 export default class GainSliderBox extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      audioContext: null,
-      videoPlayer: null,
-    };
-  }
 
   componentDidMount() {
     this.setupAudio(this.props.numChannels);
   }
 
   componentWillUnmount() {
-    this.state.audioContext.close();
-    this.state.mediaElemSource.disconnect();
+    mediaElemSource.disconnect();
+    for (let i = 0; i < this.state.gainNodes.length; i++) {
+      this.state.gainNodes[i].disconnect();
+    }
+    this.state.merger.disconnect();
   }
 
   render() {
@@ -95,23 +95,9 @@ export default class GainSliderBox extends React.Component {
   }
 
   setupAudio(numChannels) {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-
     // Possible bug in Opera thats require resume context
-    if (AudioContext.hasOwnProperty('resume')) {
-      AudioContext.resume();
-    }
-
-    const videoPlayer = this.props.videoPlayer;
-
-    let audioContext, mediaElemSource;
-    if (this.state.audioContext) {
-      audioContext = this.state.audioContext;
-      mediaElemSource = this.state.mediaElemSource;
-    } else {
-      audioContext = new AudioContext();
-      mediaElemSource = audioContext.createMediaElementSource(videoPlayer);
-      this.setState({ audioContext, mediaElemSource });
+    if (audioContext.hasOwnProperty('resume')) {
+      audioContext.resume();
     }
 
     // Create and connect ChannelSplitterNode
@@ -137,8 +123,10 @@ export default class GainSliderBox extends React.Component {
     merger.connect(audioContext.destination);
 
     this.setState({
+      merger,
       gainNodes,
       sliderValues: this.getDefaultSliderValues(numChannels),
+      splitter,
     });
 
   }
@@ -154,7 +142,6 @@ export default class GainSliderBox extends React.Component {
   }
 
   setGain(channel, sliderValue) {
-    let videoPlayer = this.props.videoPlayer;
     if (videoPlayer.muted) {
       videoPlayer.muted = false;
     }

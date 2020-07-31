@@ -11,11 +11,12 @@ import Typography from '@material-ui/core/Typography';
 import DashSettings from "./DashSettings.js";
 import DashStreamInfo from "./DashStreamInfo.js";
 import GainSliderBox from "./GainSliderBox.js";
+import { Video, videoPlayer } from "./Video.js";
 import VideoInfo from "./VideoInfo.js";
 
 const POLLING_INTERVAL = 1000;
-const STABLE_BUFFER_TIME = 120;
-const BUFFER_TIME_AT_TOP_QUALITY = 120;
+const STABLE_BUFFER_TIME = 20;
+const BUFFER_TIME_AT_TOP_QUALITY = 20;
 
 // this is a ridiciulously high number as there is some issue
 // with empty segmentTimelines with fresh livestreams.
@@ -64,8 +65,13 @@ class DashPlayer extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.streamUrl !== prevProps.streamUrl) {
-      this.setState(DEFAULT_STATE);
-      this.load(this.props.streamUrl);
+      videoPlayer.muted = true;
+      this.setState(
+        DEFAULT_STATE,
+        () => {
+          this.load(this.props.streamUrl);
+        }
+      );
     }
   }
 
@@ -79,7 +85,7 @@ class DashPlayer extends React.Component {
     const dashPlayer = dashjs.MediaPlayer().create();
     const settings = this.getCurrentSettings();
     dashPlayer.updateSettings(settings);
-    dashPlayer.initialize(document.querySelector("#videoPlayer"), url, true);
+    dashPlayer.initialize(videoPlayer, url, true);
 
     dashPlayer.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, (event) => {
       const data = event.data;
@@ -157,7 +163,6 @@ class DashPlayer extends React.Component {
             <GainSliderBox
               numChannels={this.state.numChannels}
               streamUrl={this.props.streamUrl}
-              videoPlayer={document.querySelector("#videoPlayer")}
             />
           </div>
           <div className="StreamInfoBox">
@@ -186,20 +191,18 @@ class DashPlayer extends React.Component {
     );
   }
 
-  renderVideoElement() {
-    return (
-      <video
-        className="VideoPlayer"
-        id="videoPlayer"
-        muted
-      />
-    );
+  getVideoPlayer() {
+    const video = document.createElement('video');
+    video.setAttribute("className", "VideoPlayer");
+    video.setAttribute("id", "videoPlayer");
+    video.setAttribute("muted", true);
+    return video;
   }
 
-  renderHiddenVideoElementDiv() {
+  renderHiddenVideoElementDiv(video) {
     return (
       <div style={{ display: "none" }}>
-        {this.renderVideoElement()}
+        <Video />
       </div>
     );
   }
@@ -222,7 +225,7 @@ class DashPlayer extends React.Component {
     } else {
       return (
         <div className="VideoBox InfoBox">
-          {this.renderVideoElement()}
+          <Video />
           {this.state.videoAdaptationSets && (
             <VideoInfo
               videoAdaptationSets={this.state.videoAdaptationSets}
@@ -268,6 +271,7 @@ class DashPlayer extends React.Component {
         });
       }
     }, POLLING_INTERVAL);
+
   }
 }
 
