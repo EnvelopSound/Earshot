@@ -10,7 +10,7 @@ Envelop Ambisonic RTMP Streaming Higher-Order Transcoder (Earshot) is a containe
 
 * [Join the Envelop Facebook Group for questions, tips, etc.](https://www.facebook.com/groups/E4LUsers)
 
-## Motivation ##
+## Motivation for Earshot ##
 
 Tools such as [Envelop for Live](https://www.envelop.us/software) have made it easy for musicians to compose and perform ambisonic content.  However, there remain limited options for livestreaming ambisonic content, particularly beyond first order. Ambisonic livestreaming has applications for VR/AR/XR and immersive home listening experiences.
 
