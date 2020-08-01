@@ -1,5 +1,7 @@
 # Earshot -- Envelop Ambisonic RTMP Streaming Higher-Order Transcoder  #
 
+![Earshot Screenshot](/Screenshot.png?raw=true "Earshot Screenshot")
+
 Envelop Ambisonic RTMP Streaming Higher-Order Transcoder (Earshot) is a containerized multichannel ngnix RTMP->DASH transcoder, used to transcode higher-order Ambisonics and other multichannel livestreams for the web.
 
 Earshot is based on [pkviet's](https://github.com/pkviet) forks of [FFmpeg](https://github.com/pkviet/FFmpeg) and [OBS](https://github.com/pkviet/obs-studio) which enable AAC encoding and decoding for up to 16 channels.
