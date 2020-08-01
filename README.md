@@ -9,7 +9,7 @@ Envelop Ambisonic RTMP Streaming Higher-Order Transcoder (Earshot) is a containe
 [Envelop](http://envelop.us) is a nonprofit organization that amplifies the connective power of music through immersive listening spaces and open source spatial audio software. Three-dimensional experiences of sound and music bring people together, catalyzing shared moments of inspiration, empathy and wonder.
 
 * [Join the Envelop Software Facebook Group for questions, tips, etc.](https://www.facebook.com/groups/E4LUsers)
-* Help support Envelop, and our open-source software development, [through a membership or donation](https://www.envelop.us/membership-donations)
+* Help support Envelop, and our open-source software development, [through a membership or donation](https://www.envelop.us/membership-donations).
 
 ## Motivation for Earshot ##
 
@@ -23,11 +23,11 @@ Earshot is GPL licensed, as it uses ffmpeg binaries compiled with GPL codecs inc
 
 ## Features ##
 
-* Transcoder supports livestreaming up to 255 audio channels, with optional video
+* Live-stream up to 255 audio channels with optional video
 * Web interface for stream monitoring and debuggging
-* Preview and test different Dash.js client settings
+* Preview and test different Dash.js client player settings
 * RTMP stream authentication
-* Use whichever FFmpeg flags you want
+* Custom FFmpeg flags for versatility
 
 ## Key Technologies Used ##
 
@@ -37,7 +37,7 @@ Earshot is GPL licensed, as it uses ffmpeg binaries compiled with GPL codecs inc
 * pkviet's [OBS Studio Music Edition](https://github.com/pkviet/obs-studio/releases/) which supports encoding 16.0 RTMP streams
 * [Opus](https://github.com/xiph/opus), the audio codec used in combination with DASH
 * [MPEG-DASH](https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP), an adaptive bitrate HTTP streaming solution
-* [dash.js](https://github.com/Dash-Industry-Forum/dash.js), a Javascript client for DASH stream playback
+* [Dash.js](https://github.com/Dash-Industry-Forum/dash.js), a Javascript client for DASH stream playback
 * [React](https://reactjs.org/) and [Create React App](https://github.com/facebook/create-react-app) for Webtools
 
 ## Known Limitations ##
