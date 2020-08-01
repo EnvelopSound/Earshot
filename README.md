@@ -4,9 +4,11 @@
 
 Envelop Ambisonic RTMP Streaming Higher-Order Transcoder (Earshot) is a containerized multichannel ngnix RTMP->DASH transcoder, used to transcode higher-order Ambisonics and other multichannel livestreams for the web.
 
-Earshot is based on [pkviet's](https://github.com/pkviet) forks of [FFmpeg](https://github.com/pkviet/FFmpeg) and [OBS](https://github.com/pkviet/obs-studio) which enable AAC encoding and decoding for up to 16 channels.
+## About Envelop ##
 
-Earshot is GPL licensed, as it uses ffmpeg binaries compiled with GPL codecs including libx264.
+[Envelop](http://envelop.us) is a nonprofit organization that amplifies the connective power of music through immersive listening spaces and open source spatial audio software. Three-dimensional experiences of sound and music bring people together, catalyzing shared moments of inspiration, empathy and wonder.
+
+* [Join the Envelop Facebook Group for questions, tips, etc.](https://www.facebook.com/groups/E4LUsers)
 
 ## Motivation ##
 
@@ -15,6 +17,16 @@ Tools such as [Envelop for Live](https://www.envelop.us/software) have made it e
 Earshot can be used in combination with pkviet's [OBS Studio Music Edition](https://github.com/pkviet/obs-studio/releases/) which supports multichannel AAC encoding up to 16.0. For more information on OBS see [obsproject.com](https://obsproject.com).
 
 Earshot is designed to be easily deployed to a cloud-based hosting solution, such as AWS ECS, DigitalOcean, etc.
+
+Earshot is GPL licensed, as it uses ffmpeg binaries compiled with GPL codecs including libx264.
+
+## Features ##
+
+* Transcoder supports livestreaming up to 255 audio channels, with optional video
+* Web interface for stream monitoring and debuggging
+* Preview and test different Dash.js client settings
+* RTMP stream authentication
+* Use whichever FFmpeg flags you want
 
 ## Key Technologies Used ##
 
@@ -54,36 +66,37 @@ To generate a multichannel audio stream in a format such as third-order AMBIX yo
 
 ### Setup with OBS: ###
 
-1. Build and run the Docker container for the transcoder
+**1. Build and run the Docker container for the transcoder**
 
 From this (project root) directory:
 
     docker-compose up --build nginx-rtmp
 
-2. Open OBS Music Edition
+**2. Open OBS Music Edition**
 
 Click Settings and set the following:
 
-#### Stream ####
+*Stream
+
 * Service: **Custom...**
 * Server: **rtmp://127.0.0.1:1935/live**
 * Stream Key: **stream1**
 * Use authentication: unchecked
 
-#### Output ####
+*Output
 
 * Under the Audio tab, select Audio Bitrate: **1024** or another number appropriate for your application. Divide this number by the number of channels to get the per-channel bitrate, i.e. 1024kbps with 16 channels = 64kbps per channel)
 
-#### Audio ####
+*Audio
 
 * Channels: **16.0** for third order, **9.0** for second order, etc. This must match your source audio.
 
-3. Select Audio Source
+**3. Select Audio Source**
 
 * If you are streaming via Envelop for Live or another DAW via Loopback or Jack, add an Audio Input Capture under Sources with the appropriate Device. Once you start playing audio in your DAW, audio should show up under this device in the Input Mixer
 * If you are simply testing, add a Media Source under Sources and select the `resources/16chambixloop.wav` file with **Loop** checked. You should now see audio under the Media Source in the Input Mixer.
 
-4. Start Streaming
+**4. Start Streaming**
 
 Click **Start Streaming** in OBS
 
