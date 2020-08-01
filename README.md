@@ -8,7 +8,8 @@ Envelop Ambisonic RTMP Streaming Higher-Order Transcoder (Earshot) is a containe
 
 [Envelop](http://envelop.us) is a nonprofit organization that amplifies the connective power of music through immersive listening spaces and open source spatial audio software. Three-dimensional experiences of sound and music bring people together, catalyzing shared moments of inspiration, empathy and wonder.
 
-* [Join the Envelop Facebook Group for questions, tips, etc.](https://www.facebook.com/groups/E4LUsers)
+* [Join the Envelop Software Facebook Group for questions, tips, etc.](https://www.facebook.com/groups/E4LUsers)
+* Help support Envelop, and our open-source software development, [through a membership or donation](https://www.envelop.us/membership-donations)
 
 ## Motivation for Earshot ##
 
