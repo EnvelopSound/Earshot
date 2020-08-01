@@ -1,0 +1,4 @@
+nginx-transcoder/bin-alpine/ffmpeg filter=lfs diff=lfs merge=lfs -text
+tester/bin/ffmpeg filter=lfs diff=lfs merge=lfs -text
+tester/resources/16chambixloop.wav filter=lfs diff=lfs merge=lfs -text
+nginx-transcoder/resources/16chambixloop.wav filter=lfs diff=lfs merge=lfs -text
