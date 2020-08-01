@@ -76,18 +76,18 @@ From this (project root) directory:
 
 Click Settings and set the following:
 
-*Stream
+**Stream**
 
 * Service: **Custom...**
 * Server: **rtmp://127.0.0.1:1935/live**
 * Stream Key: **stream1**
 * Use authentication: unchecked
 
-*Output
+**Output**
 
 * Under the Audio tab, select Audio Bitrate: **1024** or another number appropriate for your application. Divide this number by the number of channels to get the per-channel bitrate, i.e. 1024kbps with 16 channels = 64kbps per channel)
 
-*Audio
+**Audio**
 
 * Channels: **16.0** for third order, **9.0** for second order, etc. This must match your source audio.
 
@@ -104,7 +104,7 @@ Your Dash stream is now available under http://localhost/stream1.mpd
 
 DASH stream webtools are available under http://localhost/webtools
 
-#### RTMP Authentication ####
+### RTMP Authentication ###
 
 To add a RTMP auth secret token you can update the "RTMP_AUTH_TOKEN" environment variable in the docker-compose.yml file, e.g. ```- RTMP_AUTH_TOKEN=my_secret```
 
@@ -113,7 +113,7 @@ On your streaming client, appent the secret using the ```token``` GET parameter 
 * With ffmpeg: ```ffmpeg -y -stream_loop -1 -i tester/resources/16chambixloop.wav -af "channelmap=channel_layout=hexadecagonal" -c:a aac -ac 16 -b:a 2048k -f flv "rtmp://127.0.0.1:1935/live/stream1?token=my_secret"```
 * With OBS: your **Stream Key** should be appended with ```?token=my_secret```. If the stream name is stream1, Stream Key should be ```stream1?token=my_secret```
 
-#### FFMPEG Flags ####
+### FFMPEG Flags ###
 
 If you want to add additional flags for ffmpeg that is called within the transcoder -- for example, more adaptive DASH stream bitrates -- you can update the "FFMPEG_FLAGS" environment variable in the docker-compose.yml.
 
