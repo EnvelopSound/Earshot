@@ -37,7 +37,7 @@ Earshot is GPL licensed, as it uses ffmpeg binaries compiled with GPL codecs inc
 * [Opus](https://github.com/xiph/opus), the audio codec used in combination with DASH
 * [MPEG-DASH](https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP), an adaptive bitrate HTTP streaming solution
 * [dash.js](https://github.com/Dash-Industry-Forum/dash.js), a Javascript client for DASH stream playback
-* [Create React App](https://github.com/facebook/create-react-app) for Webtools
+* [React](https://reactjs.org/) and [Create React App](https://github.com/facebook/create-react-app) for Webtools
 
 ## Known Limitations ##
 
@@ -117,126 +117,27 @@ On your streaming client, appent the secret using the ```token``` GET parameter 
 
 If you want to add additional flags for ffmpeg that is called within the transcoder -- for example, more adaptive DASH stream bitrates -- you can update the "FFMPEG_FLAGS" environment variable in the docker-compose.yml.
 
-## Deploying Earshot to AWS ECS ##
+**5. Monitor with Webtools**
 
-You can easily deploy Earshot to run on AWS ECS.
+Load http://localhost/webtools in your browser to preview streams from the transcoder. Chrome or Firefox preferred.
 
-#### Install AWS CLI Tools ####
+To test different [Dash.js Player settings](http://cdn.dashjs.org/latest/jsdoc/module-Settings.html#~PlayerSettings__anchor), edit the JSON in the Dash.js settings box. Any changes applied will affect the livestream on your browser in real time, or reload the new URL -- containing the encoded  settings as a parameter -- to test the player settings loaded initially on page load.
 
-To deploy the containers on ECS you will need to install official AWS CLI tools.
+Known Webtools issues:
 
-- [AWS CLI](https://aws.amazon.com/cli/)
-- [ECS CLI Tools](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI_installation.html)
+* Some versions of Safari do not support Opus, so sound will not load.
+* Loading Webtools within the first minute after the start of the livestream may cause errors due to missing segments.
+* If you are using an audio-only stream, FFmpeg's -window_size flag may cause problems. It is recommended not to use the -window_size flag for audio-only streams.
 
-#### Create EC2 role ####
+## Deploying Earshot to AWS CloudFormation ##
 
-You will need to create an IAM role so that ECS CLI can create resources on your behalf.
-
-your new IAM role should have the following permissions:
-
-- AmazonECS_FullAccess
-
-to create an EC2 role, please refer to [IAM roles for Amazon EC2 - Amazon Elastic Compute Cloud](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html)
-
-once you have created your IAM role, please copy the role name as you will need it later.
-
-#### Create Security Group ####
-
-Our ECS cluster will need to be configured to allow inbound traffic from HTTP and RTMP ports. To allow our ECS cluster to accept TCP traffic we will need to create a new EC2 security group.
-
-To learn how to create a new security group, please see: [Creating, configuring, and deleting security groups for Amazon EC2 - AWS Command Line Interface](https://docs.aws.amazon.com/cli/latest/userguide/cli-services-ec2-sg.html)
-
-In your security group please add the following settings:
-
-```
-Name: ECSEarshotSecurity
-Description: (blank)
-VPC: (any)
-```
-
-Inbound rules:
-
-```
-Type: Custom TCP
-Protocol: TCP
-Port Range: 1935
-Source: 0.0.0.0/0
-```
-
-```
-Type: Custom TCP
-Protocol: TCP
-Port Range: 80
-Source: 0.0.0.0/0
-```
-
-```
-Type: Custom TCP
-Protocol: TCP
-Port Range: 443
-Source: 0.0.0.0/0
-```
-
-#### Deploy on ECS ####
-
-1. Configure ECS CLI
-
-```
-ecs-cli configure profile --access-key xxx --secret-key xxx
-```
-
-2. Create new ECS cluster
-
-```
-ecs-cli configure --cluster your-cluster-name --default-launch-type EC2 --region some-aws-region
-```
-
-3. Provision the cluster
-
-```
-ecs-cli up --instance-role your-ec2-instance-role --security-group ECSEarshotSecurity
-```
-
-4. Build and deploy the container
-
-```
-ecs-cli compose --file docker-compose.ecs.yml up
-```
-
-## Local Development ##
-
-To develop the Webtools React application:
-
-* Run the Webtools app with yarn:
-
-```
-cd webtools
-yarn
-yarn start
-```
-
-* Comment the production ```/webtools``` route and uncomment the local development ```/webtools``` route in ```nginx-rtmp/nginx.conf``` to proxy http://localhost/webtools requests to the React app running on port 3000. Now you can develop with all the benefits of Webpack hot reloading!
-
-Note: the default browser tab that yarn spawns (http://localhost:3000/webtools) will not work, since it looks for DASH files and nginx stats with a relative URL.  Use http://localhost/webtools.
-
-### Testing ###
-
-The ```rtmp-tester``` container spawns the nginx transcoder, uses ffmpeg to stream a 16 channel WAV file via RTMP, and checks for the presence of a DASH manifest file. To run it:
-
-```
-docker-compose up --build rtmp-tester
-```
-
-
-### Deploy using AWS CloudFormationg ###
-
+Earshot can be deployed to AWS using [AWS CLI](https://aws.amazon.com/cli/).
 
 #### 1. Deploy EC2 stack
 
 ```
 aws cloudformation create-stack --stack-name earshot-stack-ec2 --region us-west-2 --template-body file://templates/cluster-ec2-public-vpc.yml --parameters ParameterKey=EnvironmentName,ParameterValue=production ParameterKey=KeyPair,ParameterValue=your-aws-keypair --capabilities CAPABILITY_IAM
 ```
-
 
 #### 2. Deploy ALB stack
 
