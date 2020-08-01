@@ -93,7 +93,7 @@ class DashPlayer extends React.Component {
         (elem) => elem.contentType === "video"
       );
       const numChannels =
-        audioAdaptationSet.Representation.AudioChannelConfiguration.value;
+        audioAdaptationSet.Representation_asArray[0].AudioChannelConfiguration.value;
       if (this.state.isLoading) {
         this.setupStreamInfo();
       }
