@@ -117,9 +117,9 @@ On your streaming client, appent the secret using the ```token``` GET parameter 
 
 If you want to add additional flags for ffmpeg that is called within the transcoder -- for example, more adaptive DASH stream bitrates -- you can update the "FFMPEG_FLAGS" environment variable in the docker-compose.yml.
 
-**5. Monitor with Webtools**
+## Using Webtools ##
 
-Load http://localhost/webtools in your browser to preview streams from the transcoder. Chrome or Firefox preferred.
+Load http://localhost/webtools in your browser to monitor and debugs streams from the transcoder. Chrome or Firefox preferred.
 
 To test different [Dash.js Player settings](http://cdn.dashjs.org/latest/jsdoc/module-Settings.html#~PlayerSettings__anchor), edit the JSON in the Dash.js settings box. Any changes applied will affect the livestream on your browser in real time, or reload the new URL -- containing the encoded  settings as a parameter -- to test the player settings loaded initially on page load.
 
