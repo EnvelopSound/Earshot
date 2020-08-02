@@ -35,7 +35,7 @@ export default class DashSettings extends React.Component {
           }}
           style={{ width: "100%" }}
           value={this.state.settings}
-        ></TextareaAutosize>
+        />
         <Button
           onClick={() => {
             this.onUpdate();

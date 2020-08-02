@@ -59,7 +59,7 @@ export default class GainSliderBox extends React.Component {
   render() {
     const sliders = [];
     for (let i = 0; i < this.props.numChannels; i++) {
-      let v = i;
+      const v = i;
       sliders.push(
         <Grid
           key={i}
@@ -127,7 +127,7 @@ export default class GainSliderBox extends React.Component {
 
   getDefaultSliderValues(numChannels) {
     // setup slidervalues
-    let sliderValues = [];
+    const sliderValues = [];
     for (let i = 0; i < numChannels; i++) {
       sliderValues[i] = 0;
     }
@@ -140,7 +140,7 @@ export default class GainSliderBox extends React.Component {
       videoPlayer.muted = false;
     }
     if (this.state.gainNodes) {
-      let gainNode = this.state.gainNodes[channel];
+      const gainNode = this.state.gainNodes[channel];
       gainNode.gain.value = sliderValue / SLIDER_MAX_VALUE;
     }
   }

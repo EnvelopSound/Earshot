@@ -1,12 +1,12 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
-import history from "./history";
 import QueryString from "query-string";
 
 import dashjs from "dashjs";
 
 import Divider from "@material-ui/core/Divider";
 import Typography from "@material-ui/core/Typography";
+import history from "./history";
 
 import DashSettings from "./DashSettings.js";
 import DashStreamInfo from "./DashStreamInfo.js";
@@ -85,7 +85,7 @@ class DashPlayer extends React.Component {
     dashPlayer.initialize(videoPlayer, url, true);
 
     dashPlayer.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, (event) => {
-      const data = event.data;
+      const { data } = event;
       const audioAdaptationSet = data.Period.AdaptationSet_asArray.find(
         (elem) => elem.contentType === "audio"
       );
@@ -93,7 +93,8 @@ class DashPlayer extends React.Component {
         (elem) => elem.contentType === "video"
       );
       const numChannels =
-        audioAdaptationSet.Representation_asArray[0].AudioChannelConfiguration.value;
+        audioAdaptationSet.Representation_asArray[0].AudioChannelConfiguration
+          .value;
       if (this.state.isLoading) {
         this.setupStreamInfo();
       }
@@ -106,7 +107,7 @@ class DashPlayer extends React.Component {
         minUpdatePeriod: data.minimumUpdatePeriod,
         numChannels,
         suggestedPresentationDelay: data.suggestedPresentationDelay,
-        videoAdaptationSets: videoAdaptationSets,
+        videoAdaptationSets,
       });
     });
     dashPlayer.on(dashjs.MediaPlayer.events.ERROR, (error) => {
@@ -213,7 +214,8 @@ class DashPlayer extends React.Component {
 
     if (this.state.isLoading) {
       return this.renderHiddenVideoElementDiv();
-    } else if (isAudioOnly) {
+    }
+    if (isAudioOnly) {
       return (
         <div className="VideoBox InfoBox">
           <div className="AudioOnlyBox">Audio-only Stream</div>
@@ -221,17 +223,16 @@ class DashPlayer extends React.Component {
           {this.renderDashSettings()}
         </div>
       );
-    } else {
-      return (
-        <div className="VideoBox InfoBox">
-          <Video />
-          {this.state.videoAdaptationSets && (
-            <VideoInfo videoAdaptationSets={this.state.videoAdaptationSets} />
-          )}
-          {this.renderDashSettings()}
-        </div>
-      );
     }
+    return (
+      <div className="VideoBox InfoBox">
+        <Video />
+        {this.state.videoAdaptationSets && (
+          <VideoInfo videoAdaptationSets={this.state.videoAdaptationSets} />
+        )}
+        {this.renderDashSettings()}
+      </div>
+    );
   }
 
   renderDashSettings() {

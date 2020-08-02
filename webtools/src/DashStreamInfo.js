@@ -37,17 +37,17 @@ export default function DashStreamInfo(props) {
             <StreamInfoCell>Live Latency</StreamInfoCell>
             <StreamInfoCell>
               {props.liveLatency
-                ? props.liveLatency + " secs"
+                ? `${props.liveLatency} secs`
                 : "Calculating..."}
             </StreamInfoCell>
           </TableRow>
           <TableRow>
             <StreamInfoCell>Buffer Level</StreamInfoCell>
-            <StreamInfoCell>{props.audioBufferLevel + " secs"}</StreamInfoCell>
+            <StreamInfoCell>{`${props.audioBufferLevel} secs`}</StreamInfoCell>
           </TableRow>
           <TableRow>
             <StreamInfoCell>Audio Bitrate</StreamInfoCell>
-            <StreamInfoCell>{props.audioBitRate + " Kbps"}</StreamInfoCell>
+            <StreamInfoCell>{`${props.audioBitRate} Kbps`}</StreamInfoCell>
           </TableRow>
           <TableRow>
             <StreamInfoCell>Stream Started On</StreamInfoCell>

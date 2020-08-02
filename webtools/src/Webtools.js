@@ -7,7 +7,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 
-import DashPlayer from "./DashPlayer.js";
+import DashPlayer from "./DashPlayer";
 
 const STAT_URL = "/stat";
 const NGINX_INFO_URL = "/nginxInfo";
@@ -23,16 +23,17 @@ const DEFAULT_STAT_REFRESH_PERIOD = 4; // seconds
 
 export default class Webtools extends React.Component {
   BW_TRANSFORM_FN = (bw_in) =>
-    parseFloat((bw_in / (1024 * 1024)).toPrecision(4)) + "Mb/s";
+    `${parseFloat((bw_in / (1024 * 1024)).toPrecision(4))}Mb/s`;
+
   BYTES_TRANSFORM_FN = (bytes_in) => {
     if (bytes_in > 1024 * 1024 * 1024) {
-      return (
-        parseFloat((bytes_in / (1024 * 1024 * 1024)).toPrecision(4)) + "GB"
-      );
-    } else {
-      return parseFloat((bytes_in / (1024 * 1024)).toPrecision(4)) + "MB";
+      return `${parseFloat(
+        (bytes_in / (1024 * 1024 * 1024)).toPrecision(4)
+      )}GB`;
     }
+    return `${parseFloat((bytes_in / (1024 * 1024)).toPrecision(4))}MB`;
   };
+
   SERVER_INFO_TRANSFORM = {
     uptime: (uptime) => moment.duration(uptime, "seconds").humanize(),
     bw_in: this.BW_TRANSFORM_FN,
@@ -63,18 +64,18 @@ export default class Webtools extends React.Component {
         xml2js.parseString(response.data, function (err, result) {
           const serverInfo = self.extractServerInfo(result);
           const liveInfo = result.rtmp.server[0].application[0].live[0];
-          serverInfo["nclients"] = liveInfo.nclients;
-          let stateUpdate = {
+          serverInfo.nclients = liveInfo.nclients;
+          const stateUpdate = {
             serverInfo,
             statRetryTimer: self.state.statRetryTimer * 2,
           };
           if (liveInfo.stream) {
-            let streamNames = liveInfo.stream.map((stream) => stream.name[0]);
-            stateUpdate["streamNames"] = streamNames;
+            const streamNames = liveInfo.stream.map((stream) => stream.name[0]);
+            stateUpdate.streamNames = streamNames;
             if (self.state.selectedStream === null) {
-              stateUpdate["selectedStream"] = streamNames[0];
+              stateUpdate.selectedStream = streamNames[0];
             }
-            stateUpdate["statRetryTimer"] = DEFAULT_STAT_REFRESH_PERIOD;
+            stateUpdate.statRetryTimer = DEFAULT_STAT_REFRESH_PERIOD;
           }
           self.setState(stateUpdate);
           setTimeout(() => {
@@ -128,7 +129,7 @@ export default class Webtools extends React.Component {
   }
 
   renderStreamNames() {
-    let self = this;
+    const self = this;
     return this.state.streamNames.map((streamName) => {
       let classNames = "StreamName";
       if (self.state.selectedStream === streamName) {
@@ -199,7 +200,7 @@ export default class Webtools extends React.Component {
   }
 
   extractServerInfo(statResponse) {
-    let serverInfo = {};
+    const serverInfo = {};
     Object.keys(SERVER_INFO_FIELDS).forEach((key) => {
       if (statResponse.rtmp[key]) {
         serverInfo[key] = statResponse.rtmp[key][0];
