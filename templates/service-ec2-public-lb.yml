@@ -76,6 +76,15 @@ Resources:
           Cpu: !Ref 'ContainerCpu'
           Memory: !Ref 'ContainerMemory'
           Image: !Ref 'ImageUrl'
+          Environment:
+            - Name: HTTP_PORT
+              Value: 80
+            - Name: RTMP_PORT
+              Value: 1935
+            - Name: RTMP_AUTH_TOKEN
+              Value: rtmp
+            - Name: FFMPEG_FLAGS
+              Value: 
           PortMappings:
             - ContainerPort: !Ref 'ContainerPort'
           LogConfiguration:
