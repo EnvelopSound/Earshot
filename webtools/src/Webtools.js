@@ -119,7 +119,7 @@ export default class Webtools extends React.Component {
           <div className="DashPlayerContainer">
             <DashPlayer
               streamName={this.state.selectedStream}
-              streamUrl={"/" + this.state.selectedStream + ".mpd"}
+              streamUrl={"/dash/" + this.state.selectedStream + ".mpd"}
             />
           </div>
         )}
