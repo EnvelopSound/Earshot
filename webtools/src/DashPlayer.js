@@ -1,5 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
+import PropTypes from "prop-types";
 import QueryString from "query-string";
 
 import dashjs from "dashjs";
@@ -8,11 +9,11 @@ import Divider from "@material-ui/core/Divider";
 import Typography from "@material-ui/core/Typography";
 import history from "./history";
 
-import DashSettings from "./DashSettings.js";
-import DashStreamInfo from "./DashStreamInfo.js";
-import GainSliderBox from "./GainSliderBox.js";
-import { Video, videoPlayer } from "./Video.js";
-import VideoInfo from "./VideoInfo.js";
+import DashSettings from "./DashSettings";
+import DashStreamInfo from "./DashStreamInfo";
+import GainSliderBox from "./GainSliderBox";
+import { Video, videoPlayer } from "./Video";
+import VideoInfo from "./VideoInfo";
 
 const POLLING_INTERVAL = 1000;
 const STABLE_BUFFER_TIME = 20;
@@ -60,26 +61,29 @@ class DashPlayer extends React.Component {
   }
 
   componentDidMount() {
-    this.load(this.props.streamUrl);
+    const { streamUrl } = this.props;
+    this.load(streamUrl);
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.streamUrl !== prevProps.streamUrl) {
+    const { streamUrl } = this.props;
+    if (streamUrl !== prevProps.streamUrl) {
       videoPlayer.muted = true;
       this.setState(DEFAULT_STATE, () => {
-        this.load(this.props.streamUrl);
+        this.load(streamUrl);
       });
     }
   }
 
   load(url) {
-    if (this.state.dashPlayer) {
+    let { dashPlayer, isLoading } = this.state;
+    if (dashPlayer) {
       // if stream is being updated, just update the URL
-      this.state.dashPlayer.attachSource(url);
+      dashPlayer.attachSource(url);
       return;
     }
 
-    const dashPlayer = dashjs.MediaPlayer().create();
+    dashPlayer = dashjs.MediaPlayer().create();
     const settings = this.getCurrentSettings();
     dashPlayer.updateSettings(settings);
     dashPlayer.initialize(videoPlayer, url, true);
@@ -95,7 +99,7 @@ class DashPlayer extends React.Component {
       const numChannels =
         audioAdaptationSet.Representation_asArray[0].AudioChannelConfiguration
           .value;
-      if (this.state.isLoading) {
+      if (isLoading) {
         this.setupStreamInfo();
       }
       this.setState({
@@ -132,7 +136,8 @@ class DashPlayer extends React.Component {
   }
 
   getCurrentSettings() {
-    const params = QueryString.parse(this.props.location.search);
+    const { location } = this.props;
+    const params = QueryString.parse(location.search);
     const settings = params.settings
       ? JSON.parse(params.settings)
       : DEFAULT_CLIENT_SETTINGS;
@@ -140,19 +145,22 @@ class DashPlayer extends React.Component {
   }
 
   render() {
+    const { error, isLoading } = this.state;
+    const { streamName, streamUrl } = this.props;
+
     let body;
-    if (this.state.isLoading) {
+    if (isLoading) {
       body = (
         <div className="SearchingOrLoadingStreamsContainer">
           <div className="SearchingOrLoadingStreamsText">
-            Loading {this.props.streamName}...
+            Loading {streamName}...
             <br />
             (it may take up to a minute for the stream to warm up...)
           </div>
         </div>
       );
-    } else if (this.state.error) {
-      body = <div className="ErrorBox">{this.state.error}</div>;
+    } else if (error) {
+      body = <div className="ErrorBox">{error}</div>;
     } else {
       body = (
         <>
@@ -162,22 +170,15 @@ class DashPlayer extends React.Component {
             </Typography>
             <Divider />
             <GainSliderBox
-              numChannels={this.state.numChannels}
-              streamUrl={this.props.streamUrl}
+              numChannels
+              streamUrl
             />
           </div>
           <div className="StreamInfoBox">
             <DashStreamInfo
-              audioBitRate={this.state.audioBitRate}
-              audioBufferLevel={this.state.audioBufferLevel}
-              availabilityStartTime={this.state.availabilityStartTime}
-              dashProfiles={this.state.dashProfiles}
-              liveLatency={this.state.liveLatency}
-              minUpdatePeriod={this.state.minUpdatePeriod}
-              numChannels={this.state.numChannels}
+              {...state}
               streamName={this.props.streamName}
               streamUrl={this.props.streamUrl}
-              suggestedPresentationDelay={this.state.suggestedPresentationDelay}
             />
           </div>
         </>
@@ -284,5 +285,11 @@ class DashPlayer extends React.Component {
     }, POLLING_INTERVAL);
   }
 }
+
+DashPlayer.propTypes = {
+  location: PropTypes.object.isRequired,
+  streamName: PropTypes.string.isRequired,
+  streamUrl: PropTypes.string.isRequired
+};
 
 export default withRouter(DashPlayer);
