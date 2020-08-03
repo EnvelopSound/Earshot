@@ -23,7 +23,7 @@ Earshot is GPL licensed, as it uses ffmpeg binaries compiled with GPL codecs inc
 
 ## Features ##
 
-* Live-stream up to 255 audio channels with optional video
+* Live-stream up to 255 audio channels (i.e. up to 15th Order Ambisonics) with optional video
 * Web interface for stream monitoring and debuggging
 * Preview and test different Dash.js client player settings
 * RTMP stream authentication
