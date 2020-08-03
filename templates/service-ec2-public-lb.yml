@@ -84,7 +84,7 @@ Resources:
             - Name: RTMP_AUTH_TOKEN
               Value: rtmp
             - Name: FFMPEG_FLAGS
-              Value: 
+              Value: ''
           PortMappings:
             - ContainerPort: !Ref 'ContainerPort'
           LogConfiguration:
