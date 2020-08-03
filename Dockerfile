@@ -133,7 +133,7 @@ RUN set -x ; \
     addgroup -g 82 nginx ; \
     adduser -u 82 -D -h /home/nginx -s /bin/sh -G nginx nginx && exit 0 ; exit 1
 
-CMD rm -rf /opt/data && mkdir /opt/data && chown nginx /opt/data && chmod 777 /opt/data && mkdir -p /www && \
+CMD rm -rf /opt/data && mkdir -p /opt/data/dash && chown nginx /opt/data/dash && chmod 777 /opt/data/dash && mkdir -p /www && \
   envsubst "$(env | sed -e 's/=.*//' -e 's/^/\$/g')" < \
   /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && \
   nginx
