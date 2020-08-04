@@ -1,18 +1,25 @@
+Mappings:
+  VpcCidrs:
+    vpc:
+      cidr: 10.0.0.0/16
+    pubsubnet1:
+      cidr: 10.0.0.0/24
+    pubsubnet2:
+      cidr: 10.0.1.0/24
+
+
 Parameters:
+  VpcAvailabilityZones:
+    Type: CommaDelimitedList
+    Description: >-
+      Optional - Comma-delimited list of VPC availability zones in which to
+      create subnets.  Required if setting VpcId.
+    Default: ''
+
 
   Ami:
     Type: String
     Description: http://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI_launch_latest.html
-
-  AsgMaxSize:
-    Type: Number
-    Description: The maximum size of ASG
-    Default: 1
-
-  AsgMinSize:
-    Type: Number
-    Description: The minimum size of ASG
-    Default: 1
 
   EmailAlerts:
     Type: String
@@ -67,15 +74,102 @@ Parameters:
 
   SubnetID1:
     Type: AWS::EC2::Subnet::Id
+    Default: ''
 
   SubnetID2:
     Type: AWS::EC2::Subnet::Id
+    Default: ''
 
   VpcId:
     Type: AWS::EC2::VPC::Id
+    Default: ''
+
+Conditions:
+  UseSpecifiedVpcAvailabilityZones: !Not 
+    - !Equals 
+      - !Join 
+        - ''
+        - !Ref VpcAvailabilityZones
+      - ''
 
 Resources:
-
+  Vpc:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      CidrBlock: !FindInMap 
+        - VpcCidrs
+        - vpc
+        - cidr
+      Tags: []
+  PubSubnetAz1:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref Vpc
+      CidrBlock: !FindInMap 
+        - VpcCidrs
+        - pubsubnet1
+        - cidr
+      Tags: []
+      AvailabilityZone: !If 
+        - UseSpecifiedVpcAvailabilityZones
+        - !Select 
+          - '0'
+          - !Ref VpcAvailabilityZones
+        - !Select 
+          - '0'
+          - !GetAZs 
+            Ref: 'AWS::Region'
+  PubSubnetAz2:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref Vpc
+      CidrBlock: !FindInMap 
+        - VpcCidrs
+        - pubsubnet2
+        - cidr
+      Tags: []
+      AvailabilityZone: !If 
+        - UseSpecifiedVpcAvailabilityZones
+        - !Select 
+          - '1'
+          - !Ref VpcAvailabilityZones
+        - !Select 
+          - '1'
+          - !GetAZs 
+            Ref: 'AWS::Region'
+  InternetGateway:
+    Type: 'AWS::EC2::InternetGateway'
+    Properties:
+      Tags: []
+  AttachGateway:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      VpcId: !Ref Vpc
+      InternetGatewayId: !Ref InternetGateway
+  RouteViaIgw:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      VpcId: !Ref Vpc
+      Tags: []
+  PublicRouteViaIgw:
+    DependsOn: AttachGateway
+    Type: 'AWS::EC2::Route'
+    Properties:
+      RouteTableId: !Ref RouteViaIgw
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+  PubSubnet1RouteTableAssociation:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref PubSubnetAz1
+      RouteTableId: !Ref RouteViaIgw
+  PubSubnet2RouteTableAssociation:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref PubSubnetAz2
+      RouteTableId: !Ref RouteViaIgw
   EcsCluster:
     Type: AWS::ECS::Cluster
 
@@ -196,12 +290,9 @@ Resources:
       HealthCheckType: EC2
       LaunchConfigurationName:
         Ref: Lc
-      MinSize:
-        Ref: AsgMinSize
-      MaxSize:
-        Ref: AsgMaxSize
-      DesiredCapacity:
-        Ref: AsgMinSize
+      MinSize: 1
+      MaxSize: 1
+      DesiredCapacity: 1
       Tags:
       - Key: Name
         Value:
@@ -214,8 +305,7 @@ Resources:
         PropagateAtLaunch: true
     UpdatePolicy:
       AutoScalingRollingUpdate:
-        MinInstancesInService:
-          Ref: AsgMinSize
+        MinInstancesInService: 1
         PauseTime: PT5M
 
   Lc:
@@ -485,13 +575,13 @@ Resources:
         MinimumHealthyPercent: 50
       TaskDefinition: !Ref ProdEarshotTaskDefinition
       #Role: !Ref 'EcsServiceLinkedRole'
-      DesiredCount: !Ref AsgMinSize
+      DesiredCount: 1
 
   EcsSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: ECS Allowed Ports
-      VpcId: !Ref VpcId
+      VpcId: !Ref Vpc
 
 Outputs:
 
