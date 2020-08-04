@@ -40,7 +40,7 @@ Parameters:
                  assigned to different paths on the load balancer.
   DesiredCount:
     Type: Number
-    Default: 2
+    Default: 1
     Description: How many copies of the service task to run
   Role:
     Type: String
@@ -82,7 +82,7 @@ Resources:
             - Name: RTMP_PORT
               Value: 1935
             - Name: RTMP_AUTH_TOKEN
-              Value: rtmp
+              Value: ''
             - Name: FFMPEG_FLAGS
               Value: ''
           PortMappings:
@@ -228,39 +228,6 @@ Resources:
             ScalingAdjustment: 3
         MetricAggregationType: 'Average'
         Cooldown: 60
-
-  # Create alarms to trigger these policies
-  LowCpuUsageAlarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmName:
-        Fn::Join:
-          - '-'
-          - - low-cpu
-            - !Ref 'EnvironmentName'
-            - !Ref 'ServiceName'
-      AlarmDescription:
-        Fn::Join:
-          - ' '
-          - - "Low CPU utilization for service"
-            - !Ref 'ServiceName'
-            - "in environment"
-            - !Ref 'EnvironmentName'
-      MetricName: CPUUtilization
-      Namespace: AWS/ECS
-      Dimensions:
-        - Name: ServiceName
-          Value: !Ref 'ServiceName'
-        - Name: ClusterName
-          Value:
-            Fn::ImportValue: !Sub ${EnvironmentName}:ClusterName
-      Statistic: Average
-      Period: 60
-      EvaluationPeriods: 1
-      Threshold: 20
-      ComparisonOperator: LessThanOrEqualToThreshold
-      AlarmActions:
-        - !Ref ScaleDownPolicy
 
   HighCpuUsageAlarm:
     Type: AWS::CloudWatch::Alarm

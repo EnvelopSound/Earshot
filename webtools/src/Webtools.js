@@ -192,7 +192,7 @@ export default class Webtools extends React.Component {
           FFmpeg Flags
         </TableCell>
         <TableCell style={{ fontSize: "10px" }}>
-          {this.state.ffmpegFlags ? this.state.ffmpegFlags : "Loading..."}
+          {this.state.ffmpegFlags !== null ? this.state.ffmpegFlags : "Loading..."}
         </TableCell>
       </TableRow>
     );

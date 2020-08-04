@@ -8,7 +8,7 @@ Envelop Ambisonic RTMP Streaming Higher-Order Transcoder (Earshot) is a containe
 
 [Envelop](http://envelop.us) is a nonprofit organization that amplifies the connective power of music through immersive listening spaces and open source spatial audio software. Three-dimensional experiences of sound and music bring people together, catalyzing shared moments of inspiration, empathy and wonder.
 
-* [Join the Envelop Software Facebook Group for questions, tips, etc.](https://www.facebook.com/groups/E4LUsers)
+* [Join the Envelop Tools Facebook Group for questions, tips, etc.](https://www.facebook.com/groups/E4LUsers)
 * Help support Envelop, and our open-source software development, [through a membership or donation](https://www.envelop.us/membership-donations).
 
 ## Motivation for Earshot ##
@@ -23,7 +23,7 @@ Earshot is GPL licensed, as it uses ffmpeg binaries compiled with GPL codecs inc
 
 ## Features ##
 
-* Live-stream up to 255 audio channels with optional video
+* Live-stream up to 255 audio channels (i.e. up to 14th Order Ambisonics) with optional video
 * Web interface for stream monitoring and debuggging
 * Preview and test different Dash.js client player settings
 * RTMP stream authentication
@@ -132,7 +132,7 @@ Known Webtools issues:
 
 ## Deploying Earshot to AWS CloudFormation ##
 
-Earshot can be deployed to AWS using [AWS CLI](https://aws.amazon.com/cli/).
+Earshot can be easily deployed to AWS using [AWS CLI](https://aws.amazon.com/cli/) and CloudFormation. You can customize the deployment configuration in the CloudFormation template files in the `templates/` directory
 
 #### 1. Deploy EC2 stack
 
@@ -161,3 +161,9 @@ To get the public URL of your application load balancer:
 3. Click "earshot-stack-alb" stack
 4. Click "Outputs" tab
 5. Copy "ExternalUrl"
+
+This is the stream URL you should use for OBS or whichever live streaming application you are using at the source, e.g.: `rtmp://<ExternalUrl>:1935/live/stream1`
+
+### Custom FFmpeg flags and RTMP auth ###
+
+Set these environmental values in the service-ec2-public-vpc.yml file under Resources->TaskDefinition->Properties->ContainerDefinitions->Environment.
