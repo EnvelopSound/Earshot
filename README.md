@@ -132,7 +132,7 @@ Known Webtools issues:
 
 ## Deploying Earshot to AWS CloudFormation ##
 
-Earshot can be deployed to AWS using [AWS CLI](https://aws.amazon.com/cli/).
+Earshot can be easily deployed to AWS using [AWS CLI](https://aws.amazon.com/cli/) and CloudFormation. You can customize the deployment configuration in the CloudFormation template files in the `templates/` directory
 
 #### 1. Deploy EC2 stack
 
@@ -161,3 +161,9 @@ To get the public URL of your application load balancer:
 3. Click "earshot-stack-alb" stack
 4. Click "Outputs" tab
 5. Copy "ExternalUrl"
+
+This is the stream URL you should use for OBS or whichever live streaming application you are using at the source, e.g.: `rtmp://<ExternalUrl>:1935/live/stream1`
+
+### Custom FFmpeg flags and RTMP auth ###
+
+Set these environmental values in the service-ec2-public-vpc.yml file under Resources->TaskDefinition->Properties->ContainerDefinitions->Environment.
