@@ -73,18 +73,6 @@ Parameters:
     Type: AWS::EC2::KeyPair::KeyName
     Description: Name of an existing EC2 KeyPair to enable SSH access to instances
 
-  SubnetID1:
-    Type: AWS::EC2::Subnet::Id
-    Default: ''
-
-  SubnetID2:
-    Type: AWS::EC2::Subnet::Id
-    Default: ''
-
-  VpcId:
-    Type: AWS::EC2::VPC::Id
-    Default: ''
-
 Conditions:
   UseSpecifiedVpcAvailabilityZones: !Not 
     - !Equals 
@@ -179,7 +167,7 @@ Resources:
     Properties:
       GroupDescription:
         Fn::Sub: ${AWS::StackName}-Sg
-      VpcId: !Ref VpcId
+      VpcId: !Ref Vpc
 
   SgAllTrafficports:
     Type: AWS::EC2::SecurityGroupIngress
@@ -277,8 +265,8 @@ Resources:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       VPCZoneIdentifier:
-      - !Ref SubnetID1
-      - !Ref SubnetID2
+      - !Ref PubSubnetAz1
+      - !Ref PubSubnetAz2
       NotificationConfiguration:
         TopicARN:
           Ref: AlertsTopic
