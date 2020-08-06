@@ -16,6 +16,19 @@ const StreamInfoCell = styled(TableCell)({
 });
 
 function DashStreamInfo(props) {
+  const {
+    audioBitRate,
+    audioBufferLevel,
+    availabilityStartTime,
+    dashProfiles,
+    liveLatency,
+    minUpdatePeriod,
+    numChannels,
+    streamName,
+    streamUrl,
+    suggestedPresentationDelay,
+  } = props;
+
   return (
     <div className="InfoBox">
       <Typography variant="h6" gutterBottom>
@@ -26,52 +39,48 @@ function DashStreamInfo(props) {
         <TableBody>
           <TableRow>
             <StreamInfoCell>Stream Name</StreamInfoCell>
-            <StreamInfoCell>{props.streamName}</StreamInfoCell>
+            <StreamInfoCell>{streamName}</StreamInfoCell>
           </TableRow>
           <TableRow>
             <StreamInfoCell>Stream URL</StreamInfoCell>
             <StreamInfoCell>
-              {new URL(props.streamUrl, document.baseURI).href}
+              {new URL(streamUrl, document.baseURI).href}
             </StreamInfoCell>
           </TableRow>
           <TableRow>
             <StreamInfoCell>Live Latency</StreamInfoCell>
             <StreamInfoCell>
-              {props.liveLatency
-                ? `${props.liveLatency} secs`
-                : "Calculating..."}
+              {liveLatency ? `${liveLatency} secs` : "Calculating..."}
             </StreamInfoCell>
           </TableRow>
           <TableRow>
             <StreamInfoCell>Buffer Level</StreamInfoCell>
-            <StreamInfoCell>{`${props.audioBufferLevel} secs`}</StreamInfoCell>
+            <StreamInfoCell>{`${audioBufferLevel} secs`}</StreamInfoCell>
           </TableRow>
           <TableRow>
             <StreamInfoCell>Audio Bitrate</StreamInfoCell>
-            <StreamInfoCell>{`${props.audioBitRate} Kbps`}</StreamInfoCell>
+            <StreamInfoCell>{`${audioBitRate} Kbps`}</StreamInfoCell>
           </TableRow>
           <TableRow>
             <StreamInfoCell>Stream Started On</StreamInfoCell>
-            <StreamInfoCell>
-              {props.availabilityStartTime.toString()}
-            </StreamInfoCell>
+            <StreamInfoCell>{availabilityStartTime.toString()}</StreamInfoCell>
           </TableRow>
           <TableRow>
             <StreamInfoCell>Minimum Update Period</StreamInfoCell>
-            <StreamInfoCell>{props.minUpdatePeriod} Seconds</StreamInfoCell>
+            <StreamInfoCell>{minUpdatePeriod} Seconds</StreamInfoCell>
           </TableRow>
           <TableRow>
             <StreamInfoCell>Num Audio Channels</StreamInfoCell>
-            <StreamInfoCell>{props.numChannels}</StreamInfoCell>
+            <StreamInfoCell>{numChannels}</StreamInfoCell>
           </TableRow>
           <TableRow>
             <StreamInfoCell>DASH Profiles</StreamInfoCell>
-            <StreamInfoCell>{props.dashProfiles}</StreamInfoCell>
+            <StreamInfoCell>{dashProfiles}</StreamInfoCell>
           </TableRow>
           <TableRow>
             <StreamInfoCell>Suggested Presentation Delay</StreamInfoCell>
             <StreamInfoCell>
-              {props.suggestedPresentationDelay} Seconds
+              {suggestedPresentationDelay} Seconds
             </StreamInfoCell>
           </TableRow>
         </TableBody>
@@ -83,9 +92,9 @@ function DashStreamInfo(props) {
 DashStreamInfo.propTypes = {
   audioBitRate: PropTypes.number.isRequired,
   audioBufferLevel: PropTypes.number.isRequired,
-  availabilityStartTime: PropTypes.instanceOf(Date),
+  availabilityStartTime: PropTypes.instanceOf(Date).isRequired,
   dashProfiles: PropTypes.string.isRequired,
-  liveLatency: PropTypes.number,
+  liveLatency: PropTypes.number.isRequired,
   minUpdatePeriod: PropTypes.number.isRequired,
   numChannels: PropTypes.number.isRequired,
   streamName: PropTypes.string.isRequired,

@@ -1,10 +1,11 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 
-export default class DashSettings extends React.Component {
+class DashSettings extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -15,8 +16,11 @@ export default class DashSettings extends React.Component {
 
   onUpdate() {
     try {
-      const settingsObj = JSON.parse(this.state.settings);
-      this.props.onChange(settingsObj);
+      const { settings } = this.state;
+      const { onChange } = this.props;
+
+      const settingsObj = JSON.parse(settings);
+      onChange(settingsObj);
       this.setState({ error: null });
     } catch (error) {
       this.setState({ error: error.message });
@@ -24,6 +28,7 @@ export default class DashSettings extends React.Component {
   }
 
   render() {
+    const { error, settings } = this.state;
     return (
       <div className="InfoBox DashSettingsBox">
         <Typography variant="h6" gutterBottom>
@@ -34,7 +39,7 @@ export default class DashSettings extends React.Component {
             this.setState({ settings: e.target.value });
           }}
           style={{ width: "100%" }}
-          value={this.state.settings}
+          value={settings}
         />
         <Button
           onClick={() => {
@@ -43,12 +48,19 @@ export default class DashSettings extends React.Component {
         >
           Update
         </Button>
-        {this.state.error && (
+        {error && (
           <Typography style={{ color: "red" }} variant="body2" gutterBottom>
-            {this.state.error}
+            {error}
           </Typography>
         )}
       </div>
     );
   }
 }
+
+DashSettings.propTypes = {
+  clientSettings: PropTypes.objectOf(PropTypes.object()).isRequired,
+  onChange: PropTypes.func.isRequired,
+};
+
+export default DashSettings;
