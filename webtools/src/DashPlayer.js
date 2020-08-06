@@ -69,14 +69,66 @@ class DashPlayer extends React.Component {
     const { streamUrl } = this.props;
     if (streamUrl !== prevProps.streamUrl) {
       videoPlayer.muted = true;
-      this.setState(DEFAULT_STATE, () => {
-        this.load(streamUrl);
-      });
+      this.resetStateAndLoadUrl(streamUrl);
     }
   }
 
+  getCurrentSettings() {
+    const { location } = this.props;
+    const params = QueryString.parse(location.search);
+    const settings = params.settings
+      ? JSON.parse(params.settings)
+      : DEFAULT_CLIENT_SETTINGS;
+    return settings;
+  }
+
+  setupStreamInfo() {
+    const { dashPlayer } = this.state;
+
+    setInterval(() => {
+      const activeStream = dashPlayer.getActiveStream();
+      if (!activeStream) {
+        return;
+      }
+      const streamInfo = activeStream.getStreamInfo();
+      const dashMetrics = dashPlayer.getDashMetrics();
+      const dashAdapter = dashPlayer.getDashAdapter();
+
+      if (dashMetrics && streamInfo) {
+        const periodIdx = streamInfo.index;
+        const repSwitch = dashMetrics.getCurrentRepresentationSwitch(
+          "audio",
+          true
+        );
+        const audioBufferLevel = dashMetrics.getCurrentBufferLevel(
+          "audio",
+          true
+        );
+        const audioBitRate = repSwitch
+          ? Math.round(
+              dashAdapter.getBandwidthForRepresentation(
+                repSwitch.to,
+                periodIdx
+              ) / 1000
+            )
+          : NaN;
+        this.setState({
+          audioBitRate,
+          audioBufferLevel,
+        });
+      }
+    }, POLLING_INTERVAL);
+  }
+
+  resetStateAndLoadUrl(streamUrl) {
+    this.setState(DEFAULT_STATE, () => {
+      this.load(streamUrl);
+    });
+  }
+
   load(url) {
-    let { dashPlayer, isLoading } = this.state;
+    let { dashPlayer } = this.state;
+    const { isLoading } = this.state;
     if (dashPlayer) {
       // if stream is being updated, just update the URL
       dashPlayer.attachSource(url);
@@ -103,7 +155,6 @@ class DashPlayer extends React.Component {
         this.setupStreamInfo();
       }
       this.setState({
-        audioAdapationSet: audioAdaptationSet,
         availabilityStartTime: data.availabilityStartTime,
         dashProfiles: data.profiles,
         isLoading: false,
@@ -135,13 +186,52 @@ class DashPlayer extends React.Component {
     });
   }
 
-  getCurrentSettings() {
-    const { location } = this.props;
-    const params = QueryString.parse(location.search);
-    const settings = params.settings
-      ? JSON.parse(params.settings)
-      : DEFAULT_CLIENT_SETTINGS;
-    return settings;
+  static renderHiddenVideoElementDiv() {
+    return (
+      <div style={{ display: "none" }}>
+        <Video />
+      </div>
+    );
+  }
+
+  renderVideoBox() {
+    const { isLoading, videoAdaptationSets } = this.state;
+    const isAudioOnly = !isLoading && !videoAdaptationSets.length;
+
+    if (isLoading) {
+      return DashPlayer.renderHiddenVideoElementDiv();
+    }
+    if (isAudioOnly) {
+      return (
+        <div className="VideoBox InfoBox">
+          <div className="AudioOnlyBox">Audio-only Stream</div>
+          {DashPlayer.renderHiddenVideoElementDiv()}
+          {this.renderDashSettings()}
+        </div>
+      );
+    }
+    return (
+      <div className="VideoBox InfoBox">
+        <Video />
+        {videoAdaptationSets && (
+          <VideoInfo videoAdaptationSets={videoAdaptationSets} />
+        )}
+        {this.renderDashSettings()}
+      </div>
+    );
+  }
+
+  renderDashSettings() {
+    const { dashPlayer } = this.state;
+    return (
+      <DashSettings
+        clientSettings={this.getCurrentSettings()}
+        onChange={(settings) => {
+          dashPlayer.updateSettings(settings);
+          history.push(`/webtools/?settings=${JSON.stringify(settings)}`);
+        }}
+      />
+    );
   }
 
   render() {
@@ -162,6 +252,17 @@ class DashPlayer extends React.Component {
     } else if (error) {
       body = <div className="ErrorBox">{error}</div>;
     } else {
+      const {
+        audioBitRate,
+        audioBufferLevel,
+        availabilityStartTime,
+        dashProfiles,
+        liveLatency,
+        minUpdatePeriod,
+        numChannels,
+        suggestedPresentationDelay,
+      } = this.state;
+
       body = (
         <>
           <div className="SliderBox InfoBox">
@@ -169,16 +270,20 @@ class DashPlayer extends React.Component {
               Audio Preview
             </Typography>
             <Divider />
-            <GainSliderBox
-              numChannels
-              streamUrl
-            />
+            <GainSliderBox numChannels={numChannels} streamUrl={streamUrl} />
           </div>
           <div className="StreamInfoBox">
             <DashStreamInfo
-              {...state}
-              streamName={this.props.streamName}
-              streamUrl={this.props.streamUrl}
+              audioBitRate={audioBitRate}
+              audioBufferLevel={audioBufferLevel}
+              availabilityStartTime={availabilityStartTime}
+              dashProfiles={dashProfiles}
+              liveLatency={liveLatency}
+              minUpdatePeriod={minUpdatePeriod}
+              numChannels={numChannels}
+              streamName={streamName}
+              streamUrl={streamUrl}
+              suggestedPresentationDelay={suggestedPresentationDelay}
             />
           </div>
         </>
@@ -192,104 +297,14 @@ class DashPlayer extends React.Component {
       </div>
     );
   }
-
-  getVideoPlayer() {
-    const video = document.createElement("video");
-    video.setAttribute("className", "VideoPlayer");
-    video.setAttribute("id", "videoPlayer");
-    video.setAttribute("muted", true);
-    return video;
-  }
-
-  renderHiddenVideoElementDiv(video) {
-    return (
-      <div style={{ display: "none" }}>
-        <Video />
-      </div>
-    );
-  }
-
-  renderVideoBox() {
-    const isAudioOnly =
-      !this.state.isLoading && !this.state.videoAdaptationSets.length;
-
-    if (this.state.isLoading) {
-      return this.renderHiddenVideoElementDiv();
-    }
-    if (isAudioOnly) {
-      return (
-        <div className="VideoBox InfoBox">
-          <div className="AudioOnlyBox">Audio-only Stream</div>
-          {this.renderHiddenVideoElementDiv()}
-          {this.renderDashSettings()}
-        </div>
-      );
-    }
-    return (
-      <div className="VideoBox InfoBox">
-        <Video />
-        {this.state.videoAdaptationSets && (
-          <VideoInfo videoAdaptationSets={this.state.videoAdaptationSets} />
-        )}
-        {this.renderDashSettings()}
-      </div>
-    );
-  }
-
-  renderDashSettings() {
-    return (
-      <DashSettings
-        clientSettings={this.getCurrentSettings()}
-        onChange={(settings) => {
-          this.state.dashPlayer.updateSettings(settings);
-          history.push(`/webtools/?settings=${JSON.stringify(settings)}`);
-        }}
-      />
-    );
-  }
-
-  setupStreamInfo() {
-    const player = this.state.dashPlayer;
-    setInterval(() => {
-      const activeStream = player.getActiveStream();
-      if (!activeStream) {
-        return;
-      }
-      const streamInfo = activeStream.getStreamInfo();
-      const dashMetrics = player.getDashMetrics();
-      const dashAdapter = player.getDashAdapter();
-
-      if (dashMetrics && streamInfo) {
-        const periodIdx = streamInfo.index;
-        const repSwitch = dashMetrics.getCurrentRepresentationSwitch(
-          "audio",
-          true
-        );
-        const audioBufferLevel = dashMetrics.getCurrentBufferLevel(
-          "audio",
-          true
-        );
-        const audioBitRate = repSwitch
-          ? Math.round(
-              dashAdapter.getBandwidthForRepresentation(
-                repSwitch.to,
-                periodIdx
-              ) / 1000
-            )
-          : NaN;
-        this.setState({
-          audioBitRate,
-          audioBufferLevel,
-        });
-      }
-    }, POLLING_INTERVAL);
-  }
 }
 
 DashPlayer.propTypes = {
-  location: PropTypes.object.isRequired,
+  location: PropTypes.shape({
+    search: PropTypes.string.isRequired,
+  }).isRequired,
   streamName: PropTypes.string.isRequired,
-  streamUrl: PropTypes.string.isRequired
+  streamUrl: PropTypes.string.isRequired,
 };
 
 export default withRouter(DashPlayer);

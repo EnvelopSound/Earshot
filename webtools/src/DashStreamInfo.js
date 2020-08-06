@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { styled } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import Table from "@material-ui/core/Table";
@@ -14,7 +15,7 @@ const StreamInfoCell = styled(TableCell)({
   padding: "5px",
 });
 
-export default function DashStreamInfo(props) {
+function DashStreamInfo(props) {
   return (
     <div className="InfoBox">
       <Typography variant="h6" gutterBottom>
@@ -78,3 +79,18 @@ export default function DashStreamInfo(props) {
     </div>
   );
 }
+
+DashStreamInfo.propTypes = {
+  audioBitRate: PropTypes.number.isRequired,
+  audioBufferLevel: PropTypes.number.isRequired,
+  availabilityStartTime: PropTypes.instanceOf(Date),
+  dashProfiles: PropTypes.string.isRequired,
+  liveLatency: PropTypes.number,
+  minUpdatePeriod: PropTypes.number.isRequired,
+  numChannels: PropTypes.number.isRequired,
+  streamName: PropTypes.string.isRequired,
+  streamUrl: PropTypes.string.isRequired,
+  suggestedPresentationDelay: PropTypes.number.isRequired,
+};
+
+export default DashStreamInfo;
