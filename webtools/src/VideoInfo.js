@@ -1,13 +1,27 @@
 import React from "react";
+import PropTypes from "prop-types";
+
 import Divider from "@material-ui/core/Divider";
 import Typography from "@material-ui/core/Typography";
 
-import RepresentationsInfo from "./RepresentationsInfo";
+import VideoRepresentationsInfo from "./VideoRepresentationsInfo";
+import VideoRepresentationShape from "./VideoRepresentationShape";
 
-export default class VideoInfo extends React.Component {
+class VideoInfo extends React.Component {
+  static renderAdaptationSet(set) {
+    return (
+      <div key={set.id} style={{ width: "90%" }}>
+        <VideoRepresentationsInfo
+          representations={set.Representation_asArray}
+        />
+      </div>
+    );
+  }
+
   render() {
-    const adaptationSets = this.props.videoAdaptationSets.map((set) =>
-      this.renderAdaptationSet(set)
+    const { videoAdaptationSets } = this.props;
+    const adaptationSets = videoAdaptationSets.map((set) =>
+      VideoInfo.renderAdaptationSet(set)
     );
     return (
       <div className="VideoInfoBox InfoBox">
@@ -19,12 +33,15 @@ export default class VideoInfo extends React.Component {
       </div>
     );
   }
-
-  renderAdaptationSet(set) {
-    return (
-      <div key={set.id} style={{ width: "90%" }}>
-        <RepresentationsInfo representations={set.Representation_asArray} />
-      </div>
-    );
-  }
 }
+
+VideoInfo.propTypes = {
+  videoAdaptationSets: PropTypes.arrayOf(
+    PropTypes.Shape({
+      Representation_asArray: PropTypes.arrayOf(VideoRepresentationShape)
+        .isRequired,
+    })
+  ).isRequired,
+};
+
+export default VideoInfo;
