@@ -1,5 +1,7 @@
 # Earshot -- Envelop Ambisonic RTMP Streaming Higher-Order Transcoder  #
 
+![CI](https://github.com/EnvelopSound/Earshot/workflows/CI/badge.svg)
+
 ![Earshot Screenshot](/Screenshot.png?raw=true "Earshot Screenshot")
 
 Envelop Ambisonic RTMP Streaming Higher-Order Transcoder (Earshot) is a containerized multichannel ngnix RTMP->DASH transcoder, used to transcode higher-order Ambisonics and other multichannel livestreams for the web.
