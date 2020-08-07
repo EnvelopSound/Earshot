@@ -28,12 +28,12 @@ Parameters:
 
   InstanceType:
     Type: String
-    Default: t2.medium
+    Default: t3.micro
     AllowedValues:
-    - t2.micro
-    - t2.medium
-    - t2.small
-    - t2.large
+    - t3.micro
+    - t3.medium
+    - t3.small
+    - t3.large
     - m3.medium
     - m3.large
     - m3.xlarge
@@ -68,7 +68,7 @@ Parameters:
     - d2.2xlarge
     - d2.4xlarge
     - d2.8xlarge
-  
+
   KeyName:
     Type: AWS::EC2::KeyPair::KeyName
     Description: Name of an existing EC2 KeyPair to enable SSH access to instances
@@ -79,13 +79,13 @@ Parameters:
 
   FfmpegFlags:
     Type: String
-    Default: ''
+    Default: '-window_size 100 -max_muxing_queue_size 1000'
 
 
 Conditions:
-  UseSpecifiedVpcAvailabilityZones: !Not 
-    - !Equals 
-      - !Join 
+  UseSpecifiedVpcAvailabilityZones: !Not
+    - !Equals
+      - !Join
         - ''
         - !Ref VpcAvailabilityZones
       - ''
@@ -96,7 +96,7 @@ Resources:
     Properties:
       EnableDnsSupport: true
       EnableDnsHostnames: true
-      CidrBlock: !FindInMap 
+      CidrBlock: !FindInMap
         - VpcCidrs
         - vpc
         - cidr
@@ -105,37 +105,37 @@ Resources:
     Type: 'AWS::EC2::Subnet'
     Properties:
       VpcId: !Ref Vpc
-      CidrBlock: !FindInMap 
+      CidrBlock: !FindInMap
         - VpcCidrs
         - pubsubnet1
         - cidr
       Tags: []
-      AvailabilityZone: !If 
+      AvailabilityZone: !If
         - UseSpecifiedVpcAvailabilityZones
-        - !Select 
+        - !Select
           - '0'
           - !Ref VpcAvailabilityZones
-        - !Select 
+        - !Select
           - '0'
-          - !GetAZs 
+          - !GetAZs
             Ref: 'AWS::Region'
   PubSubnetAz2:
     Type: 'AWS::EC2::Subnet'
     Properties:
       VpcId: !Ref Vpc
-      CidrBlock: !FindInMap 
+      CidrBlock: !FindInMap
         - VpcCidrs
         - pubsubnet2
         - cidr
       Tags: []
-      AvailabilityZone: !If 
+      AvailabilityZone: !If
         - UseSpecifiedVpcAvailabilityZones
-        - !Select 
+        - !Select
           - '1'
           - !Ref VpcAvailabilityZones
-        - !Select 
+        - !Select
           - '1'
-          - !GetAZs 
+          - !GetAZs
             Ref: 'AWS::Region'
   InternetGateway:
     Type: 'AWS::EC2::InternetGateway'
@@ -188,13 +188,13 @@ Resources:
       ToPort: '65535'
       CidrIp: 0.0.0.0/0
 
-  AlertsTopic: 
+  AlertsTopic:
     Type: AWS::SNS::Topic
-    Properties: 
-      Subscription: 
+    Properties:
+      Subscription:
         - Endpoint: !Ref EmailAlerts
           Protocol: email
-      TopicName: 
+      TopicName:
         Fn::Sub: ${AWS::StackName}-AlertsTopic
 
   HostRole:
@@ -484,7 +484,7 @@ Resources:
 
   LogGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       LogGroupName:
         Fn::Sub: ${AWS::StackName}-LogGroup
       RetentionInDays: 14

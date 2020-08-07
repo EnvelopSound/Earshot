@@ -135,45 +135,43 @@ Known Webtools issues:
 
 ## Deploying Earshot to AWS CloudFormation ##
 
-Earshot can be easily deployed to AWS using [AWS CLI](https://aws.amazon.com/cli/) and CloudFormation. You can customize the deployment configuration in the CloudFormation template files in the `templates/` directory
+Earshot can be easily deployed to AWS using [AWS CLI](https://aws.amazon.com/cli/) and CloudFormation. You can customize the deployment configuration in the CloudFormation template file in the `templates/` directory
 
-#### Deploy Earshot stack
+#### Deploying the stack
+
+Before deploying, you will first need to [generate an EC2 Key Pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#prepare-key-pair).
 
 ```
-aws cloudformation create-stack --region=us-west-2 --stack-name earshot-stack --template-body file://templates/cloudformation-template.yaml --parameters ParameterKey=InstanceType,ParameterValue=t2.micro ParameterKey=KeyName,ParameterValue=ecs-test --capabilities CAPABILITY_IAM
+aws cloudformation create-stack --region=us-west-2 --stack-name earshot-stack --template-body file://templates/cloudformation-template.yaml --parameters ParameterKey=InstanceType,ParameterValue=t3.micro ParameterKey=KeyName,ParameterValue=<YOUR_KEY_PAIR_NAME> --capabilities CAPABILITY_IAM
 ```
 
-### Access Earshot public URL ###
+### Accessing the public URL ###
 
-To get the public URL of your Earshot instance
+To get the public URL of your Earshot instance:
 
 1. Go to AWS Console -> ECS
 2. Open cluster named earshot-stack-EcsCluster
-* note: full cluster name may appear be longer. For example: earshot-stack-EcsCluster-o3KvtIz8VmTt
+* note: full cluster name may appear be longer. For example: earshot-stack-EcsCluster-o3KvtIz8VZTt
 3. Open the "ECS Instances" tab
 5. Click into the first ECS instance
-6. Copy the "Public IP" field
+6. Copy the "Public DNS" field
 
 #### RTMP Access
 
-This is the stream URL you should use for OBS or whichever live streaming application you are using at the source, e.g.: `rtmp://<ExternalIp>:1935/live/stream1`
+This is the stream URL you should use for OBS or whichever live streaming application you are using at the source, e.g.: `rtmp://<YOUR_INSTANCE_PUBLIC_DNS>:1935/live/stream1`
 
 #### Webtools Access
 
-To access the webtools please use URL
+To access Webtools, navigate to: `http://<YOUR_INSTANCE_PUBLIC_DNS>/webtools`
 
-```
-http://<ExternalIp>/webtools
-```
-### Custom FFmpeg flags and RTMP auth ###
+### Custom FFmpeg Flags and RTMP Auth ###
 
-The ECS container currently uses predefined values for RTMP authentication and FFMPEG.
+The ECS container currently uses predefined values for RTMP authentication and FFmpeg flags.
 
 If you want to change the container environment variables you can change the stack variables when you deploy it. Or if you
 want to make changes live, you can update the task definition environment in the AWS console.
 
-
-#### Cloudformation parameters
+#### CloudFormation parameters
 
 ```
 RtmpAuthToken
@@ -188,9 +186,5 @@ Add additional flags to FFMPEG
 #### Deploying with custom parameters
 
 ```
-aws cloudformation create-stack --region=us-west-2 --stack-name earshot-stack --template-body file://templates/cloudformation-template.yaml --parameters ParameterKey=InstanceType,ParameterValue=t2.micro ParameterKey=KeyName,ParameterValue=ecs-test ParameterKey=RtmpAuthToken,ParameterValue=MY-CUSTOM-TOKEN ParameterKey=FfmpegFlags,ParameterValue=-loglevel repeat+level+verbose --capabilities CAPABILITY_IAM
+aws cloudformation create-stack --region=us-west-2 --stack-name earshot-stack --template-body file://templates/cloudformation-template.yaml --parameters ParameterKey=InstanceType,ParameterValue=t3.micro ParameterKey=KeyName,ParameterValue=<YOUR_KEY_PAIR_NAME> ParameterKey=RtmpAuthToken,ParameterValue=<YOUR_CUSTOM_AUTH_TOKEN> ParameterKey=FfmpegFlags,ParameterValue="-loglevel repeat+level+verbose" --capabilities CAPABILITY_IAM
 ```
-
-#### Update Task definition
-
-Set these environmental values in the service-ec2-public-vpc.yml file under Resources->TaskDefinition->Properties->ContainerDefinitions->Environment.
