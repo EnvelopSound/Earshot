@@ -41,4 +41,4 @@ jobs:
       - name: Install webtools modules
         run: cd webtools && yarn install
       - name: Run ESLint
-        run: ./webtools/node_modules/.bin/eslint --resolve-plugins-relative-to webtools webtools/ --ext .js,.jsx
+        run: cd webtools && yarn lint
