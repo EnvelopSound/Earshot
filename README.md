@@ -42,7 +42,8 @@ Earshot is GPL licensed, as it uses ffmpeg binaries compiled with GPL codecs inc
 
 ## Known Limitations ##
 
-Some browsers, such as some versions of Safari, do not support Opus.
+* Some browsers, such as some versions of Safari, do not support Opus.
+* The live stream in the first minuteis somewhat fragile when accessed with Dash.js or Webtools. This needs more investigation.
 
 ## Running Earshot Locally ##
 
