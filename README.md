@@ -98,7 +98,7 @@ Click Settings and set the following:
 **3. Select Audio Source**
 
 * If you are streaming via Envelop for Live or another DAW via Loopback or Jack, add an Audio Input Capture under Sources with the appropriate Device. Once you start playing audio in your DAW, audio should show up under this device in the Input Mixer
-* If you are simply testing, add a Media Source under Sources and select the `resources/16chambixloop.wav` file with **Loop** checked. You should now see audio under the Media Source in the Input Mixer.
+* If you are simply testing, add a Media Source under Sources and select the `tester/resources/16chambixloop.wav` file with **Loop** checked. You should now see audio under the Media Source in the Input Mixer.
 
 **4. Start Streaming**
 
@@ -160,7 +160,7 @@ This is the stream URL you should use for OBS or whichever live streaming applic
 
 #### Webtools Access
 
-To access the webtools please use URL 
+To access the webtools please use URL
 
 ```
 http://<ExternalIp>/webtools
