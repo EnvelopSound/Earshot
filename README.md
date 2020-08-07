@@ -167,4 +167,30 @@ http://<ExternalIp>/webtools
 ```
 ### Custom FFmpeg flags and RTMP auth ###
 
+The ECS container currently uses predefined values for RTMP authentication and FFMPEG.
+
+If you want to change the container environment variables you can change the stack variables when you deploy it. Or if you
+want to make changes live, you can update the task definition environment in the AWS console.
+
+
+#### Cloudformation parameters
+
+```
+RtmpAuthToken
+This is your RTMP authentication token
+```
+
+```
+FfmpegFlags
+Add additional flags to FFMPEG
+```
+
+#### Deploying with custom parameters
+
+```
+aws cloudformation create-stack --region=us-west-2 --stack-name earshot-stack --template-body file://templates/cloudformation-template.yaml --parameters ParameterKey=InstanceType,ParameterValue=t2.micro ParameterKey=KeyName,ParameterValue=ecs-test ParameterKey=RtmpAuthToken,ParameterValue=MY-CUSTOM-TOKEN ParameterKey=FfmpegFlags,ParameterValue=-loglevel repeat+level+verbose --capabilities CAPABILITY_IAM
+```
+
+#### Update Task definition
+
 Set these environmental values in the service-ec2-public-vpc.yml file under Resources->TaskDefinition->Properties->ContainerDefinitions->Environment.

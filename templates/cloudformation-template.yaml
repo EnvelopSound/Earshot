@@ -73,6 +73,15 @@ Parameters:
     Type: AWS::EC2::KeyPair::KeyName
     Description: Name of an existing EC2 KeyPair to enable SSH access to instances
 
+  RtmpAuthToken:
+    Type: String
+    Default: ''
+
+  FfmpegFlags:
+    Type: String
+    Default: ''
+
+
 Conditions:
   UseSpecifiedVpcAvailabilityZones: !Not 
     - !Equals 
@@ -546,9 +555,9 @@ Resources:
         - Name: RTMP_PORT
           Value: 1935
         - Name: RTMP_AUTH_TOKEN
-          Value: ''
+          Value: !Ref RtmpAuthToken
         - Name: FFMPEG_FLAGS
-          Value: ''
+          Value: !Ref FfmpegFlags
         LogConfiguration:
           LogDriver: awslogs
           Options:
