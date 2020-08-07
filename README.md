@@ -4,7 +4,7 @@
 
 ![Earshot Screenshot](/Screenshot.png?raw=true "Earshot Screenshot")
 
-Envelop Ambisonic RTMP Streaming Higher-Order Transcoder (Earshot) is a containerized multichannel ngnix RTMP->DASH transcoder, used to transcode higher-order Ambisonics and other multichannel livestreams for the web.
+Envelop Ambisonic RTMP Streaming Higher-Order Transcoder (Earshot) is a containerized multichannel RTMP->DASH transcoder, based on ngnix. Earshot can be used to transcode higher-order Ambisonics and other multichannel live streams for the web.
 
 ## About Envelop ##
 
@@ -15,7 +15,7 @@ Envelop Ambisonic RTMP Streaming Higher-Order Transcoder (Earshot) is a containe
 
 ## Motivation for Earshot ##
 
-Tools such as [Envelop for Live](https://www.envelop.us/software) have made it easy for musicians to compose and perform ambisonic content.  However, there remain limited options for livestreaming ambisonic content, particularly beyond first order. Ambisonic livestreaming has applications for VR/AR/XR and immersive home listening experiences.
+Tools such as [Envelop for Live](https://www.envelop.us/software) have made it easy for musicians to compose and perform ambisonic content.  However, there remain limited options for live streaming ambisonic content, particularly beyond first order. Ambisonic live streaming has applications for VR/AR/XR and immersive home listening experiences.
 
 Earshot can be used in combination with pkviet's [OBS Studio Music Edition](https://github.com/pkviet/obs-studio/releases/) which supports multichannel AAC encoding up to 16.0. For more information on OBS see [obsproject.com](https://obsproject.com).
 
@@ -25,7 +25,7 @@ Earshot is GPL licensed, as it uses ffmpeg binaries compiled with GPL codecs inc
 
 ## Features ##
 
-* Live-stream up to 255 audio channels (i.e. up to 14th Order Ambisonics) with optional video
+* Live stream up to 255 audio channels (i.e. up to 14th Order Ambisonics) with optional video
 * Web interface for stream monitoring and debuggging
 * Preview and test different Dash.js client player settings
 * RTMP stream authentication
@@ -44,8 +44,8 @@ Earshot is GPL licensed, as it uses ffmpeg binaries compiled with GPL codecs inc
 
 ## Known Limitations ##
 
-* Some browsers, such as some versions of Safari, do not support Opus.
-* The live stream in the first minuteis somewhat fragile when accessed with Dash.js or Webtools. This needs more investigation.
+* Some browsers, such as some versions of Safari, do not support Opus, and will not play any sound.
+* During the initial 60 seconds of a DASH stream, Dash.js can throw errors and Webtools may need to be reloaded. This issue requires further investigation.
 
 ## Running Earshot Locally ##
 
@@ -125,12 +125,12 @@ If you want to add additional flags for ffmpeg that is called within the transco
 
 Load http://localhost/webtools in your browser to monitor and debugs streams from the transcoder. Chrome or Firefox preferred.
 
-To test different [Dash.js Player settings](http://cdn.dashjs.org/latest/jsdoc/module-Settings.html#~PlayerSettings__anchor), edit the JSON in the Dash.js settings box. Any changes applied will affect the livestream on your browser in real time, or reload the new URL -- containing the encoded  settings as a parameter -- to test the player settings loaded initially on page load.
+To test different [Dash.js Player settings](http://cdn.dashjs.org/latest/jsdoc/module-Settings.html#~PlayerSettings__anchor), edit the JSON in the Dash.js settings box. Any changes applied will affect the live stream on your browser in real time, or reload the new URL -- containing the encoded  settings as a parameter -- to test the player settings loaded initially on page load.
 
 Known Webtools issues:
 
 * Some versions of Safari do not support Opus, so sound will not load.
-* Loading Webtools within the first minute after the start of the livestream may cause errors due to missing segments.
+* Loading Webtools within the first minute after the start of the live stream may cause errors due to missing segments.
 * If you are using an audio-only stream, FFmpeg's -window_size flag may cause problems. It is recommended not to use the -window_size flag for audio-only streams.
 
 ## Deploying Earshot to AWS CloudFormation ##
