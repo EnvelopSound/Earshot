@@ -38,5 +38,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Install webtools modules
+        run: cd webtools && yarn install
       - name: Run ESLint
-        run: eslint --resolve-plugins-relative-to webtools webtools/ --ext .js,.jsx,.ts,.tsx
+        run: ./webtools/node_modules/.bin/eslint --resolve-plugins-relative-to webtools webtools/ --ext .js,.jsx,.ts,.tsx
