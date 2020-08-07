@@ -137,36 +137,34 @@ Known Webtools issues:
 
 Earshot can be easily deployed to AWS using [AWS CLI](https://aws.amazon.com/cli/) and CloudFormation. You can customize the deployment configuration in the CloudFormation template files in the `templates/` directory
 
-#### 1. Deploy EC2 stack
+#### Deploy Earshot stack
 
 ```
-aws cloudformation create-stack --stack-name earshot-stack-ec2 --region us-west-2 --template-body file://templates/cluster-ec2-public-vpc.yml --parameters ParameterKey=EnvironmentName,ParameterValue=production ParameterKey=KeyPair,ParameterValue=your-aws-keypair --capabilities CAPABILITY_IAM
+aws cloudformation create-stack --region=us-west-2 --stack-name earshot-stack --template-body file://templates/cloudformation-template.yaml --parameters ParameterKey=InstanceType,ParameterValue=t2.micro ParameterKey=KeyName,ParameterValue=ecs-test --capabilities CAPABILITY_IAM
 ```
 
-#### 2. Deploy ALB stack
+### Access Earshot public URL ###
+
+To get the public URL of your Earshot instance
+
+1. Go to AWS Console -> ECS
+2. Open cluster named earshot-stack-EcsCluster
+* note: full cluster name may appear be longer. For example: earshot-stack-EcsCluster-o3KvtIz8VmTt
+3. Open the "ECS Instances" tab
+5. Click into the first ECS instance
+6. Copy the "Public IP" field
+
+#### RTMP Access
+
+This is the stream URL you should use for OBS or whichever live streaming application you are using at the source, e.g.: `rtmp://<ExternalIp>:1935/live/stream1`
+
+#### Webtools Access
+
+To access the webtools please use URL 
 
 ```
-aws cloudformation create-stack --stack-name earshot-stack-alb --region us-west-2 --template-body file://templates/alb-external.yml --parameters ParameterKey=EnvironmentName,ParameterValue=production --capabilities CAPABILITY_IAM
+http://<ExternalIp>/webtools
 ```
-
-#### 3. Deploy ECS stack
-
-```
-aws cloudformation create-stack --stack-name earshot-stack-ecs --region us-west-2 --template-body file://templates/service-ec2-public-lb.yml --parameters ParameterKey=EnvironmentName,ParameterValue=production --capabilities CAPABILITY_IAM
-```
-
-### Access ALB public URL ###
-
-To get the public URL of your application load balancer:
-
-1. Login to AWS Console
-2. Goto CloudFormation
-3. Click "earshot-stack-alb" stack
-4. Click "Outputs" tab
-5. Copy "ExternalUrl"
-
-This is the stream URL you should use for OBS or whichever live streaming application you are using at the source, e.g.: `rtmp://<ExternalUrl>:1935/live/stream1`
-
 ### Custom FFmpeg flags and RTMP auth ###
 
 Set these environmental values in the service-ec2-public-vpc.yml file under Resources->TaskDefinition->Properties->ContainerDefinitions->Environment.

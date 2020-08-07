@@ -160,6 +160,7 @@ Resources:
       SubnetId: !Ref PubSubnetAz2
       RouteTableId: !Ref RouteViaIgw
   EcsCluster:
+    DependsOn: Vpc
     Type: AWS::ECS::Cluster
 
   Sg:
@@ -300,6 +301,7 @@ Resources:
   Lc:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
+      AssociatePublicIpAddress: true
       ImageId:
         Ref: Ami
       BlockDeviceMappings:
@@ -526,6 +528,7 @@ Resources:
               'elasticloadbalancing:RegisterTargets', 'ec2:Describe*', 'ec2:AuthorizeSecurityGroupIngress']
             Resource: '*'
   ProdEarshotTaskDefinition:
+    DependsOn: Vpc
     Type: AWS::ECS::TaskDefinition
     Properties:
       ContainerDefinitions:
@@ -556,6 +559,7 @@ Resources:
               Ref: AWS::StackName
 
   ProdEarshotService:
+    DependsOn: Vpc
     Type: AWS::ECS::Service
     Properties:
       Cluster: !Ref EcsCluster
