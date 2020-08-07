@@ -33,3 +33,10 @@ jobs:
 
       - name: Build and Test
         run: docker-compose up --exit-code-from rtmp-tester
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run ESLint
+        run: eslint --resolve-plugins-relative-to webtools webtools/ --ext .js,.jsx,.ts,.tsx
