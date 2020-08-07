@@ -37,7 +37,7 @@ class VideoInfo extends React.Component {
 
 VideoInfo.propTypes = {
   videoAdaptationSets: PropTypes.arrayOf(
-    PropTypes.Shape({
+    PropTypes.shape({
       Representation_asArray: PropTypes.arrayOf(VideoRepresentationShape)
         .isRequired,
     })

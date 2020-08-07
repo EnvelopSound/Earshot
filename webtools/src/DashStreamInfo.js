@@ -55,11 +55,17 @@ function DashStreamInfo(props) {
           </TableRow>
           <TableRow>
             <StreamInfoCell>Buffer Level</StreamInfoCell>
-            <StreamInfoCell>{`${audioBufferLevel} secs`}</StreamInfoCell>
+            <StreamInfoCell>
+              {audioBufferLevel !== null
+                ? `${audioBufferLevel} secs`
+                : "Loading..."}
+            </StreamInfoCell>
           </TableRow>
           <TableRow>
             <StreamInfoCell>Audio Bitrate</StreamInfoCell>
-            <StreamInfoCell>{`${audioBitRate} Kbps`}</StreamInfoCell>
+            <StreamInfoCell>
+              {audioBitRate !== null ? `${audioBitRate} Kbps` : "Loading..."}
+            </StreamInfoCell>
           </TableRow>
           <TableRow>
             <StreamInfoCell>Stream Started On</StreamInfoCell>
@@ -90,8 +96,8 @@ function DashStreamInfo(props) {
 }
 
 DashStreamInfo.propTypes = {
-  audioBitRate: PropTypes.number.isRequired,
-  audioBufferLevel: PropTypes.number.isRequired,
+  audioBitRate: PropTypes.number,
+  audioBufferLevel: PropTypes.number,
   availabilityStartTime: PropTypes.instanceOf(Date).isRequired,
   dashProfiles: PropTypes.string.isRequired,
   liveLatency: PropTypes.number.isRequired,
@@ -100,6 +106,13 @@ DashStreamInfo.propTypes = {
   streamName: PropTypes.string.isRequired,
   streamUrl: PropTypes.string.isRequired,
   suggestedPresentationDelay: PropTypes.number.isRequired,
+};
+
+// issue with null values interacting with default props
+// see https://github.com/facebook/react/issues/3163
+DashStreamInfo.defaultProps = {
+  audioBitRate: null,
+  audioBufferLevel: null,
 };
 
 export default DashStreamInfo;

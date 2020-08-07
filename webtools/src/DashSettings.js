@@ -59,7 +59,7 @@ class DashSettings extends React.Component {
 }
 
 DashSettings.propTypes = {
-  clientSettings: PropTypes.objectOf(PropTypes.object()).isRequired,
+  clientSettings: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
 };
 

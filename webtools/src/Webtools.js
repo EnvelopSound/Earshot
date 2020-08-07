@@ -57,7 +57,7 @@ export default class Webtools extends React.Component {
           }
           self.setState(stateUpdate);
           setTimeout(() => {
-            self.loadStat(self);
+            Webtools.loadStat(self);
           }, stateUpdate.statRetryTimer * 1000);
         });
       })
