@@ -55,6 +55,8 @@ Earshot is GPL licensed, as it uses ffmpeg binaries compiled with GPL codecs inc
 * [Git](https://git-scm.com/)
 * [Git LFS](https://git-lfs.github.com/)
 
+*NOTE: Earshot contains binaries that are inflated with Git LFS. You must install Git LFS first, then `git clone` this repository. Downloading Earshot as a zip file of any kind (master or a release) is not supported and will not work.*
+
 #### Optional Requirements: ####
 
 * [OBS Studio Music Edition](https://github.com/pkviet/obs-studio/releases/) -- recommended to easily stream from your computer
@@ -120,6 +122,12 @@ On your streaming client, appent the secret using the ```token``` GET parameter 
 ### FFMPEG Flags ###
 
 If you want to add additional flags for ffmpeg that is called within the transcoder -- for example, more adaptive DASH stream bitrates -- you can update the "FFMPEG_FLAGS" environment variable in the docker-compose.yml.
+
+### Troubleshooting ###
+
+* I get `open() "/usr/local/nginx/html/stream1.mpd" failed (2: No such file or directory)` errors when streaming.
+
+You may be missing key binaries installed by Git LFS. Make sure you have used `git clone` to get Earshot, not downloaded it a zip file. If you installed Git LFS after cloning this repository, you can run `git lfs checkout` to inflate the binaries.
 
 ## Using Webtools ##
 
