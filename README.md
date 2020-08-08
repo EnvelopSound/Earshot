@@ -106,7 +106,7 @@ Click Settings and set the following:
 
 Click **Start Streaming** in OBS
 
-Your Dash stream is now available under http://localhost/stream1.mpd
+Your DASH stream manifest is now available at http://localhost/dash/stream1.mpd
 
 DASH stream webtools are available under http://localhost/webtools
 
