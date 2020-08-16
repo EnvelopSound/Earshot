@@ -199,4 +199,22 @@ aws cloudformation create-stack --region=us-west-2 --stack-name earshot-stack --
 
 #### HTTPS Support
 
-coming soon..
+To add HTTPS support to your container, please use the following cloudformation parameters:
+
+```
+Domain
+Your HTTPS domain name. For example: example.org
+```
+
+```
+Email
+An email for LetsEncrypt renewal alerts.
+```
+
+#### Deploy with HTTPS support
+
+```
+aws cloudformation create-stack --region=us-west-2 --stack-name earshot-stack --template-body file://templates/cloudformation-template.yaml --parameters ParameterKey=InstanceType,ParameterValue=t3.micro ParameterKey=KeyName,ParameterValue=<YOUR_KEY_PAIR_NAME> ParameterKey=RtmpAuthToken,ParameterValue=<YOUR_CUSTOM_AUTH_TOKEN> ParameterKey=FfmpegFlags,ParameterValue="-loglevel repeat+level+verbose" ParameterKey=Domain,ParameterValue=<YOUR_DOMAIN_NAME> ParameterKey=Email,ParameterValue=<YOUR_EMAIL> --capabilities CAPABILITY_IAM
+```
+
+
