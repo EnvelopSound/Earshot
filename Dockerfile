@@ -53,7 +53,10 @@ RUN apk add --update \
   pcre-dev \
   pkgconf \
   pkgconfig \
-  zlib-dev
+  zlib-dev \
+  inotify-tools \
+  certbot \
+  openssl
 
 # Get nginx source.
 RUN cd /tmp && \
@@ -133,7 +136,15 @@ RUN set -x ; \
     addgroup -g 82 nginx ; \
     adduser -u 82 -D -h /home/nginx -s /bin/sh -G nginx nginx && exit 0 ; exit 1
 
+COPY nginx-transcoder/entrypoint.sh nginx-letsencrypt
+COPY nginx-transcoder/certbot.sh certbot.sh
+COPY nginx-transcoder/ssl-options/ /etc/ssl-options
+RUN chmod +x nginx-letsencrypt && \
+    chmod +x certbot.sh 
+
 CMD rm -rf /opt/data && mkdir -p /opt/data/dash && chown nginx /opt/data/dash && chmod 777 /opt/data/dash && mkdir -p /www && \
   envsubst "$(env | sed -e 's/=.*//' -e 's/^/\$/g')" < \
   /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && \
-  nginx
+nginx
+# SSL usage
+#ENTRYPOINT ["./nginx-letsencrypt"]

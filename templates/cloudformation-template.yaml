@@ -81,6 +81,14 @@ Parameters:
     Type: String
     Default: '-window_size 100 -max_muxing_queue_size 1000'
 
+  Domain:
+    Type: String
+    Default: ''
+
+  Email:
+    Type: String
+    Default: ''
+
 
 Conditions:
   UseSpecifiedVpcAvailabilityZones: !Not
@@ -558,6 +566,10 @@ Resources:
           Value: !Ref RtmpAuthToken
         - Name: FFMPEG_FLAGS
           Value: !Ref FfmpegFlags
+        - Name: DOMAIN
+          Value: !Ref Domain
+        - Name: EMAIL
+          Value: !Ref Email
         LogConfiguration:
           LogDriver: awslogs
           Options:
