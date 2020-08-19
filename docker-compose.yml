@@ -6,15 +6,14 @@ services:
       context: .
       network: 'host'
     ports:
-      - 1935:1935
-      - 80:80
-      - 443:443
+      - ${RTMP_PORT:-1935}:1935
+      - ${HTTP_PORT:-80}:80
     environment:
       - HTTP_PORT=80
       - RTMP_PORT=1935
 
       # set a custom auth token here
-      - RTMP_AUTH_TOKEN=
+      - RTMP_AUTH_TOKEN=${RTMP_AUTH_TOKEN:-}
 
       # set custom ffmpeg flags here
       #
@@ -35,7 +34,7 @@ services:
     command: /run-tests.sh
     environment:
       # must match auth token above
-      - RTMP_AUTH_TOKEN=
+      - RTMP_AUTH_TOKEN=${RTMP_AUTH_TOKEN:-}
     depends_on:
       - nginx-rtmp
     networks:
