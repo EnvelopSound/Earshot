@@ -217,4 +217,10 @@ An email for LetsEncrypt renewal alerts.
 aws cloudformation create-stack --region=us-west-2 --stack-name earshot-stack --template-body file://templates/cloudformation-template.yaml --parameters ParameterKey=InstanceType,ParameterValue=t3.micro ParameterKey=KeyName,ParameterValue=<YOUR_KEY_PAIR_NAME> ParameterKey=RtmpAuthToken,ParameterValue=<YOUR_CUSTOM_AUTH_TOKEN> ParameterKey=FfmpegFlags,ParameterValue="-loglevel repeat+level+verbose" ParameterKey=Domain,ParameterValue=<YOUR_DOMAIN_NAME> ParameterKey=Email,ParameterValue=<YOUR_EMAIL> --capabilities CAPABILITY_IAM
 ```
 
+#### Setup Route53
+
+```
+aws cloudformation create-stack --region=us-west-2 --profile roddy --stack-name earshot-stack-dns--template-body file://templates/route53.yaml --parameters ParameterKey=ZoneName,ParameterValue=<Your Zone Name> ParameterKey=ElasticIP,ParameterValue=<Your EC2 EIP>  --capabilities CAPABILITY_IAM
+```
+
 
