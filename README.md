@@ -21,7 +21,7 @@ Earshot can be used in combination with pkviet's [OBS Studio Music Edition](http
 
 Earshot is designed to be easily deployed to a cloud-based hosting solution, such as AWS ECS, DigitalOcean, etc.
 
-Earshot is GPL licensed, as it uses ffmpeg binaries compiled with GPL codecs including libx264.
+Earshot is GPL licensed, as it uses ffmpeg binaries compiled with GPL codecs including libx264. However, if you are interested in a commercial license for Earshot, please contact us at envelop@envelop.us.
 
 ## Features ##
 
