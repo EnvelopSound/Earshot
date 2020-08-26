@@ -109,6 +109,8 @@ RUN apk add --update \
   rtmpdump \
   x264-dev \
   x265-dev \
+  inotify-tools \
+  certbot \
   sudo
 
 COPY --from=1 /usr/local/nginx /usr/local/nginx
@@ -142,9 +144,9 @@ COPY nginx-transcoder/ssl-options/ /etc/ssl-options
 RUN chmod +x nginx-letsencrypt && \
     chmod +x certbot.sh 
 
-CMD rm -rf /opt/data && mkdir -p /opt/data/dash && chown nginx /opt/data/dash && chmod 777 /opt/data/dash && mkdir -p /www && \
-  envsubst "$(env | sed -e 's/=.*//' -e 's/^/\$/g')" < \
-  /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && \
-nginx
+#CMD rm -rf /opt/data && mkdir -p /opt/data/dash && chown nginx /opt/data/dash && chmod 777 /opt/data/dash && mkdir -p /www && \
+#  envsubst "$(env | sed -e 's/=.*//' -e 's/^/\$/g')" < \
+#  /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && \
+#nginx
 # SSL usage
-#ENTRYPOINT ["./nginx-letsencrypt"]
+ENTRYPOINT ["./nginx-letsencrypt"]
