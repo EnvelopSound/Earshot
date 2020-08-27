@@ -197,19 +197,19 @@ Add additional flags to FFMPEG
 aws cloudformation create-stack --region=us-west-2 --stack-name earshot-stack --template-body file://templates/cloudformation-template.yaml --parameters ParameterKey=InstanceType,ParameterValue=t3.micro ParameterKey=KeyName,ParameterValue=<YOUR_KEY_PAIR_NAME> ParameterKey=RtmpAuthToken,ParameterValue=<YOUR_CUSTOM_AUTH_TOKEN> ParameterKey=FfmpegFlags,ParameterValue="-loglevel repeat+level+verbose" --capabilities CAPABILITY_IAM
 ```
 
-#### Setup Route53
+## Setup Route53
 
 Adding a domain to your earshot service is an optional step. However, there are many benefits to it, such as HTTPS support and more.
 
-##### Route53 requirements
+#### Route53 requirements
 
-To use the Route53 Cloudformation stack, you must have already purchased a domain from AWS. The domain must also be setup with
-an existing DNS zone.
+To use the Route53 Cloudformation stack, you must have already purchased a domain from AWS.
 
+For more info on registering Route53 domains, please see: [Registering domains - Amazon Route 53](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register-update.html)
 
 #### Deploy with HTTPS support
 
-To setup your ECS cluster based on a domain, please use the following cloud formation parameters:
+To setup your ECS cluster based on a domain, please use the following CloudFormation parameters:
 
 ```
 Domain
@@ -227,18 +227,19 @@ For example:
 aws cloudformation create-stack --region=us-west-2 --stack-name earshot-stack --template-body file://templates/cloudformation-template.yaml --parameters ParameterKey=InstanceType,ParameterValue=t3.micro ParameterKey=KeyName,ParameterValue=<YOUR_KEY_PAIR_NAME> ParameterKey=RtmpAuthToken,ParameterValue=<YOUR_CUSTOM_AUTH_TOKEN> ParameterKey=FfmpegFlags,ParameterValue="-loglevel repeat+level+verbose" ParameterKey=Domain,ParameterValue=<YOUR_DOMAIN_NAME> ParameterKey=Email,ParameterValue=<YOUR_EMAIL> --capabilities CAPABILITY_IAM
 ```
 
-Once the CF stack is deployed, you will need to get the Elastic IP attached to the ECS cluster.
+#### Deploy Route53 stack
 
-To get the Elastic IP:
+To deploy the Route53 stack you will need to use the Elastic IP provisioned for your ECS service. You can view this value at any time in the AWS CloudFormation section.
+
+To get your Elastic IP:
 
 1. Go to AWS Console -> Cloudformation
 2. Open the "earshot" stack
 3. Click the "Outputs" tab 
 4. Copy the "EIPAddress" value
 
-#### Deploy Route53 stack
 
-To deploy the Route53 stack, please use the following command:
+To deploy the Route53 stack, using your Elastic IP, please run the following command:
 
 ```
 aws cloudformation create-stack --region=us-west-2 --stack-name earshot-stack-dns --template-body file://templates/route53.yaml --parameters ParameterKey=ZoneName,ParameterValue=<Your Zone Name> ParameterKey=ZoneId,ParameterValue=<Your Zone ID> ParameterKey=ElasticIP,ParameterValue=<Your EIP>  --capabilities CAPABILITY_IAM
