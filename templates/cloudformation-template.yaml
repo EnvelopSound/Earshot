@@ -572,6 +572,8 @@ Resources:
         PortMappings:
         - ContainerPort: 80
           HostPort: 80
+        - ContainerPort: 443
+          HostPort: 443
         - ContainerPort: 1935
           HostPort: 1935
         Environment:
