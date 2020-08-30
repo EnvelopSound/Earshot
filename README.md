@@ -21,7 +21,7 @@ Earshot can be used in combination with pkviet's [OBS Studio Music Edition](http
 
 Earshot is designed to be easily deployed to a cloud-based hosting solution, such as AWS ECS, DigitalOcean, etc.
 
-Earshot is GPL licensed, as it uses ffmpeg binaries compiled with GPL codecs including libx264.
+Earshot is GPL licensed. However, if you are interested in a commercial license for Earshot, please contact us at envelop@envelop.us.
 
 ## Features ##
 
@@ -239,7 +239,7 @@ To get your Elastic IP:
 4. Copy the "EIPAddress" value
 
 
-To deploy the Route53 stack, using your Elastic IP, please run the following command:
+To deploy the Route53 stack, please run the following command:
 
 ```
 aws cloudformation create-stack --region=us-west-2 --stack-name earshot-stack-dns --template-body file://templates/route53.yaml --parameters ParameterKey=ZoneName,ParameterValue=<Your Zone Name> ParameterKey=ZoneId,ParameterValue=<Your Zone ID> ParameterKey=ElasticIP,ParameterValue=<Your EIP>  --capabilities CAPABILITY_IAM
