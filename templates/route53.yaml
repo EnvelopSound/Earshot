@@ -13,7 +13,6 @@ Resources:
     RecordSet:
       Type: 'AWS::Route53::RecordSet'
       Properties:
-        #HostedZoneId: Z3DG6IL3SJCGPX
         HostedZoneName: !Join
           - ''
           - - !Ref ZoneName
