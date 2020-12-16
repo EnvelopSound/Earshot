@@ -201,6 +201,6 @@ aws cloudformation create-stack --region=us-west-2 --stack-name earshot-stack --
 
 Google Chrome, amongst other browers, requires HTTPS to serve MPEG DASH streams.
 
-If you want to run Earshot with SSL natively, check out the `feature/ssl` branch.
+One way to achieve this in a production environment is to wrap Earshot in a CDN like Amazon Cloudfront.  Cloudfront will serve requests over HTTP and can interface with the Earshot server via plain old HTTP (the "origin").  You can read more on how to achieve this with CloudFront [here](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/live-streaming.html)
 
-However, a better way to achieve this in a production environment is to wrap Earshot in a CDN like Amazon Cloudfront.  Cloudfront will serve requests over HTTP and can interface with the Earshot server via plain old HTTP (the "origin").  You can read more on how to achieve this with CloudFront [here](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/live-streaming.html)
+If you want to run Earshot to serve HTTPS without a CDN, check out the `feature/ssl` branch.
