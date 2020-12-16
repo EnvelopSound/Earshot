@@ -197,10 +197,10 @@ Add additional flags to FFMPEG
 aws cloudformation create-stack --region=us-west-2 --stack-name earshot-stack --template-body file://templates/cloudformation-template.yaml --parameters ParameterKey=InstanceType,ParameterValue=t3.micro ParameterKey=KeyName,ParameterValue=<YOUR_KEY_PAIR_NAME> ParameterKey=RtmpAuthToken,ParameterValue=<YOUR_CUSTOM_AUTH_TOKEN> ParameterKey=FfmpegFlags,ParameterValue="-loglevel repeat+level+verbose" --capabilities CAPABILITY_IAM
 ```
 
-### HTTPS
+### HTTPS / SSL
 
 Google Chrome, amongst other browers, requires HTTPS to serve MPEG DASH streams.
 
-One way to achieve this in a production environment is to wrap Earshot in a CDN like Amazon Cloudfront.  Cloudfront will serve requests over HTTP and can interface with the Earshot server via plain old HTTP (the "origin").  You can read more on how to achieve this with CloudFront [here](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/live-streaming.html)
+One way to achieve this in a production environment is to wrap Earshot in a CDN like Amazon Cloudfront.  Cloudfront will serve requests over HTTP and can interface with the Earshot server via plain old HTTP (the "origin").  You can read more on how to achieve this with CloudFront [here].(https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/live-streaming.html)
 
 If you want to run Earshot to serve HTTPS without a CDN, check out the `feature/ssl` branch.
