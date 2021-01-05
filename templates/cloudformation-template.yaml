@@ -48,6 +48,12 @@ Parameters:
     - c4.2xlarge
     - c4.4xlarge
     - c4.8xlarge
+    - c5n.large
+    - c5n.xlarge
+    - c5n.2xlarge
+    - c5n.4xlarge
+    - c5n.9xlarge
+    - c5n.18xlarge
     - c3.large
     - c3.xlarge
     - c3.2xlarge
@@ -567,8 +573,8 @@ Resources:
     Properties:
       ContainerDefinitions:
       - Name: earshot
-        Image: envelopsound/earshot:latest
-        Memory: 256
+        Image: envelopsound/earshot:v0.2
+        Memory: 40000
         PortMappings:
         - ContainerPort: 80
           HostPort: 80
