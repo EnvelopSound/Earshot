@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  ZoneName:
+    Type: String
+    Description: Your Route53 Domain
+    Default: example.org
+  ElasticIP:
+    Type: String
+    Description: Your Elastic IP
+    Default: 1.2.3.4
+  
+Resources:
+    RecordSet:
+      Type: 'AWS::Route53::RecordSet'
+      Properties:
+        HostedZoneName: !Join
+          - ''
+          - - !Ref ZoneName
+            - '.'
+        Type: A
+        TTL: '900'
+        ResourceRecords:
+          - !Ref ElasticIP
+

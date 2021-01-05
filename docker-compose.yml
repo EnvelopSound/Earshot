@@ -14,7 +14,8 @@ services:
 
       # set a custom auth token here
       - RTMP_AUTH_TOKEN=${RTMP_AUTH_TOKEN:-}
-
+      - DOMAIN=${DOMAIN:-}
+      - EMAIL=${EMAIL:-}
       # set custom ffmpeg flags here
       #
       # example with multiple adaptation sets:

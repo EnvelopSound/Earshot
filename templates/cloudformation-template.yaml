@@ -81,6 +81,24 @@ Parameters:
     Type: String
     Default: '-window_size 100 -max_muxing_queue_size 1000'
 
+  Domain:
+    Type: String
+    Default: ''
+
+  Email:
+    Type: String
+    Default: ''
+  AccessKey:
+    Type: String
+    Description: AWS access key
+    Default: ''
+
+  SecretKey:
+    Type: String
+    Description: AWS secret key
+    Default: ''
+
+
 
 Conditions:
   UseSpecifiedVpcAvailabilityZones: !Not
@@ -309,6 +327,7 @@ Resources:
 
   Lc:
     Type: AWS::AutoScaling::LaunchConfiguration
+    DependsOn: LcEIP
     Properties:
       AssociatePublicIpAddress: true
       ImageId:
@@ -349,9 +368,15 @@ Resources:
             runcmd:
             - vgextend docker /dev/xvdcy
             - lvextend -L+100G /dev/docker/docker-pool
+            - lvextend -L+100G /dev/docker/docker-pool
+            - export InstanceID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id` &&  cd /usr/tmp && curl -O https://bootstrap.pypa.io/get-pip.py && sudo python27 get-pip.py && sudo /usr/local/bin/pip install awscli && export AWS_ACCESS_KEY_ID=${AccessKey} && export AWS_SECRET_ACCESS_KEY=${SecretKey} &&  aws ec2 associate-address --instance-id $InstanceID --allocation-id ${LcEIP.AllocationId} --region ${AWS::Region}
+            - printenv > /tmp/envs.txt
             - stop ecs
             - service docker restart
             - start ecs
+
+  LcEIP:
+      Type: AWS::EC2::EIP
 
   CpuUtilization:
     Type: AWS::AutoScaling::ScalingPolicy
@@ -547,6 +572,8 @@ Resources:
         PortMappings:
         - ContainerPort: 80
           HostPort: 80
+        - ContainerPort: 443
+          HostPort: 443
         - ContainerPort: 1935
           HostPort: 1935
         Environment:
@@ -558,6 +585,10 @@ Resources:
           Value: !Ref RtmpAuthToken
         - Name: FFMPEG_FLAGS
           Value: !Ref FfmpegFlags
+        - Name: DOMAIN
+          Value: !Ref Domain
+        - Name: EMAIL
+          Value: !Ref Email
         LogConfiguration:
           LogDriver: awslogs
           Options:
@@ -597,3 +628,12 @@ Outputs:
         Fn::Sub: ${AWS::StackName}-EcsCluster
     Value:
       Ref: EcsCluster
+
+  EIPAllocationId:
+    Value: !GetAtt LcEIP.AllocationId
+    Export:
+      Name: "LcEIP::AllocationId"
+  EIPAddress:
+    Value: !Ref LcEIP
+    Export:
+      Name: "LcEIP::Address"
