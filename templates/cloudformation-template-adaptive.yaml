@@ -24,11 +24,11 @@ Parameters:
 
   EmailAlerts:
     Type: String
-    Default:
+    Default: ''
 
   InstanceType:
     Type: String
-    Default: c5n.2xlarge
+    Default: c5n.4xlarge
     AllowedValues:
     - t3.micro
     - t3.medium
