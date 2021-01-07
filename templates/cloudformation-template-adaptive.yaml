@@ -28,7 +28,7 @@ Parameters:
 
   InstanceType:
     Type: String
-    Default: c5n.4xlarge
+    Default: c5n.2xlarge
     AllowedValues:
     - t3.micro
     - t3.medium
@@ -575,7 +575,7 @@ Resources:
       ContainerDefinitions:
       - Name: earshot
         Image: envelopsound/earshot:v0.2
-        Memory: 40000
+        Memory: 20000
         PortMappings:
         - ContainerPort: 80
           HostPort: 80
