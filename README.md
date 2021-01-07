@@ -145,6 +145,8 @@ Known Webtools issues:
 
 Earshot can be easily deployed to AWS using [AWS CLI](https://aws.amazon.com/cli/) and CloudFormation. You can customize the deployment configuration in the CloudFormation template file in the `templates/` directory
 
+A sample configuration for adaptive bandwidth streaming can be found in the `cloudformation-template-adaptive.yaml` file with a c5n.2xlarge EC2 instance type. With an 1080p input stream with additional 720p and 360p adaptive resolutions and 16 channels at 128k each, CPU usage was found to be at 33% with no clients for this instance type.
+
 #### Deploying the stack
 
 Before deploying, you will first need to [generate an EC2 Key Pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#prepare-key-pair).
