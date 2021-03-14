@@ -16,6 +16,7 @@ services:
       - RTMP_AUTH_TOKEN=${RTMP_AUTH_TOKEN:-}
       - DOMAIN=${DOMAIN:-}
       - EMAIL=${EMAIL:-}
+      - RENEW_INTERVAL=${RENEW_INTERVAL:-1h}
       # set custom ffmpeg flags here
       #
       # example with multiple adaptation sets:
