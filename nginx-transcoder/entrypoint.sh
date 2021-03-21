@@ -4,6 +4,23 @@
 
 #Ensure we have folders available
 
+if [ "$DOMAIN" = "" ]; then
+	echo "Cannot start Earshot"
+	echo "Please make sure you have configured your environment correctly."
+	echo "The following environment variable was not set: DOMAIN"
+	exit -1;
+fi
+if [ "$EMAIL" = "" ]; then
+	echo "Cannot start Earshot"
+	echo "Please make sure you have configured your environment correctly."
+	echo "The following environment variable was not set: EMAIL"
+
+	exit -1;
+fi
+
+
+
+
 if [[ ! -f /usr/share/nginx/certificates/fullchain.pem ]];then
     mkdir -p /usr/share/nginx/certificates
 fi
