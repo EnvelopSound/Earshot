@@ -31,6 +31,10 @@ jobs:
       - name: Git LFS Pull
         run: git lfs pull
 
+      - name: Setup environment
+        run: echo -e "RTMP_AUTH_TOKEN=\nDOMAIN=example.org\nEMAIL=test@example.org\nRENEW_INTERVAL=1h" > .env
+
+
       - name: Build and Test
         run: docker-compose up --exit-code-from rtmp-tester
   lint:
