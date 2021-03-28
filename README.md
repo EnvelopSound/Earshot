@@ -72,13 +72,25 @@ To generate a multichannel audio stream in a format such as third-order AMBIX yo
 
 ### Setup with OBS: ###
 
-**1. Build and run the Docker container for the transcoder**
+**1. Update your environment settings**
+
+To setup your environment please create a copy of the .env.example file. For example:
+
+```
+cp .env.example .env
+```
+
+Please update the environment as needed.
+
+> note: if you are using SSL please be sure to add the domain and email fields.
+
+**2. Build and run the Docker container for the transcoder**
 
 From this (project root) directory:
 
     docker-compose up --build nginx-rtmp
 
-**2. Open OBS Music Edition**
+**3. Open OBS Music Edition**
 
 Click Settings and set the following:
 
