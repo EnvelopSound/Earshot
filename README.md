@@ -72,17 +72,17 @@ To generate a multichannel audio stream in a format such as third-order AMBIX yo
 
 ### Setup with OBS: ###
 
-**1. Update your environment settings**
+**1. Create your environment settings**
 
-To setup your environment please create a copy of the .env.example file. For example:
+To setup your environment, first create a copy of the .env.example file. For example:
 
 ```
 cp .env.example .env
 ```
 
-Please update the environment as needed.
+Please update the environmental variables in the .env file as needed.
 
-> note: if you are using SSL please be sure to add the domain and email fields.
+> Note: if you are using SSL please be sure to add the domain and email fields you will be serving Earshot from.
 
 **2. Build and run the Docker container for the transcoder**
 
@@ -109,12 +109,12 @@ Click Settings and set the following:
 
 * Channels: **16.0** for third order, **9.0** for second order, etc. This must match your source audio.
 
-**3. Select Audio Source**
+**4. Select Audio Source**
 
 * If you are streaming via Envelop for Live or another DAW via Loopback or Jack, add an Audio Input Capture under Sources with the appropriate Device. Once you start playing audio in your DAW, audio should show up under this device in the Input Mixer
 * If you are simply testing, add a Media Source under Sources and select the `tester/resources/16chambixloop.wav` file with **Loop** checked. You should now see audio under the Media Source in the Input Mixer.
 
-**4. Start Streaming**
+**5. Start Streaming**
 
 Click **Start Streaming** in OBS
 
