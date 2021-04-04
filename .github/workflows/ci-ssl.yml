@@ -1,6 +1,6 @@
 # Github workflow that builds the transcoder and tests it
 
-name: CI
+name: CI with SSL
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
