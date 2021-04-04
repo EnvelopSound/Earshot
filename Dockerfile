@@ -119,6 +119,7 @@ COPY --from=1 /etc/nginx /etc/nginx
 # Add NGINX path, config and static files.
 ENV PATH "${PATH}:/usr/local/nginx/sbin"
 ADD nginx-transcoder/nginx.conf /etc/nginx/nginx.conf.template
+ADD nginx-transcoder/nginx-no-ssl.conf /etc/nginx/nginx-no-ssl.conf.template
 ADD nginx-transcoder/static /www/static
 COPY nginx-transcoder/bin-alpine/ffmpeg /usr/local/bin/
 

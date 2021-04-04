@@ -32,7 +32,7 @@ jobs:
         run: git lfs pull
 
       - name: Setup environment
-        run: echo -e "RTMP_AUTH_TOKEN=\nDOMAIN=example.org\nEMAIL=test@example.org\nRENEW_INTERVAL=1h" > .env
+        run: echo -e "RTMP_AUTH_TOKEN=\nSSL_ENABLED=true\nDOMAIN=example.org\nEMAIL=test@example.org\nRENEW_INTERVAL=1h" > .env
 
 
       - name: Build and Test
