@@ -4,18 +4,20 @@
 
 #Ensure we have folders available
 
-if [ "$DOMAIN" = "" ]; then
-	echo "Cannot start Earshot"
-	echo "Please make sure you have configured your environment correctly."
-	echo "The following environment variable was not set: DOMAIN"
-	exit -1;
-fi
-if [ "$EMAIL" = "" ]; then
-	echo "Cannot start Earshot"
-	echo "Please make sure you have configured your environment correctly."
-	echo "The following environment variable was not set: EMAIL"
+if [ "$SSL_ENABLED" = true ] ; then
+	if [ "$DOMAIN" = "" ]; then
+		echo "Cannot start Earshot"
+		echo "Please make sure you have configured your environment correctly."
+		echo "The following environment variable was not set: DOMAIN"
+		exit -1;
+	fi
+	if [ "$EMAIL" = "" ]; then
+		echo "Cannot start Earshot"
+		echo "Please make sure you have configured your environment correctly."
+		echo "The following environment variable was not set: EMAIL"
 
-	exit -1;
+		exit -1;
+	fi
 fi
 
 
