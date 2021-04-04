@@ -89,11 +89,11 @@ Parameters:
 
   Domain:
     Type: String
-    Default: ''
+    Default: 'example.org'
 
   Email:
     Type: String
-    Default: ''
+    Default: 'test@example.org'
   AccessKey:
     Type: String
     Description: AWS access key
@@ -564,7 +564,8 @@ Resources:
           Statement:
           - Effect: Allow
             Action: ['elasticloadbalancing:DeregisterInstancesFromLoadBalancer', 'elasticloadbalancing:DeregisterTargets',
-              'elasticloadbalancing:Describe*', 'elasticloadbalancing:RegisterInstancesWithLoadBalancer',
+                 Image: envelopsound/earshot:v0.2
+     'elasticloadbalancing:Describe*', 'elasticloadbalancing:RegisterInstancesWithLoadBalancer',
               'elasticloadbalancing:RegisterTargets', 'ec2:Describe*', 'ec2:AuthorizeSecurityGroupIngress']
             Resource: '*'
   ProdEarshotTaskDefinition:
@@ -585,6 +586,10 @@ Resources:
         Environment:
         - Name: HTTP_PORT
           Value: 80
+        - Name: HTTPS_PORT
+          Value: 443
+        - Name: SSL_ENABLED
+          Value: true
         - Name: RTMP_PORT
           Value: 1935
         - Name: RTMP_AUTH_TOKEN

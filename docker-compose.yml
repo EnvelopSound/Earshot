@@ -41,6 +41,9 @@ services:
     environment:
       # must match auth token above
       - RTMP_AUTH_TOKEN=${RTMP_AUTH_TOKEN:-}
+      - SSL_ENABLED=${SSL_ENABLED:-false}
+    env_file:
+     - ./.env
     depends_on:
       - nginx-rtmp
     networks:
