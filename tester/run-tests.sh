@@ -7,5 +7,8 @@ sleep 30
 echo "Testing HTTP"
 curl --fail http://nginx-rtmp:80/dash/stream1.mpd
 sleep 5
-echo "Testing HTTPS"
-curl --fail -k https://nginx-rtmp:443/dash/stream1.mpd
+# only test SSL if it is enabled
+if [ "$SSL_ENABLED" = true ] ; then
+	echo "Testing HTTPS"
+	curl --fail -k https://nginx-rtmp:443/dash/stream1.mpd
+fi
