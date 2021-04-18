@@ -254,7 +254,7 @@ aws cloudformation create-stack --region=us-west-2 --stack-name earshot-stack --
 If you plan to use Earshot with HTTPS support you will also need to create a Elastic IP. You can create a new one in the AWS console and associate it with your ECS instance. 
 
 To read more about EIPs please view:
-[lastic IP addresses - Amazon Elastic Compute Cloud](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html)
+[Elastic IP addresses - Amazon Elastic Compute Cloud](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html)
 
 
 To find the name of your Earshot instance:
