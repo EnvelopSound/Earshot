@@ -570,7 +570,7 @@ Resources:
     Properties:
       ContainerDefinitions:
       - Name: earshot
-        Image: envelopsound/earshot:v0.2
+        Image: envelopsound/earshot:latest
         Memory: 20000
         PortMappings:
         - ContainerPort: 80
