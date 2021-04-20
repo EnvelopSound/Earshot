@@ -582,6 +582,8 @@ Resources:
         Environment:
         - Name: HTTP_PORT
           Value: 80
+        - Name: SSL_ENABLED
+          Value: true
         - Name: RTMP_PORT
           Value: 1935
         - Name: RTMP_AUTH_TOKEN
