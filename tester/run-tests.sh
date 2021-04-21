@@ -1,6 +1,17 @@
 #! /bin/bash
 # exit when any command fails
 set -e
+
+# Test auth
+AUTH_URL="http://nginx-rtmp:80/auth?token=${RTMP_AUTH_TOKEN}"
+
+status_code=$(curl --write-out %{http_code} --silent --output /dev/null ${AUTH_URL})
+
+if [[ "$status_code" -ne 201 ]] ; then
+  echo "Auth test was unsuccessful. Status reported: $status_code"
+  exit -1
+fi
+
 sleep 10
 bash -c "ffmpeg -y -stream_loop -1 -i test.wav -af \"channelmap=channel_layout=hexadecagonal\" -c:a aac -ac 16 -b:a 2048k -f flv \"rtmp://nginx-rtmp:1935/live/stream1?token=${RTMP_AUTH_TOKEN}\" &"
 sleep 30
