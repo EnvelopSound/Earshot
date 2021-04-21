@@ -15,6 +15,20 @@ if [[ "$status_code" -ne 201 ]] ; then
 fi
 
 
+AUTH_URL="http://nginx-rtmp:80/auth"
+
+FAKE_AUTH=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo '')
+AUTH_URL="http://nginx-rtmp:80/auth?token=${FAKE_AUTH}"
+echo "Running fake AUTH test"
+echo "Auth URL is: ${AUTH_URL}"
+
+status_code=$(curl --write-out %{http_code} --silent --output /dev/null ${AUTH_URL})
+
+if [[ "$status_code" -eq 201 ]] ; then
+  echo "Fake auth test was not successful. Exiting"
+  exit -1
+fi
+
 echo "AUTH test passed!"
 
 sleep 10
