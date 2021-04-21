@@ -6,6 +6,7 @@ set -e
 AUTH_URL="http://nginx-rtmp:80/auth?token=${RTMP_AUTH_TOKEN}"
 
 echo "Running AUTH test"
+echo "Auth URL is: ${AUTH_URL}"
 status_code=$(curl --write-out %{http_code} --silent --output /dev/null ${AUTH_URL})
 
 if [[ "$status_code" -ne 201 ]] ; then
