@@ -2,6 +2,9 @@
 # exit when any command fails
 set -e
 
+# Wait some time before running tests...
+sleep 10
+
 # Test auth
 AUTH_URL="http://nginx-rtmp:80/auth?token=${RTMP_AUTH_TOKEN}"
 
@@ -17,7 +20,7 @@ fi
 
 AUTH_URL="http://nginx-rtmp:80/auth"
 
-FAKE_AUTH=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo '')
+FAKE_AUTH="thisWillFail"
 AUTH_URL="http://nginx-rtmp:80/auth?token=${FAKE_AUTH}"
 echo "Running fake AUTH test"
 echo "Auth URL is: ${AUTH_URL}"
