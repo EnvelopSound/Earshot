@@ -21,42 +21,80 @@ RUN yarn
 #build the project for production
 RUN yarn build
 
-ARG NGINX_VERSION=1.15.1
-ARG NGINX_RTMP_VERSION=1.2.1
-ARG FFMPEG_VERSION=4.2.2
-
 ##############################
 # Build the NGINX-build image.
 FROM alpine:3.11
-#ARG NGINX_VERSION
-#ARG NGINX_RTMP_VERSION
 ARG NGINX_VERSION=1.15.1
 ARG NGINX_RTMP_VERSION=1.2.1
-ARG FFMPEG_VERSION=4.2.2
 
+ARG FFMPEG_VERSION=accessibility-test
+
+ARG PREFIX=/opt/ffmpeg
+ARG LD_LIBRARY_PATH=/opt/ffmpeg/lib
+ARG MAKEFLAGS="-j4"
 
 
 # Build dependencies.
 RUN apk add --update \
   build-base \
+  coreutils \
+  freetype-dev \
+  gcc \
+  lame-dev \
+  libogg-dev \
+  libass \
+  libass-dev \
+  libvpx-dev \
+  libvorbis-dev \
+  libwebp-dev \
+  libtheora-dev \
+  opus-dev \
+  openssl \
+  openssl-dev \
+  pkgconf \
+  pkgconfig \
+  rtmpdump-dev \
+  wget \
+  x264-dev \
+  x265-dev \
+  yasm \
   ca-certificates \
   curl \
-  gcc \
   libc-dev \
   libgcc \
   linux-headers \
   make \
   musl-dev \
-  openssl \
-  openssl-dev \
   pcre \
   pcre-dev \
-  pkgconf \
-  pkgconfig \
   zlib-dev \
   inotify-tools \
-  certbot \
-  openssl
+  certbot
+
+# Get FFmpeg source.
+RUN cd /tmp/ && \
+  wget https://github.com/EnvelopSound/ffmpeg/archive/${FFMPEG_VERSION}.tar.gz && \
+  tar zxf ${FFMPEG_VERSION}.tar.gz && rm ${FFMPEG_VERSION}.tar.gz
+
+# Compile ffmpeg.
+RUN cd /tmp/FFmpeg-${FFMPEG_VERSION} && \
+   ./configure \
+   --enable-version3 \
+   --enable-gpl \
+   --enable-nonfree \
+   --enable-small \
+   --enable-libx264 \
+   --enable-libopus \
+   --disable-debug \
+   --disable-doc \
+   --disable-ffplay \
+   --extra-cflags="-I${PREFIX}/include" \
+   --extra-ldflags="-L${PREFIX}/lib" \
+   --extra-libs="-lpthread -lm" \
+   --prefix="${PREFIX}" && \
+    make && make install && make distclean
+
+#COPY /tmp/FFmpeg-${FFMPEG_VERSION}/build/ffmpeg /usr/local/bin/
 
 # Get nginx source.
 RUN cd /tmp && \
@@ -113,6 +151,7 @@ RUN apk add --update \
   certbot \
   sudo
 
+COPY --from=1 /opt/ffmpeg/bin/ffmpeg /usr/local/bin
 COPY --from=1 /usr/local/nginx /usr/local/nginx
 COPY --from=1 /etc/nginx /etc/nginx
 
@@ -121,7 +160,9 @@ ENV PATH "${PATH}:/usr/local/nginx/sbin"
 ADD nginx-transcoder/nginx.conf /etc/nginx/nginx.conf.template
 ADD nginx-transcoder/nginx-no-ssl.conf /etc/nginx/nginx-no-ssl.conf.template
 ADD nginx-transcoder/static /www/static
-COPY nginx-transcoder/bin-alpine/ffmpeg /usr/local/bin/
+
+# Cleanup.
+RUN rm -rf /var/cache/* /tmp/*
 
 # Copy special FFMPEG build for alpine
 # Uses pkviet's pce2 fork which supports PCE headers in RTMP
@@ -143,7 +184,7 @@ COPY nginx-transcoder/entrypoint.sh nginx-letsencrypt
 COPY nginx-transcoder/certbot.sh certbot.sh
 COPY nginx-transcoder/ssl-options/ /etc/ssl-options
 RUN chmod +x nginx-letsencrypt && \
-    chmod +x certbot.sh 
+    chmod +x certbot.sh
 
 #CMD rm -rf /opt/data && mkdir -p /opt/data/dash && chown nginx /opt/data/dash && chmod 777 /opt/data/dash && mkdir -p /www && \
 #  envsubst "$(env | sed -e 's/=.*//' -e 's/^/\$/g')" < \
