@@ -249,17 +249,36 @@ For example:
 aws cloudformation create-stack --region=us-west-2 --stack-name earshot-stack --template-body file://templates/cloudformation-template.yaml --parameters ParameterKey=InstanceType,ParameterValue=t3.micro ParameterKey=KeyName,ParameterValue=<YOUR_KEY_PAIR_NAME> ParameterKey=RtmpAuthToken,ParameterValue=<YOUR_CUSTOM_AUTH_TOKEN> ParameterKey=FfmpegFlags,ParameterValue="-loglevel repeat+level+verbose" ParameterKey=Domain,ParameterValue=<YOUR_DOMAIN_NAME> ParameterKey=Email,ParameterValue=<YOUR_EMAIL> --capabilities CAPABILITY_IAM
 ```
 
+#### Setup Elastic IP
+
+If you plan to use Earshot with HTTPS support you will also need to create a Elastic IP. You can create a new one in the AWS console and associate it with your ECS instance. 
+
+To read more about EIPs please view:
+[Elastic IP addresses - Amazon Elastic Compute Cloud](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html)
+
+
+To find the name of your Earshot instance:
+1. Open AWS Console -> EC2
+2. In the left pane, click Instances
+3. Find the name of your EC2 instance
+> note: Your instance name should begin with EC2ContainerService-<your-cf-stack-name>. For example if you used Earshot as the stack name you would have a name such as EC2ContainerService-Earshot-EcsCluster-BzS7LfpNkDQq.
+4. Copy the name of your Earshot instance
+
+
+#### Create new EIP:
+
+You can create a new EIP using AWS console or CLI. Below are the steps needed to create a new EIP and associate it with your Earshot cluster:
+
+1. Allocate a new EIP. 
+> note: If you are new to AWS you can Learn more here: [Elastic IP addresses - Amazon Elastic Compute Cloud](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html)
+2. In the Elastic IP console, click the checkbox next to your new EIP
+3. Click Actions -> Associate Elastic IP address
+4. In the instance field, please use the name of your Earshot instance
+5. Select any available private IP address
+6. Click Associate
+
+
 #### Deploy Route53 stack
-
-To deploy the Route53 stack you will need to use the Elastic IP provisioned for your ECS service. You can view this value at any time in the AWS CloudFormation section.
-
-To get your Elastic IP:
-
-1. Go to AWS Console -> Cloudformation
-2. Open the "earshot" stack
-3. Click the "Outputs" tab
-4. Copy the "EIPAddress" value
-
 
 To deploy the Route53 stack, please run the following command:
 

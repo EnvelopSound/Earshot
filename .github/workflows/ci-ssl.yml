@@ -1,0 +1,48 @@
+# Github workflow that builds the transcoder and tests it
+
+name: CI with SSL
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create LFS file list
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+
+      - name: Restore LFS cache
+        uses: actions/cache@v2
+        id: lfs-cache
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
+
+      - name: Git LFS Pull
+        run: git lfs pull
+
+      - name: Setup environment
+        run: echo -e "RTMP_AUTH_TOKEN=\nSSL_ENABLED=true\nDOMAIN=example.org\nEMAIL=test@example.org\nRENEW_INTERVAL=1h" > .env
+
+
+      - name: Build and Test
+        run: docker-compose up --exit-code-from rtmp-tester
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install webtools modules
+        run: cd webtools && yarn install
+      - name: Run ESLint
+        run: cd webtools && yarn lint
