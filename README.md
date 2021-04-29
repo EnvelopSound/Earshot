@@ -141,6 +141,16 @@ If you want to add additional flags for ffmpeg that is called within the transco
 
 You may be missing key binaries installed by Git LFS. Make sure you have used `git clone` to get Earshot, not downloaded it a zip file. If you installed Git LFS after cloning this repository, you can run `git lfs checkout` to inflate the binaries.
 
+* I get some other error.
+
+You can look at the nginx-rtmp ffmpeg logs in the container. First open a shell:
+
+    docker exec -it earshot_nginx-rtmp_1 sh
+
+Then tail the log file here:
+
+    tail -f /tmp/nginx_rtmp_ffmpeg_log
+
 ## Using Webtools ##
 
 Load http://localhost/webtools in your browser to monitor and debugs streams from the transcoder. Chrome or Firefox preferred.
