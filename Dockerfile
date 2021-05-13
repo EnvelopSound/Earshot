@@ -27,7 +27,7 @@ FROM alpine:3.11
 ARG NGINX_VERSION=1.15.1
 ARG NGINX_RTMP_VERSION=1.2.1
 
-ARG FFMPEG_VERSION=accessibility-test
+ARG FFMPEG_VERSION=earshot-v0.1
 
 ARG PREFIX=/opt/ffmpeg
 ARG LD_LIBRARY_PATH=/opt/ffmpeg/lib
