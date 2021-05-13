@@ -5,7 +5,7 @@
 # these are what will be served by nginx
 # use alias build to be easier to refer this container elsewhere
 # e.g inside nginx container
-FROM node:12.18.2-alpine3.12
+FROM node:12.22.1-alpine3.12
 # set working directory
 # this is the working folder in the container
 # from which the app will be running from
@@ -143,7 +143,7 @@ COPY nginx-transcoder/entrypoint.sh nginx-letsencrypt
 COPY nginx-transcoder/certbot.sh certbot.sh
 COPY nginx-transcoder/ssl-options/ /etc/ssl-options
 RUN chmod +x nginx-letsencrypt && \
-    chmod +x certbot.sh 
+    chmod +x certbot.sh
 
 #CMD rm -rf /opt/data && mkdir -p /opt/data/dash && chown nginx /opt/data/dash && chmod 777 /opt/data/dash && mkdir -p /www && \
 #  envsubst "$(env | sed -e 's/=.*//' -e 's/^/\$/g')" < \

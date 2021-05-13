@@ -31,8 +31,6 @@ services:
       - emp-network
     tmpfs:
       - /dash
-    volumes:
-      - ./certs:/opt/certs
   rtmp-tester:
     build:
       context: ./tester/
