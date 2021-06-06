@@ -1,10 +1,10 @@
-version: '3.6'
+version: "3.6"
 
 services:
   nginx-rtmp:
     build:
       context: .
-      network: 'host'
+      network: "host"
     ports:
       - ${RTMP_PORT:-1935}:1935
       - ${HTTP_PORT:-80}:80
@@ -24,9 +24,9 @@ services:
       # example with multiple adaptation sets:
       #- FFMPEG_FLAGS=-window_size 100 -max_muxing_queue_size 1000 -map 0:v:0 -map 0:a\?:0 -map 0:v:0 -map 0:a\?:0 -b:v:0 350k -c:v:0 libx264 -filter:v:0 "scale=320:-1" -b:v:1 1000k -c:v:1 libx264 -filter:v:1 "scale=640:-1" -adaptation_sets "id=0,streams=v id=1,streams=a"
       #
-      - FFMPEG_FLAGS=-window_size 100 -max_muxing_queue_size 1000
+      - FFMPEG_FLAGS=-window_size 100 -max_muxing_queue_size 1000 -c:v copy
     env_file:
-     - ./.env
+      - ./.env
     networks:
       - emp-network
     tmpfs:
@@ -34,19 +34,18 @@ services:
   rtmp-tester:
     build:
       context: ./tester/
-      network: 'host'
+      network: "host"
     command: /run-tests.sh
     environment:
       # must match auth token above
       - RTMP_AUTH_TOKEN=${RTMP_AUTH_TOKEN:-}
       - SSL_ENABLED=${SSL_ENABLED:-false}
     env_file:
-     - ./.env
+      - ./.env
     depends_on:
       - nginx-rtmp
     networks:
       - emp-network
-
 
 networks:
   emp-network:
