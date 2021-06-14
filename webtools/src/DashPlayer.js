@@ -136,7 +136,6 @@ class DashPlayer extends React.Component {
     }
 
     dashPlayer = dashjs.MediaPlayer().create();
-    dashPlayer.setTextDefaultEnabled(true);
     const settings = this.getCurrentSettings();
     dashPlayer.updateSettings(settings);
     dashPlayer.initialize(videoPlayer, url, true);
