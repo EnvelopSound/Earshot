@@ -8,6 +8,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 
 import DashPlayer from "./DashPlayer";
+import { audioContext } from "./Video";
 
 const STAT_URL = "/stat";
 const NGINX_INFO_URL = "/nginxInfo";
@@ -95,6 +96,7 @@ export default class Webtools extends React.Component {
       selectedStream: null,
       serverInfo: null,
       statRetryTimer: 1,
+      windowClicked: false,
     };
   }
 
@@ -204,7 +206,17 @@ export default class Webtools extends React.Component {
   render() {
     const { selectedStream, serverInfo, streamNames } = this.state;
     return (
-      <div className="WebtoolsContainer">
+      <div className="WebtoolsContainer"> 
+      
+      {
+        // to resume audiocontext if the browser stops it
+        window.addEventListener('click', () => {
+        if(!this.state.windowClicked){
+        audioContext.resume();
+        console.log('clicked');
+        this.setState({windowClicked: true})
+        }})
+        }
         <div className="StreamSelectionSidebar">
           <img
             alt="Earshot Logo"
