@@ -513,6 +513,8 @@ Resources:
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
+      RequiresCompatibilities:
+        - FARGATE
       LogGroupName:
         Fn::Sub: ${AWS::StackName}-LogGroup
       RetentionInDays: 14
