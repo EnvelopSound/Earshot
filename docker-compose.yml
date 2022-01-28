@@ -19,6 +19,7 @@ services:
       - DOMAIN=${DOMAIN:-}
       - EMAIL=${EMAIL:-}
       - RENEW_INTERVAL=${RENEW_INTERVAL:-1h}
+      - RTMP_AUTH_URL=${RTMP_AUTH_URL:-http://127.0.0.1:80/auth}
       # set custom ffmpeg flags here      - DOMAIN=${DOMAIN:-}
       #
       # example with multiple adaptation sets:
