@@ -21,7 +21,7 @@ services:
       - RENEW_INTERVAL=${RENEW_INTERVAL:-1h}
       - RTMP_AUTH_URL=${RTMP_AUTH_URL:-http://127.0.0.1:80/auth}
       # set custom ffmpeg flags here      - DOMAIN=${DOMAIN:-}
-      #
+      #http://127.0.0.1:80/auth
       # example with multiple adaptation sets:
       #- FFMPEG_FLAGS=-window_size 100 -max_muxing_queue_size 1000 -map 0:v:0 -map 0:a\?:0 -map 0:v:0 -map 0:a\?:0 -b:v:0 350k -c:v:0 libx264 -filter:v:0 "scale=320:-1" -b:v:1 1000k -c:v:1 libx264 -filter:v:1 "scale=640:-1" -adaptation_sets "id=0,streams=v id=1,streams=a"
       #
