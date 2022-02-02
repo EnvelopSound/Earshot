@@ -40,7 +40,7 @@ services:
     environment:
       # must match auth token above
       - RTMP_AUTH_TOKEN=${RTMP_AUTH_TOKEN:-}
-      - TEST_RTMP_AUTH_KEY=${TEST_RTMP_AUTH_KEY:-}
+      - TEST_RTMP_AUTH_STREAMKEY=${TEST_RTMP_AUTH_STREAMKEY:-}
       - SSL_ENABLED=${SSL_ENABLED:-false}
       - RTMP_AUTH_URL=${RTMP_AUTH_URL:-http://127.0.0.1:80/auth}
     env_file:

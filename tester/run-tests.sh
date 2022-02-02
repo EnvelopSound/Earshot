@@ -6,7 +6,7 @@ set -e
 sleep 10
 
 # Test auth
-AUTH_URL="${RTMP_AUTH_URL}?name=${TEST_RTMP_AUTH_KEY}&token=${RTMP_AUTH_TOKEN}"
+AUTH_URL="${RTMP_AUTH_URL}?name=${TEST_RTMP_AUTH_STREAMKEY}&token=${RTMP_AUTH_TOKEN}"
 
 echo "Running AUTH test"
 echo "Auth URL is: ${AUTH_URL}"
@@ -18,7 +18,7 @@ if [[ "$status_code" -ne 201 ]] ; then
 fi
 
 FAKE_AUTH="thisWillFail"
-AUTH_URL="${RTMP_AUTH_URL}?name=${TEST_RTMP_AUTH_KEY}&token=${RTMP_AUTH_TOKEN}"
+AUTH_URL="${RTMP_AUTH_URL}?name=${TEST_RTMP_AUTH_STREAMKEY}&token=${FAKE_AUTH}"
 echo "Running fake AUTH test"
 echo "Auth URL is: ${AUTH_URL}"
 
