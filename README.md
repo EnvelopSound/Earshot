@@ -130,7 +130,7 @@ To add a RTMP auth secret token you can update the "RTMP_AUTH_TOKEN" environment
 
 To use a custom auth server you can update the "RTMP_AUTH_URL" environment variable. Earshot will pass ```name``` (the Stream Key), ```token``` (the auth token provided by the user), and other parameters to your server. 
 
-On your streaming client, appent the secret using the ```token``` GET parameter to the request.
+On your streaming client, appent the secret using the ```token``` GET parameter to the request. 
 
 * With ffmpeg: ```ffmpeg -y -stream_loop -1 -i tester/resources/16chambixloop.wav -af "channelmap=channel_layout=hexadecagonal" -c:a aac -ac 16 -b:a 2048k -f flv "rtmp://127.0.0.1:1935/live/stream1?token=my_secret"```
 * With OBS: your **Stream Key** should be appended with ```?token=my_secret```. If the stream name is stream1, Stream Key should be ```stream1?token=my_secret```
