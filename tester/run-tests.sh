@@ -33,13 +33,13 @@ echo "AUTH test passed!"
 
 echo "Testing media streaming"
 
-bash -c "ffmpeg -y -stream_loop -1 -i test.wav -af \"channelmap=channel_layout=hexadecagonal\" -c:a aac -ac 16 -b:a 2048k -f flv \"rtmp://nginx-rtmp:1935/live/stream1?token=${RTMP_AUTH_TOKEN}\" &"
+bash -c "ffmpeg -y -stream_loop -1 -i test.wav -af \"channelmap=channel_layout=hexadecagonal\" -c:a aac -ac 16 -b:a 2048k -f flv \"rtmp://nginx-rtmp:1935/live/${TEST_RTMP_AUTH_STREAMKEY}?token=${RTMP_AUTH_TOKEN}\" &"
 sleep 30
 echo "Testing HTTP"
-curl --fail http://nginx-rtmp:80/dash/stream1.mpd
+curl --fail http://nginx-rtmp:80/dash/${TEST_RTMP_AUTH_STREAMKEY}.mpd
 sleep 5
 # only test SSL if it is enabled
 if [ "$SSL_ENABLED" = true ] ; then
 	echo "Testing HTTPS"
-	curl --fail -k https://nginx-rtmp:443/dash/stream1.mpd
+	curl --fail -k https://nginx-rtmp:443/dash/${TEST_RTMP_AUTH_STREAMKEY}.mpd
 fi
