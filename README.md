@@ -128,7 +128,7 @@ DASH stream webtools are available under http://localhost/webtools
 
 To add a RTMP auth secret token you can update the "RTMP_AUTH_TOKEN" environment variable in the docker-compose.yml file, e.g. ```- RTMP_AUTH_TOKEN=my_secret```. 
 
-To use a custom auth server you can update the "RTMP_AUTH_URL" environment variable. Earshot will pass ```name``` (the Stream Key), ```token``` (the auth token), and other parameters to your server. 
+To use a custom auth server you can update the "RTMP_AUTH_URL" environment variable. Earshot will pass ```name``` (the Stream Key), ```token``` (the auth token provided by the user), and other parameters to your server. 
 
 On your streaming client, appent the secret using the ```token``` GET parameter to the request.
 
