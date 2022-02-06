@@ -6,7 +6,7 @@ set -e
 sleep 10
 
 # Test auth
-AUTH_URL="${RTMP_AUTH_URL}?name=${TEST_RTMP_AUTH_STREAMKEY}&token=${RTMP_AUTH_TOKEN}"
+AUTH_URL="${RTMP_AUTH_URL}?name=stream1&token=${RTMP_AUTH_TOKEN}"
 
 echo "Running AUTH test"
 echo "Auth URL is: ${AUTH_URL}"
@@ -18,7 +18,7 @@ if [[ "$status_code" -ne 201 ]] ; then
 fi
 
 FAKE_AUTH="thisWillFail"
-AUTH_URL="${RTMP_AUTH_URL}?name=${TEST_RTMP_AUTH_STREAMKEY}&token=${FAKE_AUTH}"
+AUTH_URL="${RTMP_AUTH_URL}?name=stream1&token=${FAKE_AUTH}"
 echo "Running fake AUTH test"
 echo "Auth URL is: ${AUTH_URL}"
 
@@ -33,13 +33,13 @@ echo "AUTH test passed!"
 
 echo "Testing media streaming"
 
-bash -c "ffmpeg -y -stream_loop -1 -i test.wav -af \"channelmap=channel_layout=hexadecagonal\" -c:a aac -ac 16 -b:a 2048k -f flv \"rtmp://nginx-rtmp:1935/live/${TEST_RTMP_AUTH_STREAMKEY}?token=${RTMP_AUTH_TOKEN}\" &"
+bash -c "ffmpeg -y -stream_loop -1 -i test.wav -af \"channelmap=channel_layout=hexadecagonal\" -c:a aac -ac 16 -b:a 2048k -f flv \"rtmp://nginx-rtmp:1935/live/stream1?token=${RTMP_AUTH_TOKEN}\" &"
 sleep 30
 echo "Testing HTTP"
-curl --fail http://nginx-rtmp:80/dash/${TEST_RTMP_AUTH_STREAMKEY}.mpd
+curl --fail http://nginx-rtmp:80/dash/stream1.mpd
 sleep 5
 # only test SSL if it is enabled
 if [ "$SSL_ENABLED" = true ] ; then
 	echo "Testing HTTPS"
-	curl --fail -k https://nginx-rtmp:443/dash/${TEST_RTMP_AUTH_STREAMKEY}.mpd
+	curl --fail -k https://nginx-rtmp:443/dash/stream1.mpd
 fi

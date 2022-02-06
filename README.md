@@ -83,8 +83,8 @@ cp .env.example .env
 Please update the environmental variables in the .env file as needed.
 
 > Note: if you are using SSL please be sure to add the domain and email fields you will be serving Earshot from.
-> Also, if you will be running tests, please fill out ```TEST_RTMP_AUTH_KEY``` so that it holds the key of the stream which should be used when testing. 
-> If you are using a custom authentication server (please see RTMP Authentication section for more on this) and will be using tests, please fill out ```RTMP_AUTH_TOKEN``` so that it holds the auth token for the stream specified in ```TEST_RTMP_AUTH_KEY```.
+> Also, if you will be running tests, please note that the tests will use "stream1" as the stream key.
+> If you are using a custom authentication server (please see RTMP Authentication section for more on this) and will be using tests, please fill out ```RTMP_AUTH_TOKEN``` so that it holds the auth token for the stream key: "stream1". 
 
 **2. Build and run the Docker container for the transcoder**
 
