@@ -83,6 +83,8 @@ cp .env.example .env
 Please update the environmental variables in the .env file as needed.
 
 > Note: if you are using SSL please be sure to add the domain and email fields you will be serving Earshot from.
+> Also, if you will be running tests, please note that the tests will use "stream1" as the stream key.
+> If you are using a custom authentication server (please see RTMP Authentication section for more on this) and will be using tests, please fill out ```RTMP_AUTH_TOKEN``` so that it holds the auth token for the stream key: "stream1". 
 
 **2. Build and run the Docker container for the transcoder**
 
@@ -124,9 +126,11 @@ DASH stream webtools are available under http://localhost/webtools
 
 ### RTMP Authentication ###
 
-To add a RTMP auth secret token you can update the "RTMP_AUTH_TOKEN" environment variable in the docker-compose.yml file, e.g. ```- RTMP_AUTH_TOKEN=my_secret```
+To add a RTMP auth secret token you can update the "RTMP_AUTH_TOKEN" environment variable in the docker-compose.yml file, e.g. ```- RTMP_AUTH_TOKEN=my_secret```. 
 
-On your streaming client, appent the secret using the ```token``` GET parameter to the request.
+To use a custom auth server you can update the "RTMP_AUTH_URL" environment variable. Earshot will pass ```name``` (the Stream Key), ```token``` (the auth token provided by the user), and other parameters to your server. 
+
+On your streaming client, appent the secret using the ```token``` GET parameter to the request. 
 
 * With ffmpeg: ```ffmpeg -y -stream_loop -1 -i tester/resources/16chambixloop.wav -af "channelmap=channel_layout=hexadecagonal" -c:a aac -ac 16 -b:a 2048k -f flv "rtmp://127.0.0.1:1935/live/stream1?token=my_secret"```
 * With OBS: your **Stream Key** should be appended with ```?token=my_secret```. If the stream name is stream1, Stream Key should be ```stream1?token=my_secret```

@@ -6,7 +6,7 @@ set -e
 sleep 10
 
 # Test auth
-AUTH_URL="http://nginx-rtmp:80/auth?token=${RTMP_AUTH_TOKEN}"
+AUTH_URL="${RTMP_AUTH_URL}?name=stream1&token=${RTMP_AUTH_TOKEN}"
 
 echo "Running AUTH test"
 echo "Auth URL is: ${AUTH_URL}"
@@ -17,11 +17,8 @@ if [[ "$status_code" -ne 201 ]] ; then
   exit -1
 fi
 
-
-AUTH_URL="http://nginx-rtmp:80/auth"
-
 FAKE_AUTH="thisWillFail"
-AUTH_URL="http://nginx-rtmp:80/auth?token=${FAKE_AUTH}"
+AUTH_URL="${RTMP_AUTH_URL}?name=stream1&token=${FAKE_AUTH}"
 echo "Running fake AUTH test"
 echo "Auth URL is: ${AUTH_URL}"
 

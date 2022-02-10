@@ -19,6 +19,7 @@ services:
       - DOMAIN=${DOMAIN:-}
       - EMAIL=${EMAIL:-}
       - RENEW_INTERVAL=${RENEW_INTERVAL:-1h}
+      - RTMP_AUTH_URL=${RTMP_AUTH_URL:-http://127.0.0.1:80/auth}
       # set custom ffmpeg flags here      - DOMAIN=${DOMAIN:-}
       #
       # example with multiple adaptation sets:
@@ -40,6 +41,7 @@ services:
       # must match auth token above
       - RTMP_AUTH_TOKEN=${RTMP_AUTH_TOKEN:-}
       - SSL_ENABLED=${SSL_ENABLED:-false}
+      - RTMP_AUTH_URL=${RTMP_AUTH_URL:-http://nginx-rtmp:80/auth}
     env_file:
      - ./.env
     depends_on:
