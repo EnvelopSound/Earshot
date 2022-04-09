@@ -12,7 +12,7 @@
     "dashjs": "3.1.2",
     "fontsource-roboto": "^2.2.6",
     "history": "^5.0.0",
-    "moment": "^2.27.0",
+    "moment": "^2.29.2",
     "prop-types": "^15.7.2",
     "query-string": "^6.13.1",
     "react": "^16.13.1",
