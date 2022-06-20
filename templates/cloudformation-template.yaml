@@ -30,54 +30,10 @@ Parameters:
     Type: String
     Default: c7g.medium
     AllowedValues:
-    - t3.micro
-    - t3.medium
-    - t3.small
-    - t3.large
-    - m3.medium
-    - m3.large
-    - m3.xlarge
-    - m3.2xlarge
-    - m4.large
-    - m4.xlarge
-    - m4.2xlarge
-    - m4.4xlarge
-    - m4.10xlarge
-    - c4.large
-    - c4.xlarge
-    - c4.2xlarge
-    - c4.4xlarge
-    - c4.8xlarge
-    - c5n.large
-    - c5n.xlarge
-    - c5n.2xlarge
-    - c5n.4xlarge
-    - c5n.9xlarge
-    - c5n.18xlarge
     - c6g.medium
     - c6g.large
     - c7g.medium
     - c7g.large
-    - c3.large
-    - c3.xlarge
-    - c3.2xlarge
-    - c3.4xlarge
-    - c3.8xlarge
-    - r3.large
-    - r3.xlarge
-    - r3.2xlarge
-    - r3.4xlarge
-    - r3.8xlarge
-    - i2.xlarge
-    - i2.2xlarge
-    - i2.4xlarge
-    - i2.8xlarge
-    - g2.2xlarge
-    - g2.8xlarge
-    - d2.xlarge
-    - d2.2xlarge
-    - d2.4xlarge
-    - d2.8xlarge
 
   KeyName:
     Type: AWS::EC2::KeyPair::KeyName
@@ -582,7 +538,7 @@ Resources:
       ContainerDefinitions:
       - Name: earshot
         Image: envelopsound/earshot:v0.5
-        Memory: 2000
+        Memory: 1900
         PortMappings:
         - ContainerPort: 80
           HostPort: 80

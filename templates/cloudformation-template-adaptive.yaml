@@ -19,8 +19,8 @@ Parameters:
 
   Ami:
     Type: String
-    Description: http://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI_launch_latest.html
-    Default: ami-29f80351
+    Description: Choose an AMI depending on AWS Region (default is arm64 / us-west-2). See http://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI_launch_latest.html
+    Default: ami-0ef24e8ea76bad0b2
 
   EmailAlerts:
     Type: String
@@ -28,52 +28,12 @@ Parameters:
 
   InstanceType:
     Type: String
-    Default: c5n.xlarge
+    Default: c7g.large
     AllowedValues:
-    - t3.micro
-    - t3.medium
-    - t3.small
-    - t3.large
-    - m3.medium
-    - m3.large
-    - m3.xlarge
-    - m3.2xlarge
-    - m4.large
-    - m4.xlarge
-    - m4.2xlarge
-    - m4.4xlarge
-    - m4.10xlarge
-    - c4.large
-    - c4.xlarge
-    - c4.2xlarge
-    - c4.4xlarge
-    - c4.8xlarge
-    - c5n.large
-    - c5n.xlarge
-    - c5n.2xlarge
-    - c5n.4xlarge
-    - c5n.9xlarge
-    - c5n.18xlarge
-    - c3.large
-    - c3.xlarge
-    - c3.2xlarge
-    - c3.4xlarge
-    - c3.8xlarge
-    - r3.large
-    - r3.xlarge
-    - r3.2xlarge
-    - r3.4xlarge
-    - r3.8xlarge
-    - i2.xlarge
-    - i2.2xlarge
-    - i2.4xlarge
-    - i2.8xlarge
-    - g2.2xlarge
-    - g2.8xlarge
-    - d2.xlarge
-    - d2.2xlarge
-    - d2.4xlarge
-    - d2.8xlarge
+    - c6g.medium
+    - c6g.large
+    - c7g.medium
+    - c7g.large
 
   KeyName:
     Type: AWS::EC2::KeyPair::KeyName
@@ -81,11 +41,17 @@ Parameters:
 
   RtmpAuthToken:
     Type: String
+    Description: Global Auth token to authenticate inbound RTMP requests. Set this if you want all RTMP requests to be validated with a single, shared auth token.
+    Default: ''
+
+  RtmpAuthUrl:
+    Type: String
+    Description: URL to authenticate inbound RTMP requests. Set this if you want RTMP requests to ping an endpoint with the stream name and token parameter to dynamically authenticate each connection.
     Default: ''
 
   FfmpegFlags:
     Type: String
-    Description: Default setting for original 720p stream with 360p and 144p adaptations
+    Description: Additional FFmpeg flags to be passed. Default setting has original 720p stream with 360p and 144p adaptations
     Default: '-window_size 100 -max_muxing_queue_size 1000 -map 0:v:0 -map 0:v:0 -map 0:v:0 -map 0:\a?:0 -b:a 2048k -c:v:0 libx264 -crf 23 -filter:v:0 "scale=-1:360" -c:v:1 libx264 -crf 23 -filter:v:1 "scale=-1:144" -c:v:2 libx264 -crf 23 -adaptation_sets "id=0,streams=v id=1,streams=a"'
 
   Domain:
@@ -95,6 +61,7 @@ Parameters:
   Email:
     Type: String
     Default: ''
+
   AccessKey:
     Type: String
     Description: AWS access key
@@ -219,7 +186,7 @@ Resources:
             Subscription:
               - Endpoint: !Ref EmailAlerts
                 Protocol: email
-            TopicName: 
+            TopicName:
               Fn::Sub: ${AWS::StackName}-AlertsTopic
 
   HostRole:
@@ -570,8 +537,8 @@ Resources:
     Properties:
       ContainerDefinitions:
       - Name: earshot
-        Image: envelopsound/earshot:latest
-        Memory: 20000
+        Image: envelopsound/earshot:v0.5
+        Memory: 1900
         PortMappings:
         - ContainerPort: 80
           HostPort: 80
@@ -588,6 +555,8 @@ Resources:
           Value: 1935
         - Name: RTMP_AUTH_TOKEN
           Value: !Ref RtmpAuthToken
+        - Name: RTMP_AUTH_URL
+          Value: !Ref RtmpAuthUrl
         - Name: FFMPEG_FLAGS
           Value: !Ref FfmpegFlags
         - Name: DOMAIN
