@@ -135,6 +135,8 @@ On your streaming client, appent the secret using the ```token``` GET parameter 
 * With ffmpeg: ```ffmpeg -y -stream_loop -1 -i tester/resources/16chambixloop.wav -af "channelmap=channel_layout=hexadecagonal" -c:a aac -ac 16 -b:a 2048k -f flv "rtmp://127.0.0.1:1935/live/stream1?token=my_secret"```
 * With OBS: your **Stream Key** should be appended with ```?token=my_secret```. If the stream name is stream1, Stream Key should be ```stream1?token=my_secret```
 
+<img width="728" alt="image" src="https://user-images.githubusercontent.com/1270126/174658251-8d9f5fe6-3e70-49c9-bd29-203c795e1c21.png">
+
 ### FFMPEG Flags ###
 
 If you want to add additional flags for ffmpeg that is called within the transcoder -- for example, more adaptive DASH stream bitrates -- you can update the "FFMPEG_FLAGS" environment variable in the docker-compose.yml.
