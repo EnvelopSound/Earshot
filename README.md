@@ -128,7 +128,7 @@ DASH stream webtools are available under http://localhost/webtools
 
 To add a RTMP auth secret token you can update the "RTMP_AUTH_TOKEN" environment variable in the docker-compose.yml or .env file, e.g. ```- RTMP_AUTH_TOKEN=my_secret```.
 
-In order to prevent brute force attacks, Earshot will limit authentication requests to 1 per second.
+In order to prevent brute force attacks, Earshot will limit authentication requests to one per second. To allow for flexibility and legitimate traffic surges, occasional bursts for up to two requests are accepted, until, on avarage, the one per second limit is retained.
 
 To use a custom http auth server, you can update the `RTMP_AUTH_URL` environment variable. Earshot will pass ```name``` (the Stream Key), ```token``` (the auth token provided by the user), and other parameters to your server. You can read the [full list of parameters](https://github.com/arut/nginx-rtmp-module/wiki/Directives#on_play).
 
