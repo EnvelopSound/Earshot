@@ -126,11 +126,13 @@ DASH stream webtools are available under http://localhost/webtools
 
 ### RTMP Authentication ###
 
-To add a RTMP auth secret token you can update the "RTMP_AUTH_TOKEN" environment variable in the docker-compose.yml file, e.g. ```- RTMP_AUTH_TOKEN=my_secret```. 
+To add a RTMP auth secret token you can update the "RTMP_AUTH_TOKEN" environment variable in the docker-compose.yml or .env file, e.g. ```- RTMP_AUTH_TOKEN=my_secret```.
 
-To use a custom auth server you can update the "RTMP_AUTH_URL" environment variable. Earshot will pass ```name``` (the Stream Key), ```token``` (the auth token provided by the user), and other parameters to your server. 
+In order to prevent brute force attacks, Earshot will limit authentication requests to one per second. To allow for flexibility and legitimate traffic surges, occasional bursts for up to two requests are accepted, until, on avarage, the one per second limit is retained.
 
-On your streaming client, appent the secret using the ```token``` GET parameter to the request. 
+To use a custom http auth server, you can update the `RTMP_AUTH_URL` environment variable. Earshot will pass ```name``` (the Stream Key), ```token``` (the auth token provided by the user), and other parameters to your server. You can read the [full list of parameters](https://github.com/arut/nginx-rtmp-module/wiki/Directives#on_play).
+
+On your streaming client, appent the secret using the ```token``` GET parameter to the request.
 
 * With ffmpeg: ```ffmpeg -y -stream_loop -1 -i tester/resources/16chambixloop.wav -af "channelmap=channel_layout=hexadecagonal" -c:a aac -ac 16 -b:a 2048k -f flv "rtmp://127.0.0.1:1935/live/stream1?token=my_secret"```
 * With OBS: your **Stream Key** should be appended with ```?token=my_secret```. If the stream name is stream1, Stream Key should be ```stream1?token=my_secret```
