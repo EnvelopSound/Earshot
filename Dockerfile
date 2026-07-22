@@ -85,6 +85,7 @@ RUN cd /tmp/FFmpeg-${FFMPEG_VERSION} && \
    --enable-small \
    --enable-libx264 \
    --enable-libopus \
+   --enable-libvpx \
    --disable-debug \
    --disable-doc \
    --disable-ffplay \
