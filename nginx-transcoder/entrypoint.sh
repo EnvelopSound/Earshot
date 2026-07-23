@@ -37,7 +37,7 @@ if [ "$SSL_ENABLED" = true ] ; then
 
 
 
-	rm -rf /opt/data && mkdir -p /opt/data/dash && chown nginx /opt/data/dash && chmod 777 /opt/data/dash && mkdir -p /www && \
+	mkdir -p /opt/data/dash && find /opt/data/dash -mindepth 1 -delete && chown nginx /opt/data/dash && chmod 777 /opt/data/dash && mkdir -p /www && \
 	  envsubst "$(env | sed -e 's/=.*//' -e 's/^/\$/g')" < \
 	  /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 	### Send certbot Emission/Renewal to background
@@ -48,7 +48,7 @@ if [ "$SSL_ENABLED" = true ] ; then
 
 else
 	echo "Running Earshot without SSL (connections will be insecure)"
-	rm -rf /opt/data && mkdir -p /opt/data/dash && chown nginx /opt/data/dash && chmod 777 /opt/data/dash && mkdir -p /www && \
+	mkdir -p /opt/data/dash && find /opt/data/dash -mindepth 1 -delete && chown nginx /opt/data/dash && chmod 777 /opt/data/dash && mkdir -p /www && \
 	  envsubst "$(env | sed -e 's/=.*//' -e 's/^/\$/g')" < \
 	  /etc/nginx/nginx-no-ssl.conf.template > /etc/nginx/nginx.conf
 fi
