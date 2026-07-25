@@ -76,12 +76,17 @@ RUN cd /tmp/ && \
   wget https://github.com/EnvelopSound/ffmpeg/archive/${FFMPEG_VERSION}.tar.gz && \
   tar zxf ${FFMPEG_VERSION}.tar.gz && rm ${FFMPEG_VERSION}.tar.gz
 
+# --enable-nonfree gates GPL-incompatible libraries (e.g. libfdk_aac); this
+# build links none of them, so the flag is a no-op that only marks the binary
+# non-redistributable. Default on (behaviour unchanged); build with
+# --build-arg ENABLE_NONFREE=0 for a redistributable image.
+ARG ENABLE_NONFREE=1
 # Compile ffmpeg.
 RUN cd /tmp/FFmpeg-${FFMPEG_VERSION} && \
    ./configure \
    --enable-version3 \
    --enable-gpl \
-   --enable-nonfree \
+   $( [ "${ENABLE_NONFREE}" = "1" ] && printf '%s' '--enable-nonfree' ) \
    --enable-small \
    --enable-libx264 \
    --enable-libopus \
