@@ -4,6 +4,22 @@
 
 #Ensure we have folders available
 
+# DASH manifest filename. This is the only variable component of the ffmpeg
+# output path in either transcoder config (nginx-no-ssl.conf / nginx.conf), so
+# it is defaulted and validated here, before nginx starts and before either
+# envsubst call below. It must be exported: the envsubst whitelist is derived
+# from `env`, so an unexported value would leave the literal ${DASH_NAME} in
+# the rendered config, and ffmpeg would write a file nobody fetches. It is
+# read only from the container environment, never from the network, and
+# rejecting '.' and '/' makes '..' and absolute paths unrepresentable.
+DASH_NAME="${DASH_NAME:-stream}"
+case "$DASH_NAME" in
+    ''|*[!A-Za-z0-9_-]*)
+        echo "[earshot] DASH_NAME must be a non-empty [A-Za-z0-9_-]+ string (got: $DASH_NAME)" >&2
+        exit 1 ;;
+esac
+export DASH_NAME
+
 if [ "$SSL_ENABLED" = true ] ; then
 
 	if [ "$DOMAIN" = "" ]; then
