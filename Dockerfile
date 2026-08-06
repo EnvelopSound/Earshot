@@ -84,9 +84,11 @@ RUN cd /tmp/ && \
 # source instead.
 ARG DASH_SPD_FLOOR=30
 RUN cd /tmp/FFmpeg-${FFMPEG_VERSION} && \
+  case "${DASH_SPD_FLOOR}" in (""|*[!0-9]*) echo "DASH_SPD_FLOOR must be a non-negative integer" >&2; exit 1;; esac && \
   test "$(grep -c 'suggestedPresentationDelay=' libavformat/dashenc.c)" = "1" && \
+  grep -F 'suggestedPresentationDelay=' libavformat/dashenc.c | grep -F 'c->last_duration / AV_TIME_BASE' && \
   sed -i "/suggestedPresentationDelay=/s|c->last_duration / AV_TIME_BASE|FFMAX(c->last_duration / AV_TIME_BASE, ${DASH_SPD_FLOOR})|" libavformat/dashenc.c && \
-  grep -F "FFMAX(c->last_duration / AV_TIME_BASE, ${DASH_SPD_FLOOR})" libavformat/dashenc.c
+  grep -F 'suggestedPresentationDelay=' libavformat/dashenc.c | grep -F "FFMAX(c->last_duration / AV_TIME_BASE, ${DASH_SPD_FLOOR})"
 
 # --enable-nonfree gates GPL-incompatible libraries (e.g. libfdk_aac); this
 # build links none of them, so the flag is a no-op that only marks the binary
