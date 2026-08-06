@@ -17,7 +17,13 @@ COPY ./webtools/ /app
 ENV PATH /app/node_modules/.bin:$PATH
 
 # install and cache dependencies
-RUN yarn
+# yarn 1.x defaults --network-timeout to 30 s, and that ceiling covers the CPU
+# time yarn spends alongside each request, not transfer alone. On a slower build
+# host it expires mid-install and yarn reports it as "There appears to be trouble
+# with your network connection", which points at the wrong subsystem. Raised so
+# the install can finish; it costs nothing on a fast host, where the install
+# completes long before the ceiling is in reach.
+RUN yarn --network-timeout 600000
 #build the project for production
 RUN yarn build
 
