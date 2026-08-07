@@ -36,7 +36,7 @@ jobs:
 
 
       - name: Build and Test
-        run: docker-compose up --exit-code-from rtmp-tester
+        run: docker compose up --exit-code-from rtmp-tester
   lint:
     runs-on: ubuntu-latest
     steps:
