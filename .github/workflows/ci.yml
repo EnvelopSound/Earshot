@@ -37,6 +37,19 @@ jobs:
 
       - name: Build and Test
         run: docker compose up --exit-code-from rtmp-tester
+
+      # The transcoder's ffmpeg writes its stderr to a file inside the
+      # container, so a failed run says only that the manifest is missing and
+      # never why. Surface it when the job fails.
+      - name: Transcoder log on failure
+        if: failure()
+        run: |
+          cid=$(docker compose ps -aq nginx-rtmp) || true
+          if [ -n "$cid" ]; then
+            docker cp "$cid":/tmp/nginx_rtmp_ffmpeg_log - 2>/dev/null | tar -xO || echo '(no transcoder log found)'
+          else
+            echo '(nginx-rtmp container not found)'
+          fi
   lint:
     runs-on: ubuntu-latest
     steps:
