@@ -46,7 +46,7 @@ jobs:
         run: |
           cid=$(docker compose ps -aq nginx-rtmp) || true
           if [ -n "$cid" ]; then
-            docker cp "$cid":/tmp/nginx_rtmp_ffmpeg_log - 2>/dev/null | tar -xO || echo '(no transcoder log found)'
+            docker cp "$cid":/tmp/nginx_rtmp_ffmpeg_log - 2>/dev/null | tar -xO 2>/dev/null || echo '(no transcoder log found)'
           else
             echo '(nginx-rtmp container not found)'
           fi
