@@ -33,7 +33,7 @@ echo "AUTH test passed!"
 
 echo "Testing media streaming"
 
-bash -c "ffmpeg -y -stream_loop -1 -i test.wav -af \"channelmap=channel_layout=hexadecagonal\" -c:a aac -ac 16 -b:a 2048k -f flv \"rtmp://nginx-rtmp:1935/live/stream1?token=${RTMP_AUTH_TOKEN}\" &"
+bash -c "ffmpeg -y -stream_loop -1 -i test.wav -f lavfi -i \"testsrc2=size=640x360:rate=25\" -af \"channelmap=channel_layout=hexadecagonal\" -c:v libx264 -g 25 -c:a aac -ac 16 -b:a 2048k -f flv \"rtmp://nginx-rtmp:1935/live/stream1?token=${RTMP_AUTH_TOKEN}\" &"
 sleep 30
 echo "Testing HTTP"
 curl --fail http://nginx-rtmp:80/dash/stream1.mpd
