@@ -60,6 +60,9 @@ class GainSliderBox extends React.Component {
 
   setGain(channel, sliderValue) {
     const { gainNodes } = this.state;
+    if (audioContext.state === "suspended") {
+      audioContext.resume();
+    }
     if (videoPlayer.muted) {
       videoPlayer.muted = false;
     }
