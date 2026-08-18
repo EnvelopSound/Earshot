@@ -19,7 +19,7 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
-    "xml2js": "^0.4.23"
+    "xml2js": "^0.6.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -50,5 +50,17 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-prettier": "^3.1.4",
     "prettier": "^2.0.5"
+  },
+  "resolutions": {
+    "**/sockjs": "0.3.24",
+    "**/ansi-html": "0.0.9",
+    "**/loader-utils": "1.4.2",
+    "**/request/form-data": "2.5.6",
+    "**/minimatch": "3.1.5",
+    "**/resolve-url-loader/postcss": "7.0.39",
+    "**/react-dev-utils/cross-spawn": "7.0.6",
+    "**/react-dev-utils/shell-quote": "1.9.0",
+    "**/object-path": "0.11.8",
+    "**/json-schema": "0.4.0"
   }
 }
