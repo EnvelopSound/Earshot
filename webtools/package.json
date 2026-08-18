@@ -62,6 +62,19 @@
     "**/react-dev-utils/shell-quote": "1.9.0",
     "**/object-path": "0.11.8",
     "**/json-schema": "0.4.0",
-    "**/@babel/runtime": "7.26.10"
+    "**/@babel/runtime": "7.26.10",
+    "**/react-scripts/semver": "6.3.1",
+    "**/core-js-compat/semver": "7.5.4",
+    "**/@typescript-eslint/typescript-estree/semver": "6.3.1",
+    "**/eslint-plugin-react/semver": "6.3.1",
+    "**/eslint/semver": "6.3.1",
+    "**/istanbul-lib-instrument/semver": "6.3.1",
+    "**/jest-snapshot/semver": "6.3.1",
+    "**/make-dir/semver": "6.3.1",
+    "**/sass-loader/semver": "6.3.1",
+    "**/webpack-dev-server/semver": "6.3.1",
+    "**/browserslist": "4.28.8",
+    "**/node-releases": "2.0.44",
+    "**/@babel/core": "7.29.6"
   }
 }
