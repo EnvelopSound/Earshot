@@ -75,6 +75,10 @@
     "**/webpack-dev-server/semver": "6.3.1",
     "**/browserslist": "4.28.8",
     "**/node-releases": "2.0.44",
-    "**/@babel/core": "7.29.6"
+    "**/@babel/core": "7.29.6",
+    "**/chokidar/braces": "3.0.3",
+    "**/micromatch/braces": "3.0.3",
+    "**/request/qs": "6.15.3",
+    "**/mkdirp/minimist": "1.2.8"
   }
 }
