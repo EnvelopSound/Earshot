@@ -79,6 +79,14 @@
     "**/chokidar/braces": "3.0.3",
     "**/micromatch/braces": "3.0.3",
     "**/request/qs": "6.15.3",
-    "**/mkdirp/minimist": "1.2.8"
+    "**/mkdirp/minimist": "1.2.8",
+    "**/webpack-dev-middleware": "5.3.4",
+    "**/http-proxy-middleware": "2.0.10",
+    "**/node-forge": "1.4.0",
+    "**/micromatch": "4.0.8",
+    "**/node-notifier": "8.0.2",
+    "**/flatted": "3.4.0",
+    "**/tough-cookie": "4.1.3",
+    "**/tmp": "0.2.4"
   }
 }
