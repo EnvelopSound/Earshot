@@ -51,6 +51,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "prettier": "^2.0.5"
   },
+  "_comment_svg_resolutions": "The is-svg/nth-check/svgo entries in resolutions below are forced past what their actual current requesters declare (@svgr/plugin-svgo wants svgo ^1.2.2, postcss-svgo wants svgo ^1.0.0 + is-svg ^3.0.0, css-select@1.2.0 wants nth-check ~1.0.1). Verified unreachable via three separate paths: (1) @svgr/webpack's SVG loader - zero .svg files are imported under src/; (2) cssnano's postcss-svgo, which DOES run on every production build (cssnano-preset-default, always active) and walks every url() in the bundled CSS - but src/App.css and src/index.css are the app's only CSS, neither contains a url(), and no third-party CSS is imported, so its svgo/is-svg call is never reached; (3) html-webpack-plugin's build-error formatter (pretty-error -> renderkid -> css-select@1.2.0), present on every build regardless of app content - renderkid's own bundled selector rules never use an nth-child/nth-of-type-family pseudo-class, so css-select@1.2.0 never calls nth-check. Path (3) is the sharp one: nth-check@2.1.1's export is no longer directly callable (require('nth-check')('2n+1') throws 'is not a function'), so if that path is ever exercised it crashes outright rather than degrading quietly; is-svg@4.4.0 kept v3's plain isSvg(str) API, so path (2) is comparatively softer but still forces a major version none of its requesters declared. If an .svg import, a CSS url(), a CSS-bearing dependency, or a renderkid/pretty-error upgrade is ever added, remove these three overrides first and re-verify with a real docker build --no-cache. (Kept as a sibling key rather than a fake entry inside resolutions itself, since yarn parses every key there as a real override rule.)",
   "resolutions": {
     "**/sockjs": "0.3.24",
     "**/ansi-html": "0.0.9",
@@ -89,6 +90,9 @@
     "**/tough-cookie": "4.1.3",
     "**/tmp": "0.2.4",
     "**/uuid": "11.1.1",
-    "**/yargs/yargs-parser": "13.1.2"
+    "**/yargs/yargs-parser": "13.1.2",
+    "**/is-svg": "4.4.0",
+    "**/nth-check": "2.1.1",
+    "**/svgo": "2.8.3"
   }
 }
