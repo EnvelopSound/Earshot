@@ -40,6 +40,15 @@ FROM alpine:3.11
 ARG NGINX_VERSION=1.15.1
 ARG NGINX_RTMP_VERSION=1.2.1
 
+# Do not bump past n8.1 without re-checking 16-channel AAC encoding. n9.0
+# removed AV_CHANNEL_LAYOUT_HEXADECAGONAL from aac_pce_configs[] in
+# libavcodec/aacenc.c (c92c6cbf19), and with it the only PCE config able to
+# encode any layout above 8 channels. The RTMP contribution leg carries 16-ch
+# AAC with a PCE from OBS Music Edition, so on n9.0 that leg dies at encoder
+# init with "Unsupported channel layout". Note this is a RUNTIME failure, not
+# a build failure: the image still builds clean and only breaks when a
+# 16-channel stream actually arrives. Verified present at n7.0 through n8.1,
+# absent at n9.0 and master.
 ARG FFMPEG_VERSION=7.1
 ARG FFMPEG_SHA256=40973d44970dbc83ef302b0609f2e74982be2d85916dd2ee7472d30678a7abe6
 
