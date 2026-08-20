@@ -40,7 +40,8 @@ FROM alpine:3.11
 ARG NGINX_VERSION=1.15.1
 ARG NGINX_RTMP_VERSION=1.2.1
 
-ARG FFMPEG_VERSION=n7.1
+ARG FFMPEG_VERSION=7.1
+ARG FFMPEG_SHA256=40973d44970dbc83ef302b0609f2e74982be2d85916dd2ee7472d30678a7abe6
 
 ARG PREFIX=/opt/ffmpeg
 ARG LD_LIBRARY_PATH=/opt/ffmpeg/lib
@@ -68,6 +69,7 @@ RUN apk add --update \
   pkgconfig \
   rtmpdump-dev \
   wget \
+  xz \
   x264-dev \
   x265-dev \
   yasm \
@@ -84,10 +86,17 @@ RUN apk add --update \
   inotify-tools \
   certbot
 
-# Get FFmpeg source.
+# Get FFmpeg source from the ffmpeg.org release tarball and verify it against a
+# pinned SHA-256. The release .tar.xz is a signed, immutable artifact; GitHub's
+# /archive/refs/tags/ tarballs are generated on demand and their bytes (hence
+# hash) have changed before, so a pin is only meaningful against the release
+# tarball, not the archive URL. This hash is the one FFmpeg's release signing
+# key (FCF9 86EA 15E6 E293 A564 4F10 B432 2F04 D676 58D8) signs for 7.1; a
+# mismatch aborts the build rather than compiling unexpected source.
 RUN cd /tmp/ && \
-  wget -O ${FFMPEG_VERSION}.tar.gz https://github.com/FFmpeg/FFmpeg/archive/refs/tags/${FFMPEG_VERSION}.tar.gz && \
-  tar zxf ${FFMPEG_VERSION}.tar.gz && rm ${FFMPEG_VERSION}.tar.gz
+  wget -O ffmpeg-${FFMPEG_VERSION}.tar.xz https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.xz && \
+  echo "${FFMPEG_SHA256}  ffmpeg-${FFMPEG_VERSION}.tar.xz" | sha256sum -c - && \
+  xz -dc ffmpeg-${FFMPEG_VERSION}.tar.xz | tar -xf - && rm ffmpeg-${FFMPEG_VERSION}.tar.xz
 
 # ffmpeg's DASH muxer hardcodes suggestedPresentationDelay to the last
 # segment duration, so a player joining live starts right at the edge and
@@ -96,7 +105,7 @@ RUN cd /tmp/ && \
 # LL-DASH mode, which WebM segments cannot use), so this floors it at the
 # source instead.
 ARG DASH_SPD_FLOOR=30
-RUN cd /tmp/FFmpeg-${FFMPEG_VERSION} && \
+RUN cd /tmp/ffmpeg-${FFMPEG_VERSION} && \
   case "${DASH_SPD_FLOOR}" in (""|*[!0-9]*) echo "DASH_SPD_FLOOR must be a non-negative integer" >&2; exit 1;; esac && \
   test "$(grep -c 'suggestedPresentationDelay=' libavformat/dashenc.c)" = "1" && \
   grep -F 'suggestedPresentationDelay=' libavformat/dashenc.c | grep -F 'c->last_duration / AV_TIME_BASE' && \
@@ -109,7 +118,7 @@ RUN cd /tmp/FFmpeg-${FFMPEG_VERSION} && \
 # --build-arg ENABLE_NONFREE=0 for a redistributable image.
 ARG ENABLE_NONFREE=1
 # Compile ffmpeg.
-RUN cd /tmp/FFmpeg-${FFMPEG_VERSION} && \
+RUN cd /tmp/ffmpeg-${FFMPEG_VERSION} && \
    ./configure \
    --enable-version3 \
    --enable-gpl \
@@ -127,7 +136,7 @@ RUN cd /tmp/FFmpeg-${FFMPEG_VERSION} && \
    --prefix="${PREFIX}" && \
     make && make install && make distclean
 
-#COPY /tmp/FFmpeg-${FFMPEG_VERSION}/build/ffmpeg /usr/local/bin/
+#COPY /tmp/ffmpeg-${FFMPEG_VERSION}/build/ffmpeg /usr/local/bin/
 
 # Get nginx source.
 RUN cd /tmp && \
