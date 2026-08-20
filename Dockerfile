@@ -40,7 +40,7 @@ FROM alpine:3.11
 ARG NGINX_VERSION=1.15.1
 ARG NGINX_RTMP_VERSION=1.2.1
 
-ARG FFMPEG_VERSION=earshot-v0.1
+ARG FFMPEG_VERSION=n7.1
 
 ARG PREFIX=/opt/ffmpeg
 ARG LD_LIBRARY_PATH=/opt/ffmpeg/lib
@@ -86,7 +86,7 @@ RUN apk add --update \
 
 # Get FFmpeg source.
 RUN cd /tmp/ && \
-  wget https://github.com/EnvelopSound/ffmpeg/archive/${FFMPEG_VERSION}.tar.gz && \
+  wget -O ${FFMPEG_VERSION}.tar.gz https://github.com/FFmpeg/FFmpeg/archive/refs/tags/${FFMPEG_VERSION}.tar.gz && \
   tar zxf ${FFMPEG_VERSION}.tar.gz && rm ${FFMPEG_VERSION}.tar.gz
 
 # ffmpeg's DASH muxer hardcodes suggestedPresentationDelay to the last
