@@ -63,8 +63,8 @@ class GainSliderBox extends React.Component {
     // Video.js constructs the AudioContext at module-import time, which is
     // before any user gesture, so browsers with an autoplay policy hand it back
     // "suspended" and the whole graph is stopped. Unmuting the element and
-    // raising a gain then change nothing audible, which is exactly what a user
-    // dragging this slider experiences: no sound, and no clue why.
+    // raising a gain do nothing audible on their own, which is exactly what a
+    // user dragging this slider experiences: no sound, and no clue why.
     //
     // Measured on a live 16-channel stream, each step added alone (RMS into
     // ctx.destination): gain up 0.0, + element unmuted 0.0, + resume() 5.6e-4.
