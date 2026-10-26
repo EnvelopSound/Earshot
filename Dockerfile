@@ -96,8 +96,15 @@ RUN apk add --update \
 # tarball, not the archive URL. This hash is the one FFmpeg's release signing
 # key (FCF9 86EA 15E6 E293 A564 4F10 B432 2F04 D676 58D8) signs for 7.1; a
 # mismatch aborts the build rather than compiling unexpected source.
+#
+# ffmpeg.org drops the odd connection: on 2026-10-26 one of two parallel CI
+# builds failed with "Unable to establish SSL connection", and an hour later a
+# connection from elsewhere timed out once and then worked. wget treats an SSL
+# failure as final whatever --tries says, so this is curl, which retries every
+# kind of failure. The hash check below still decides what gets built.
 RUN cd /tmp/ && \
-  wget -O ffmpeg-${FFMPEG_VERSION}.tar.xz https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.xz && \
+  curl -fsSL --retry 5 --retry-all-errors --retry-delay 15 --connect-timeout 60 \
+    -o ffmpeg-${FFMPEG_VERSION}.tar.xz https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.xz && \
   echo "${FFMPEG_SHA256}  ffmpeg-${FFMPEG_VERSION}.tar.xz" | sha256sum -c - && \
   xz -dc ffmpeg-${FFMPEG_VERSION}.tar.xz | tar -xf - && rm ffmpeg-${FFMPEG_VERSION}.tar.xz
 
