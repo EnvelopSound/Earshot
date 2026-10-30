@@ -23,13 +23,6 @@ ENV PATH /app/node_modules/.bin:$PATH
 # with your network connection", which points at the wrong subsystem. Raised so
 # the install can finish; it costs nothing on a fast host, where the install
 # completes long before the ceiling is in reach.
-#
-# webpack 4's default content-hash function calls Node's crypto.createHash
-# ('md4'), which OpenSSL 3 (Node 17+) refuses by default -
-# ERR_OSSL_EVP_UNSUPPORTED. Re-enabling the legacy provider is the standard
-# fix for a webpack4-era build that isn't being upgraded to webpack 5; it
-# only affects this build step, never a running service.
-ENV NODE_OPTIONS=--openssl-legacy-provider
 RUN yarn --network-timeout 600000
 #build the project for production
 RUN yarn build

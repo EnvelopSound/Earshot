@@ -62,7 +62,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      # Same Node as the Dockerfile's webtools build stage.
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
       - name: Install webtools modules
         run: cd webtools && yarn install
       - name: Run ESLint
         run: cd webtools && yarn lint
+      - name: Run webtools tests
+        run: cd webtools && yarn test
+      # Loads the production build in headless Chromium: unit tests run under
+      # Node and cannot see a page that only breaks in a browser.
+      - name: Smoke-test the built page
+        run: cd webtools && npx playwright install --with-deps chromium && yarn smoke
