@@ -40,7 +40,7 @@ Earshot is GPL licensed. However, if you are interested in a commercial license 
 * [Opus](https://github.com/xiph/opus), the audio codec used in combination with DASH
 * [MPEG-DASH](https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP), an adaptive bitrate HTTP streaming solution
 * [Dash.js](https://github.com/Dash-Industry-Forum/dash.js), a Javascript client for DASH stream playback
-* [React](https://reactjs.org/) and [Create React App](https://github.com/facebook/create-react-app) for Webtools
+* [React](https://reactjs.org/) and [Vite](https://vite.dev/) for Webtools
 
 ## Known Limitations ##
 
@@ -61,7 +61,7 @@ Earshot is GPL licensed. However, if you are interested in a commercial license 
 
 * [OBS Studio Music Edition](https://github.com/pkviet/obs-studio/releases/) -- recommended to easily stream from your computer
 * [FFmpeg](https://ffmpeg.org/) installed locally for command-line RTMP streaming
-* [Yarn](https://classic.yarnpkg.com/en/) for developing Webtools locally
+* [Node.js](https://nodejs.org/) and [Yarn](https://classic.yarnpkg.com/en/) for developing Webtools locally (see [webtools/README.md](webtools/README.md))
 * [Loopback](https://rogueamoeba.com/loopback/) for streaming from Ableton Live or other audio software
 
 To generate a multichannel audio stream in a format such as third-order AMBIX you can use any of the following:

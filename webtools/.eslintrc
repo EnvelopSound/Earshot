@@ -1,11 +1,14 @@
 {
-  "extends": [
-    "react-app",
-    "airbnb",
-    "plugin:jsx-a11y/recommended",
-    "prettier",
-    "prettier/react"
-  ],
+  "root": true,
+  "env": {
+    "browser": true,
+    "es2022": true
+  },
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "extends": ["airbnb", "plugin:jsx-a11y/recommended", "prettier"],
   "plugins": ["jsx-a11y", "prettier"],
   "rules": {
     "semi": 1,
@@ -16,6 +19,19 @@
         "semi": true
       }
     ],
-    "react/forbid-prop-types": "off"
-  }
+    "react/forbid-prop-types": "off",
+    "react/jsx-no-useless-fragment": "off",
+    "react/no-unused-class-component-methods": "off"
+  },
+  "overrides": [
+    {
+      "files": ["vite.config.mjs", "smoke/*.mjs"],
+      "env": { "node": true },
+      "rules": {
+        "no-console": "off",
+        "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+        "import/no-unresolved": ["error", { "ignore": ["^vite$", "^@vitejs/"] }]
+      }
+    }
+  ]
 }

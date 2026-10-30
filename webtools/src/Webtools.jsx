@@ -1,6 +1,5 @@
 import axios from "axios";
 import React from "react";
-import xml2js from "xml2js";
 import moment from "moment";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -8,6 +7,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 
 import DashPlayer from "./DashPlayer";
+import parseStat from "./parseStat";
 
 const STAT_URL = "/stat";
 const NGINX_INFO_URL = "/nginxInfo";
@@ -56,27 +56,26 @@ export default class Webtools extends React.Component {
         "Content-Type": "application/xml; charset=utf-8",
       })
       .then((response) => {
-        xml2js.parseString(response.data, (err, result) => {
-          const serverInfo = Webtools.extractServerInfo(result);
-          const liveInfo = result.rtmp.server[0].application[0].live[0];
-          serverInfo.nclients = liveInfo.nclients;
-          const stateUpdate = {
-            serverInfo,
-            statRetryTimer: self.state.statRetryTimer * 2,
-          };
-          if (liveInfo.stream) {
-            const streamNames = liveInfo.stream.map((stream) => stream.name[0]);
-            stateUpdate.streamNames = streamNames;
-            if (self.state.selectedStream === null) {
-              [stateUpdate.selectedStream] = streamNames;
-            }
-            stateUpdate.statRetryTimer = DEFAULT_STAT_REFRESH_PERIOD;
+        const result = parseStat(response.data);
+        const serverInfo = Webtools.extractServerInfo(result);
+        const liveInfo = result.rtmp.server[0].application[0].live[0];
+        serverInfo.nclients = liveInfo.nclients;
+        const stateUpdate = {
+          serverInfo,
+          statRetryTimer: self.state.statRetryTimer * 2,
+        };
+        if (liveInfo.stream) {
+          const streamNames = liveInfo.stream.map((stream) => stream.name[0]);
+          stateUpdate.streamNames = streamNames;
+          if (self.state.selectedStream === null) {
+            [stateUpdate.selectedStream] = streamNames;
           }
-          self.setState(stateUpdate);
-          setTimeout(() => {
-            Webtools.loadStat(self);
-          }, stateUpdate.statRetryTimer * 1000);
-        });
+          stateUpdate.statRetryTimer = DEFAULT_STAT_REFRESH_PERIOD;
+        }
+        self.setState(stateUpdate);
+        setTimeout(() => {
+          Webtools.loadStat(self);
+        }, stateUpdate.statRetryTimer * 1000);
       })
       .catch(() => {
         setTimeout(() => {

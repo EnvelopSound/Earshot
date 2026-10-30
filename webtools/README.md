@@ -1,68 +1,27 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Earshot Webtools
 
-## Available Scripts
+The debugging page Earshot serves at `/webtools`. It lists the streams on the server, plays the DASH output of the selected stream and shows its manifest, buffer and audio details. It is a React app built with [Vite](https://vite.dev). The Docker image runs `yarn build` itself and nginx serves the result, so none of the commands below are needed to run Earshot.
 
-In the project directory, you can run:
+Development needs Node.js 22.22 or later (22.x from 22.22.2, 24.x from 24.15.0, or 26 and later) and Yarn 1. Run `yarn install` first.
+
+## Scripts
 
 ### `yarn start`
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Starts a development server at http://localhost:3000/webtools/ (with the trailing slash) that reloads the page on every edit. The page reads `/stat`, `/nginxInfo` and `/dash` from an Earshot server, and the development server forwards those requests to http://localhost, where `docker-compose up` publishes Earshot. To use another server, set `EARSHOT_URL`, for example `EARSHOT_URL=http://192.0.2.10 yarn start`.
 
 ### `yarn build`
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Builds the page into `build/`, which the Dockerfile copies into the image.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+### `yarn test`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Runs the unit tests with [Vitest](https://vitest.dev).
 
-### `yarn eject`
+### `yarn smoke`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Builds the page and loads it in headless Chromium against a mocked Earshot, failing if the page throws or does not draw one gain slider per audio channel. Run `npx playwright install chromium` once beforehand.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### `yarn lint`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+Checks the code with ESLint and Prettier.
