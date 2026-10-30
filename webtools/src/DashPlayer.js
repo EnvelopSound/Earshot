@@ -1,7 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import QueryString from "query-string";
 
 import dashjs from "dashjs";
 
@@ -75,9 +74,9 @@ class DashPlayer extends React.Component {
 
   getCurrentSettings() {
     const { location } = this.props;
-    const params = QueryString.parse(location.search);
-    const settings = params.settings
-      ? JSON.parse(params.settings)
+    const params = new URLSearchParams(location.search);
+    const settings = params.get("settings")
+      ? JSON.parse(params.get("settings"))
       : DEFAULT_CLIENT_SETTINGS;
     return settings;
   }
