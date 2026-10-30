@@ -14,7 +14,6 @@
     "history": "^5.0.0",
     "moment": "^2.31.0",
     "prop-types": "^15.7.2",
-    "query-string": "^6.13.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
