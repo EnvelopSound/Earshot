@@ -13,21 +13,38 @@ const STAT_URL = "/stat";
 const NGINX_INFO_URL = "/nginxInfo";
 
 const SERVER_INFO_FIELDS = {
-  bandwidthIn: "bw_in",
+  bwIn: "bw_in",
   bytesIn: "bytes_in",
   bwOut: "bw_out",
-  totalBytesOut: "bytes_out",
+  bytesOut: "bytes_out",
   uptime: "uptime",
-  nclients: "nclients",
 };
 
 const SERVER_INFO_FIELD_NAMES = {
-  bandwidthIn: "Bandwidth In",
+  bwIn: "Bandwidth In",
   bytesIn: "Total Bytes In",
   bwOut: "Bandwidth Out",
   bytesOut: "Total Bytes Out",
   uptime: "Server Uptime",
   nclients: "Num Clients",
+};
+
+const bwToText = (bw) =>
+  `${parseFloat((bw / (1024 * 1024)).toPrecision(4))}Mb/s`;
+
+const bytesToText = (bytes) => {
+  if (bytes > 1024 * 1024 * 1024) {
+    return `${parseFloat((bytes / (1024 * 1024 * 1024)).toPrecision(4))}GB`;
+  }
+  return `${parseFloat((bytes / (1024 * 1024)).toPrecision(4))}MB`;
+};
+
+const SERVER_INFO_TRANSFORM = {
+  uptime: (uptime) => moment.duration(uptime, "seconds").humanize(),
+  bwIn: bwToText,
+  bwOut: bwToText,
+  bytesIn: bytesToText,
+  bytesOut: bytesToText,
 };
 
 const DEFAULT_STAT_REFRESH_PERIOD = 4; // seconds
@@ -72,20 +89,12 @@ export default class Webtools extends React.Component {
     const serverInfo = {};
     Object.keys(SERVER_INFO_FIELDS).forEach((key) => {
       const responseKey = SERVER_INFO_FIELDS[key];
-      if (statResponse.rtmp[key]) {
+      if (statResponse.rtmp[responseKey]) {
         [serverInfo[key]] = statResponse.rtmp[responseKey];
       }
     });
     return serverInfo;
   }
-
-  SERVER_INFO_TRANSFORM = {
-    uptime: (uptime) => moment.duration(uptime, "seconds").humanize(),
-    bwIn: this.BW_TRANSFORM_FN,
-    bwOut: this.BW_TRANSFORM_FN,
-    bytesIn: this.BYTES_TRANSFORM_FN,
-    bytesOut: this.BYTES_TRANSFORM_FN,
-  };
 
   constructor(props) {
     super(props);
@@ -102,16 +111,6 @@ export default class Webtools extends React.Component {
     Webtools.loadStat(this);
     this.loadEarshotInfo();
   }
-
-  BW_TRANSFORM_FN = (bwIn) =>
-    `${parseFloat((bwIn / (1024 * 1024)).toPrecision(4))}Mb/s`;
-
-  BYTES_TRANSFORM_FN = (bytesIn) => {
-    if (bytesIn > 1024 * 1024 * 1024) {
-      return `${parseFloat((bytesIn / (1024 * 1024 * 1024)).toPrecision(4))}GB`;
-    }
-    return `${parseFloat((bytesIn / (1024 * 1024)).toPrecision(4))}MB`;
-  };
 
   loadEarshotInfo() {
     axios.get(NGINX_INFO_URL).then((response) => {
@@ -142,8 +141,8 @@ export default class Webtools extends React.Component {
   renderServerInfo() {
     const { serverInfo } = this.state;
     const rows = Object.keys(serverInfo).map((key) => {
-      const serverInfoValue = this.SERVER_INFO_TRANSFORM[key]
-        ? this.SERVER_INFO_TRANSFORM[key](serverInfo[key])
+      const serverInfoValue = SERVER_INFO_TRANSFORM[key]
+        ? SERVER_INFO_TRANSFORM[key](serverInfo[key])
         : serverInfo[key];
 
       return (
